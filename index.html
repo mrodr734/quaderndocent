@@ -498,12 +498,12 @@
       <div style="flex: 2; display:flex; gap:8px; align-items:center;">
         <label for="apiKey" style="white-space:nowrap;"><strong>Clau API:</strong></label>
         <input type="password" id="apiKey" placeholder="Enganxa la teva clau de Gemini aquí...">
-        <button type="button" onclick="saveApiKey()">Desar Clau</button>
+        <button type="button" onclick="saveApiKey()">Desar clau</button>
         <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?">❓</button>
       </div>
       <div style="display:flex; gap:8px;">
-        <button type="button" onclick="exportData()" class="btn-green">💾 Exportar Còpia</button>
-        <button type="button" onclick="document.getElementById('importFile').click()">📂 Importar Còpia</button>
+        <button type="button" onclick="exportData()" class="btn-green">💾 Exportar còpia</button>
+        <button type="button" onclick="document.getElementById('importFile').click()">📂 Importar còpia</button>
         <input type="file" id="importFile" style="display:none" onchange="importData(event)">
       </div>
     </div>
@@ -511,12 +511,12 @@
 
   <!-- NAVEGACIÓ PRINCIPAL ENTRE PESTANYES -->
   <div class="main-nav">
-    <button type="button" id="tabGroupsBtn" class="nav-btn active" onclick="switchMainTab('groups')">📋 Quadern de Grups i Alumnat</button>
-    <button type="button" id="tabSchoolBtn" class="nav-btn" onclick="switchMainTab('school')">🏫 Reunions i Acords del Centre</button>
+    <button type="button" id="tabGroupsBtn" class="nav-btn active" onclick="switchMainTab('groups')">📋 Quadern de grups i alumnat</button>
+    <button type="button" id="tabSchoolBtn" class="nav-btn" onclick="switchMainTab('school')">🏫 Reunions i acords del centre</button>
   </div>
 
   <div class="privacy-notice">
-    🔒 <strong>Privacitat Protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes.
+    🔒 <strong>Privacitat protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes.
   </div>
 
   <div class="storage-warning">
@@ -532,11 +532,11 @@
     <div class="layout">
       <!-- PANEL ESQUERRA: GRUPS I ALUMNES -->
       <div class="panel">
-        <h3>1. Gestió de Grups</h3>
+        <h3>1. Gestió de grups</h3>
         <div style="margin-bottom: 15px;">
           <input type="text" id="newGroupName" placeholder="Nom del grup (p. ex., 3r A)">
           <input type="text" id="newGroupAreas" placeholder="Àrees separades per comes (p. ex., Mates, Art)">
-          <button type="button" onclick="addGroup()" style="width: 100%;">+ Crear Grup</button>
+          <button type="button" onclick="addGroup()" style="width: 100%;">+ Crear grup</button>
         </div>
 
         <div id="groupList"></div>
@@ -553,7 +553,7 @@
           <div style="background: #fafdfb; border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <strong style="font-size: 13px; color: var(--accent-green);">📋 Tasques de grup</strong>
-              <button type="button" onclick="openAddTaskModal()" style="font-size: 11px; padding: 3px 6px;" class="btn-green">+ Nova Tasca</button>
+              <button type="button" onclick="openAddTaskModal()" style="font-size: 11px; padding: 3px 6px;" class="btn-green">+ Nova tasca</button>
             </div>
             <div id="groupTasksList" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
           </div>
@@ -577,7 +577,7 @@
 
           <!-- BOTO D'IMPORTACIONS DE CSV -->
           <div style="margin-bottom: 12px;">
-            <button type="button" onclick="document.getElementById('importCsvFile').click()" class="btn-green" style="width:100%; font-size:12px; padding:6px;">📥 Importar Alumnes (CSV)</button>
+            <button type="button" onclick="document.getElementById('importCsvFile').click()" class="btn-green" style="width:100%; font-size:12px; padding:6px;">📥 Importar alumnes (CSV)</button>
             <input type="file" id="importCsvFile" accept=".csv, .txt" style="display:none" onchange="importStudentsCsv(event)">
           </div>
 
@@ -592,7 +592,7 @@
         <div id="groupOverviewSection" style="display:none; margin-bottom:20px; background:#fafdfb; border:1px solid var(--border); padding:15px; border-radius:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <h3 style="margin:0; font-size:16px;">📊 Resum de les Mitjanes del Grup</h3>
+              <h3 style="margin:0; font-size:16px;">📊 Resum de les mitjanes del grup</h3>
               <button type="button" id="toggleMatrixBtn" onclick="toggleGroupMatrix()" style="font-size:11px; padding:3px 8px; background:#6c757d;">▲ Amagar</button>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
@@ -601,7 +601,7 @@
                 <option value="1r Trimestre">1r Trimestre</option>
                 <option value="2n Trimestre">2n Trimestre</option>
                 <option value="3r Trimestre">3r Trimestre</option>
-                <option value="FINAL">🎓 Curs Global (FINAL)</option>
+                <option value="FINAL">🎓 Curs global (FINAL)</option>
               </select>
             </div>
           </div>
@@ -615,7 +615,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <h2 id="currentStudentHeader" style="margin: 0;">Selecciona un alumne</h2>
-              <button type="button" onclick="editStudentName()" style="font-size: 11px; padding: 4px 8px; background-color: #6c757d;" title="Editar el nom d'aquest infant">✏️ Editar Nom</button>
+              <button type="button" onclick="editStudentName()" style="font-size: 11px; padding: 4px 8px; background-color: #6c757d;" title="Editar el nom d'aquest infant">✏️ Editar nom</button>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
               <label style="font-size:12px; font-weight:600;">Article/Pronom:</label>
@@ -634,14 +634,14 @@
           <!-- MARCADOR DE NOTES D'EVALUACIÓ DE L'ALUMNE -->
           <div style="background: linear-gradient(135deg, #2d6a4f, #1b4332); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-              <h4 style="margin:0; color:white;">📊 Marcador d'Avaluació Ponderada (Infant)</h4>
+              <h4 style="margin:0; color:white;">📊 Marcador d'avaluació ponderada (infant)</h4>
               <div style="display:flex; align-items:center; gap:6px;">
                 <label for="summaryTrimestreSelector" style="font-size:12px; color:#e2e8f0;">Període:</label>
                 <select id="summaryTrimestreSelector" onchange="renderSummaryDashboard(); renderGrades();" style="width:auto; margin-bottom:0; font-size:12px; padding:3px 8px; color:#1b4332; font-weight:bold;">
                   <option value="1r Trimestre">1r Trimestre</option>
                   <option value="2n Trimestre">2n Trimestre</option>
                   <option value="3r Trimestre">3r Trimestre</option>
-                  <option value="FINAL">🎓 Curs Global (FINAL)</option>
+                  <option value="FINAL">🎓 Curs global (FINAL)</option>
                 </select>
               </div>
             </div>
@@ -650,14 +650,14 @@
 
           <!-- CONTROL DE TASQUES I LLIURAMENTS DE L'ALUMNE/A -->
           <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
-            <h4 style="margin:0 0 8px 0;">📋 Control de Lliuraments d'Aquest Alumne/a</h4>
+            <h4 style="margin:0 0 8px 0;">📋 Control de lliuraments d'aquest alumne/a</h4>
             <p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Fes clic per canviar l'estat individual d'aquesta tasca:</p>
             <div id="tasksContainer" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 20px;"></div>
           </div>
 
           <!-- REGISTRE DE PROVES I MATRIU DE NOTES PONDERADES -->
           <div style="background: #eef6f2; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
-            <h4>📊 Registre i Matriu de Proves d'Avaluació</h4>
+            <h4>📊 Registre i matriu de proves d'avaluació</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 90px; gap: 8px; align-items: end; margin-bottom: 15px; background: white; padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
               <div>
                 <label style="font-size:12px; font-weight:600;">Àrea:</label>
@@ -690,7 +690,7 @@
 
           <!-- REGISTRE D'OBSERVACIONS -->
           <div style="background: #fafdfb; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
-            <h4>✍️ Nova Observació Pedagògica</h4>
+            <h4>✍️ Nova observació pedagògica</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
               <div>
                 <label style="font-size: 12px; font-weight: 600;">Àrea/Matèria:</label>
@@ -711,13 +711,13 @@
               <label style="font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; cursor: pointer;">
                 <input type="checkbox" id="obsIsInternal"> 🔒 <em>Anotació interna (no incloure a l'informe)</em>
               </label>
-              <button type="button" onclick="addObservation()">Desar Observació</button>
+              <button type="button" onclick="addObservation()">Desar observació</button>
             </div>
           </div>
 
           <!-- HISTORIAL I FILTRE D'OBSERVACIONS -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h4 style="margin: 0;">Historial d'Observacions Registrades</h4>
+            <h4 style="margin: 0;">Historial d'observacions registrades</h4>
             <div style="display: flex; align-items: center; gap: 8px;">
               <label for="filterObsArea" style="font-size: 12px; font-weight: 600; white-space: nowrap;">Filtrar per àrea:</label>
               <select id="filterObsArea" onchange="renderObservations()" style="margin-bottom: 0; padding: 4px 8px; font-size: 12px; width: auto;"></select>
@@ -727,19 +727,19 @@
 
           <hr style="margin: 25px 0; border: 0; border-top: 1px solid var(--border);">
 
-          <h4>Generació Automàtica d'Informes</h4>
+          <h4>Generació automàtica d'informes</h4>
           <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
             Genera una proposta de redactat adaptada gramaticalment (excloent anotacions internes):
           </p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button type="button" id="btnReportTrimestral" onclick="generateReport('trimestral')">📝 Informe Trimestral</button>
-            <button type="button" id="btnReportAnual" onclick="generateReport('anual')" class="btn-green">🎓 Informe Global de Curs (Juny)</button>
+            <button type="button" id="btnReportTrimestral" onclick="generateReport('trimestral')">📝 Informe trimestral</button>
+            <button type="button" id="btnReportAnual" onclick="generateReport('anual')" class="btn-green">🎓 Informe global de curs (juny)</button>
           </div>
 
           <div id="reportContainer" style="display:none;" class="report-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <strong id="reportTitle">Informe Generat:</strong>
-              <button type="button" onclick="copyReport()" style="font-size: 12px; padding: 4px 8px;">📋 Copiar Text</button>
+              <strong id="reportTitle">Informe generat:</strong>
+              <button type="button" onclick="copyReport()" style="font-size: 12px; padding: 4px 8px;">📋 Copiar text</button>
             </div>
             <div id="reportText"></div>
           </div>
@@ -756,23 +756,23 @@
   <!-- SECCIÓ 2: REUNIONS I ACORDS DEL CENTRE -->
   <div id="sectionSchool" style="display:none;">
     <div class="panel">
-      <h3>🏫 Registre de Reunions, Claustres i Acords de Cicle</h3>
+      <h3>🏫 Registre de reunions, claustres i acords de cicle</h3>
       <p style="font-size: 13px; color: #555; margin-bottom: 15px;">
         Anota aquí les decisions, acords pedagògics o informacions importants dels claustres, la direcció o les trobades de cicle.
       </p>
 
       <div style="background: #fafdfb; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <h4 style="margin-top:0;">✍️ Nova Acta / Anotació de Reunió</h4>
+        <h4 style="margin-top:0;">✍️ Nova acta / anotació de reunió</h4>
         <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 8px;">
           <div>
-            <label style="font-size: 12px; font-weight: 600;">Títol / Tema de la reunió:</label>
+            <label style="font-size: 12px; font-weight: 600;">Títol / tema de la reunió:</label>
             <input type="text" id="schoolMeetingTitle" placeholder="P. ex. Acords sobre la festa de final de curs...">
           </div>
           <div>
             <label style="font-size: 12px; font-weight: 600;">Tipus de reunió:</label>
             <select id="schoolMeetingType">
               <option value="Claustre">🏛️ Claustre de mestres</option>
-              <option value="Cicle">🔄 Reunió de Cicle</option>
+              <option value="Cicle">🔄 Reunió de cicle</option>
               <option value="Escola/Direcció">🏫 Escola / Direcció</option>
               <option value="Comissió">💬 Comissió / Altres</option>
             </select>
@@ -784,13 +784,13 @@
         </div>
         <textarea id="schoolMeetingContent" rows="4" placeholder="Escriu els punts tractats, acords preses, acords de cicle o tasques pendents..."></textarea>
         <div style="text-align: right; margin-top: 5px;">
-          <button type="button" onclick="addSchoolMeeting()" class="btn-green">+ Desar Anotació de Reunió</button>
+          <button type="button" onclick="addSchoolMeeting()" class="btn-green">+ Desar anotació de reunió</button>
         </div>
       </div>
 
       <!-- FILTRES I CERCADOR DE REUNIONS -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-        <h4 style="margin: 0;">Historial d'Acords i Reunions Registrades</h4>
+        <h4 style="margin: 0;">Historial d'acords i reunions registrades</h4>
         <div style="display: flex; gap: 10px; align-items: center;">
           <input type="text" id="searchSchoolMeetings" oninput="renderSchoolMeetings()" placeholder="🔍 Cercar acords..." style="margin-bottom:0; font-size:12px; padding:5px 8px; width:180px;">
           <select id="filterSchoolMeetingType" onchange="renderSchoolMeetings()" style="margin-bottom:0; font-size:12px; padding:5px 8px; width:auto;">
@@ -809,14 +809,14 @@
 
   <!-- PEU DE PÀGINA AMB BOTÓ DE PRIVACITAT -->
   <footer>
-    <button type="button" class="btn-privacy" onclick="openPrivacyModal()">🔒 Avís de Privacitat i Bones Pràctiques</button>
+    <button type="button" class="btn-privacy" onclick="openPrivacyModal()">🔒 Avís de privacitat i bones pràctiques</button>
   </footer>
 </div>
 
 <!-- MODAL PER CONFIGURAR PONDERACIONS DEL GRUP -->
 <div id="weightsModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <h4 style="margin-top:0; margin-bottom:10px;">⚙️ Ponderacions per Àrees</h4>
+    <h4 style="margin-top:0; margin-bottom:10px;">⚙️ Ponderacions per àrees</h4>
     <p style="font-size:12px; color:#666; margin-top:0;">Defineix els percentatges dels diferents instruments d'avaluació per a cada matèria:</p>
 
     <div style="margin-bottom:10px;">
@@ -830,7 +830,7 @@
       <button type="button" onclick="addCategoryToWeights()" style="font-size:11px; padding:4px 8px;">+ Categoria</button>
       <div style="display:flex; gap:8px;">
         <button type="button" style="background:#6c757d;" onclick="closeWeightsModal()">Cancel·lar</button>
-        <button type="button" class="btn-green" onclick="saveWeightsConfig()">Desar Ponderació</button>
+        <button type="button" class="btn-green" onclick="saveWeightsConfig()">Desar ponderació</button>
       </div>
     </div>
   </div>
@@ -839,7 +839,7 @@
 <!-- MODAL PER CREAR TASCA PER ÀREA I ALUMNES -->
 <div id="addTaskModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <h4 style="margin-top:0; margin-bottom:10px;">Nova Tasca de Grup</h4>
+    <h4 style="margin-top:0; margin-bottom:10px;">Nova tasca de grup</h4>
     
     <label style="font-size:12px; font-weight:600;">Nom de la tasca:</label>
     <input type="text" id="modalTaskName" placeholder="P. ex. Autorització, Dibuix d'Art...">
@@ -865,7 +865,7 @@
 
     <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:5px;">
       <button type="button" style="background:#6c757d;" onclick="closeAddTaskModal()">Cancel·lar</button>
-      <button type="button" class="btn-green" onclick="confirmAddTask()">Crear Tasca</button>
+      <button type="button" class="btn-green" onclick="confirmAddTask()">Crear tasca</button>
     </div>
   </div>
 </div>
@@ -889,7 +889,7 @@
     </ol>
 
     <div style="background:#eef6f2; border:1px solid var(--border); border-radius:6px; padding:10px; font-size:12px; color:#1b4332; margin-bottom:15px;">
-      💡 Un cop la tinguis copiada, enganxa-la a la casella superior i prem <strong>"Desar Clau"</strong>. Quedarà desada al teu navegador.
+      💡 Un cop la tinguis copiada, enganxa-la a la casella superior i prem <strong>"Desar clau"</strong>. Quedarà desada al teu navegador.
     </div>
 
     <div style="text-align:right;">
@@ -902,7 +902,7 @@
 <div id="privacyModal" class="modal-overlay" style="display:none;">
   <div class="modal-content" style="width: 520px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h4 style="margin:0; color:var(--accent-green); font-size:16px;">🔒 Avís de Privacitat i Seguretat de les Dades</h4>
+      <h4 style="margin:0; color:var(--accent-green); font-size:16px;">🔒 Avís de privacitat i seguretat de les dades</h4>
       <button type="button" onclick="closePrivacyModal()" style="background:none; border:none; color:#777; font-size:18px; cursor:pointer; padding:0;">✕</button>
     </div>
     
@@ -914,12 +914,12 @@
       </div>
 
       <div style="background:#fafdfb; border:1px solid var(--border); padding:10px; border-radius:6px; margin-bottom:12px;">
-        <strong>2. Emmagatzematge Local (100% Privat):</strong><br>
-        Totes les notes, observacions, tasques i dades dels alumnes <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`). No es guarda res en cap servidor extern ni base de dades al núvol. Per això, és fonamental realitzar còpies de seguretat periòdiques des del botó <em>"💾 Exportar Còpia"</em>.
+        <strong>2. Emmagatzematge local (100% privat):</strong><br>
+        Totes les notes, observacions, tasques i dades dels alumnes <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`). No es guarda res en cap servidor extern ni base de dades al núvol. Per això, és fonamental realitzar còpies de seguretat periòdiques des del botó <em>"💾 Exportar còpia"</em>.
       </div>
 
       <div style="background:#fff8f3; border-left:4px solid var(--primary-orange); padding:10px; border-radius:4px; margin-bottom:12px;">
-        <strong>3. Recomanació d'Anonimització:</strong><br>
+        <strong>3. Recomanació d'anonimització:</strong><br>
         Per garantir una protecció total de la identitat de l'alumnat:
         <ul style="margin:5px 0 0 0; padding-left:20px;">
           <li>És preferible registrar els infants utilitzant <strong>només el nom de pila o el nom amb la inicial del primer cognom</strong> (p. ex. <em>"Marc P."</em> o <em>"Laia"</em>) en lloc del nom i dos cognoms complets.</li>
@@ -1228,7 +1228,7 @@
       <thead>
         <tr>
           <th style="width:40px;">#</th>
-          <th style="text-align:left;">Nom i Cognoms</th>`;
+          <th style="text-align:left;">Nom i cognoms</th>`;
 
     group.areas.forEach(area => {
       tableHtml += `<th>${area}</th>`;
@@ -1273,7 +1273,7 @@
     });
 
     tableHtml += `<tr class="avg-row">
-      <td colspan="2" style="text-align:right;">Mitjana del Grup:</td>`;
+      <td colspan="2" style="text-align:right;">Mitjana del grup:</td>`;
 
     group.areas.forEach(area => {
       if (areaCounts[area] > 0) {
@@ -1340,7 +1340,7 @@
     const div = document.createElement('div');
     div.style.cssText = "display:flex; gap:8px; align-items:center; margin-bottom:8px;";
     div.innerHTML = `
-      <input type="text" class="weight-cat-name" value="" placeholder="Nova Categoria" style="flex:2; margin-bottom:0;">
+      <input type="text" class="weight-cat-name" value="" placeholder="Nova categoria" style="flex:2; margin-bottom:0;">
       <input type="number" class="weight-cat-val" value="0" min="0" max="100" placeholder="%" style="flex:1; margin-bottom:0;">
       <span style="font-size:12px; font-weight:bold;">%</span>
       <button type="button" class="btn-danger" onclick="this.parentElement.remove()">✕</button>
@@ -1895,14 +1895,14 @@
             <div style="padding: 10px 14px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-bottom: 1px solid ${areaColor.text}33; display: flex; justify-content: space-between; align-items: center;">
               <strong style="font-size: 14px;">📘 ${area} (${selectedTrimestre})</strong>
               <span style="font-size: 12px; background: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 4px; font-weight:600; border: 1px solid ${areaColor.text}22;">
-                Mitjana Resultant: <span style="font-size:14px; text-decoration:underline;">${areaScore !== null ? areaScore : '-'}</span> (${qScore.text})
+                Mitjana resultant: <span style="font-size:14px; text-decoration:underline;">${areaScore !== null ? areaScore : '-'}</span> (${qScore.text})
               </span>
             </div>
 
             <table class="student-grades-table">
               <thead>
                 <tr style="background-color: ${areaColor.bg}; color: ${areaColor.text};">
-                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Instrument / Categoria</th>
+                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Instrument / categoria</th>
                   <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Nota</th>
                   <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Ponderació</th>
                   <th style="width:100px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Data</th>
@@ -2119,7 +2119,7 @@
   async function generateReport(type) {
     const apiKey = document.getElementById('apiKey').value.trim();
     if (!apiKey) {
-      alert("Enganxa la teva clau API a la part superior i fes clic a 'Desar Clau'. Si no en tens cap, prem el botó '❓' per veure com aconseguir-la.");
+      alert("Enganxa la teva clau API a la part superior i fes clic a 'Desar clau'. Si no en tens cap, prem el botó '❓' per veure com aconseguir-la.");
       return;
     }
 
@@ -2208,7 +2208,7 @@
     let promptText = "";
 
     if (type === 'trimestral') {
-      reportTitleDiv.innerText = "📝 Informe de Final de Trimestre:";
+      reportTitleDiv.innerText = "📝 Informe de final de trimestre:";
       promptText = `${instruccionsNormes}\n` +
         `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
         `Resum de qualificacions ponderades per àrea:\n${summaryGradesFormatted}\n\n` +
@@ -2217,7 +2217,7 @@
         `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Actitud i treball a l'aula' i 'Aspectes a millorar'.`;
 
     } else if (type === 'anual') {
-      reportTitleDiv.innerText = "🎓 Informe Global de Final de Curs (Juny):";
+      reportTitleDiv.innerText = "🎓 Informe global de final de curs (juny):";
       promptText = `${instruccionsNormes}\n` +
         `Informe GLOBAL de final de curs (juny) per a ${nameWithArticle}, centrant-te en el seu PROGRÉS I EVOLUCIÓ al llarg de l'any.\n` +
         `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
@@ -2235,7 +2235,13 @@
         const response = await fetch(streamEndpointUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptText }] }],
+            generationConfig: {
+              maxOutputTokens: 1000,
+              temperature: 0.7
+            }
+          })
         });
 
         if (!response.ok) {
@@ -2250,7 +2256,7 @@
 
           clearInterval(reportTimerInterval);
           if (msg.includes('API key not valid')) {
-            reportTextDiv.innerText = "🔑 La Clau API introduïda no és vàlida.";
+            reportTextDiv.innerText = "🔑 La clau API introduïda no és vàlida.";
           } else if (msg.includes('quota')) {
             reportTextDiv.innerText = "⚠️ Has excedit la quota gratuïta de la teva clau API per avui.";
           } else {
