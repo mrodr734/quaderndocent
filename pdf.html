@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eina de Traspàs i Exportació - Quadern Docent</title>
+  <style>
+    :root {
+      --bg-green: #f4f8f5;
+      --card-bg: #ffffff;
+      --accent-green: #2d6a4f;
+      --accent-dark: #1b4332;
+      --text: #2b2d42;
+      --border: #d3e2d8;
+      --orange: #e06d3b;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-green);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-dark));
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    header h1 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
+    }
+
+    .file-input-box {
+      border: 2px dashed var(--accent-green);
+      background-color: #f8fbf9;
+      padding: 25px;
+      text-align: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .file-input-box:hover {
+      background-color: #eef6f2;
+    }
+
+    select, button, input[type="checkbox"] {
+      font-size: 14px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background-color: #fafdfb;
+      margin-top: 6px;
+    }
+
+    .btn {
+      background-color: var(--accent-green);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-dark);
+    }
+
+    .btn-orange {
+      background-color: var(--orange);
+    }
+
+    .btn-orange:hover {
+      background-color: #c85a2b;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 15px 0;
+      padding: 12px;
+      background: #fafdfb;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    /* ESTILS PER A LA IMPRESSIÓ / GENERACIÓ DE PDF */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        color: black;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      .print-page {
+        page-break-after: always;
+      }
+
+      .print-header {
+        border-bottom: 2px solid #2d6a4f;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        font-size: 11px;
+      }
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 6px 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #eef6f2 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .student-card {
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        page-break-inside: avoid;
+      }
+    }
+
+    /* ESTILS DE LA VISTA PREVIA A PANTALLA */
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .preview-table th, .preview-table td {
+      border: 1px solid var(--border);
+      padding: 8px;
+      text-align: left;
+    }
+
+    .preview-table th {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .preview-table tr:nth-child(even) {
+      background: #f9fbf9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- CONTROLS I SELECCIÓ (S'AMAGUEN EN IMPRIMIR) -->
+  <div class="no-print">
+    <header>
+      <h1>📄 Eina de Traspàs d'Informació i Exportació</h1>
+      <p>Genera informes complets en PDF/Imprès o fitxers Excel (.csv) a partir de la còpia de seguretat JSON.</p>
+    </header>
+
+    <div class="panel">
+      <h3>1. Carrega el fitxer de dades (JSON)</h3>
+      <div class="file-input-box" onclick="document.getElementById('jsonFileInput').click()">
+        <span style="font-size: 28px;">📂</span>
+        <p style="margin: 8px 0 0 0; font-weight: bold;">Fes clic aquí per seleccionar el fitxer .json de la còpia de seguretat</p>
+        <span id="fileNameDisplay" style="font-size: 12px; color: #666;">Cap fitxer seleccionat</span>
+      </div>
+      <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleFileSelect(event)">
+    </div>
+
+    <div id="exportOptionsPanel" class="panel" style="display:none;">
+      <h3>2. Selecciona el grup i personalitza la sortida</h3>
+      
+      <label for="groupSelect"><strong>Grup a exportar:</strong></label>
+      <select id="groupSelect" onchange="renderPreview()"></select>
+
+      <div class="options-grid">
+        <label class="option-item">
+          <input type="checkbox" id="optGrades" checked onchange="renderPreview()"> 📊 Incloure Marcador i Notes
+        </label>
+        <label class="option-item">
+          <input type="checkbox" id="optTasks" checked onchange="renderPreview()"> 📋 Incloure Control de Tasques
+        </label>
+        <label class="option-item">
+          <input type="checkbox" id="optObs" checked onchange="renderPreview()"> ✍️ Incloure Observacions Pedagògiques
+        </label>
+        <label class="option-item">
+          <input type="checkbox" id="optIncludeInternal" onchange="renderPreview()"> 🔒 Incloure Anotacions Internes
+        </label>
+        <label class="option-item">
+          <input type="checkbox" id="optSchoolMeetings" checked onchange="renderPreview()"> 🏫 Incloure Reunions de Centre
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-orange" onclick="window.print()">🖨️ Imprimir o Desar en PDF</button>
+        <button type="button" class="btn" onclick="exportToExcel()">📊 Exportar a Excel (.CSV)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÀREA DE CONTINGUT (ES MOSTRA EN PANTALLA I EN L'INFORME IMPRÈS) -->
+  <div id="printArea"></div>
+
+</div>
+
+<script>
+  let importedDb = null;
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    document.getElementById('fileNameDisplay').innerText = `Fitxer seleccionat: ${file.name}`;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const parsed = JSON.parse(evt.target.result);
+        if (parsed && Array.isArray(parsed.groups)) {
+          importedDb = parsed;
+          populateGroupSelector();
+          document.getElementById('exportOptionsPanel').style.display = 'block';
+          renderPreview();
+        } else {
+          alert("El fitxer seleccionat no té l'estructura correcta del quadern docent.");
+        }
+      } catch (err) {
+        alert("Error en llegir el fitxer JSON: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function populateGroupSelector() {
+    const selector = document.getElementById('groupSelect');
+    selector.innerHTML = '';
+
+    if (!importedDb || !importedDb.groups || importedDb.groups.length === 0) {
+      selector.innerHTML = '<option value="">No hi ha cap grup al fitxer</option>';
+      return;
+    }
+
+    importedDb.groups.forEach((g, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.innerText = `${g.name} (${g.students ? g.students.length : 0} alumnes)`;
+      selector.appendChild(opt);
+    });
+  }
+
+  function renderPreview() {
+    const container = document.getElementById('printArea');
+    container.innerHTML = '';
+
+    if (!importedDb || importedDb.groups.length === 0) return;
+
+    const groupIdx = document.getElementById('groupSelect').value;
+    const group = importedDb.groups[groupIdx];
+
+    if (!group) return;
+
+    const incGrades = document.getElementById('optGrades').checked;
+    const incTasks = document.getElementById('optTasks').checked;
+    const incObs = document.getElementById('optObs').checked;
+    const incInternal = document.getElementById('optIncludeInternal').checked;
+    const incMeetings = document.getElementById('optSchoolMeetings').checked;
+
+    let html = `
+      <div class="print-header">
+        <h2 style="margin:0; color:#2d6a4f;">🏫 Informe i Dossier de Traspàs Docent</h2>
+        <h3 style="margin:4px 0 0 0; color:#4a5568;">Grup: ${group.name}</h3>
+        <p style="font-size:12px; color:#666; margin:4px 0 0 0;">Generat el: ${new Date().toLocaleDateString('ca-ES')} | Àrees: ${group.areas.join(', ')}</p>
+      </div>
+    `;
+
+    // 1. MATRIU DE RESUM DE LES MITJANES DEL GRUP
+    if (incGrades && group.students && group.students.length > 0) {
+      html += `
+        <h3 style="color:#2d6a4f; margin-top:20px;">📊 Resum de Qualificacions Finals del Grup</h3>
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th style="width:30px;">#</th>
+              <th>Nom i Cognoms</th>
+              <th>Article</th>
+              ${group.areas.map(a => `<th>${a}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      group.students.forEach((s, idx) => {
+        html += `
+          <tr>
+            <td><strong>${idx + 1}</strong></td>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.article || 'En'}</td>
+            ${group.areas.map(a => {
+              const score = calculateWeightedScore(group, s, a, 'FINAL');
+              return `<td>${score !== null ? score : '-'}</td>`;
+            }).join('')}
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+    }
+
+    // 2. CONTROL DE TASQUES DEL GRUP
+    if (incTasks && group.tasks && group.tasks.length > 0) {
+      html += `
+        <h3 style="color:#2d6a4f; margin-top:25px;">📋 Estat de Lliurament de Tasques de Grup</h3>
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th style="width:30px;">#</th>
+              <th>Alumne/a</th>
+              ${group.tasks.map(t => `<th>${typeof t === 'object' ? t.name : t}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      group.students.forEach((s, idx) => {
+        html += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${s.name}</td>
+            ${group.tasks.map(t => {
+              const taskId = typeof t === 'object' ? t.id : t;
+              const isDone = s.tasksCompleted && s.tasksCompleted[taskId];
+              return `<td style="text-align:center;">${isDone ? '✅ Feta' : '❌ Pendent'}</td>`;
+            }).join('')}
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+    }
+
+    // 3. DETALL INDIVIDUAL PER ALUMNE (OBSERVACIONS I REGISTRE DE NOTES)
+    if (group.students && group.students.length > 0) {
+      html += `<h3 style="color:#2d6a4f; margin-top:30px; page-break-before: always;">👤 Fitxa i Seguiment Individual de l'Alumnat</h3>`;
+
+      group.students.forEach((s, idx) => {
+        const obsList = (s.observations || []).filter(o => incInternal || !o.isInternal);
+        const gradesList = s.grades || [];
+
+        html += `
+          <div class="student-card">
+            <h4 style="margin:0 0 6px 0; color:#1b4332;">${idx + 1}. ${s.name} <span style="font-size:12px; font-weight:normal; color:#666;">(Article: ${s.article || 'En'})</span></h4>
+        `;
+
+        if (incGrades && gradesList.length > 0) {
+          html += `<p style="font-size:11px; margin:4px 0;"><strong>Historial de Proves Numèriques:</strong> ` +
+            gradesList.map(g => `[${g.area} - ${g.trimestre}: <b>${g.val}</b>]`).join(' ') + `</p>`;
+        }
+
+        if (incObs) {
+          if (obsList.length > 0) {
+            html += `<div style="font-size:12px; margin-top:6px;"><strong>Observacions Pedagògiques:</strong><ul style="margin:4px 0; padding-left:18px;">`;
+            obsList.forEach(o => {
+              html += `<li>[${o.trimestre}] [<b>${o.area}</b>] (${o.date}): ${o.text} ${o.isInternal ? '<em>(🔒 Interna)</em>' : ''}</li>`;
+            });
+            html += `</ul></div>`;
+          } else {
+            html += `<p style="font-size:11px; color:#888; margin:4px 0;">Sense observacions registrades.</p>`;
+          }
+        }
+
+        html += `</div>`;
+      });
+    }
+
+    // 4. ACORDS I REUNIONS DEL CENTRE
+    if (incMeetings && importedDb.schoolMeetings && importedDb.schoolMeetings.length > 0) {
+      html += `
+        <h3 style="color:#2d6a4f; margin-top:30px; page-break-before: always;">🏫 Acords i Anotacions de Reunió del Centre</h3>
+      `;
+
+      importedDb.schoolMeetings.forEach(m => {
+        html += `
+          <div class="student-card" style="background:#fcfdfe; border-left: 4px solid #2d6a4f;">
+            <strong style="font-size:13px; color:#1b4332;">[${m.type}] ${m.title}</strong>
+            <span style="font-size:11px; color:#666; float:right;">📅 ${m.date}</span>
+            <p style="font-size:12px; margin:6px 0 0 0; white-space: pre-wrap;">${m.content}</p>
+          </div>
+        `;
+      });
+    }
+
+    container.innerHTML = html;
+  }
+
+  function calculateWeightedScore(group, student, areaName, trimestreName) {
+    if (!student.grades) return null;
+    const DEFAULT_CAT = [
+      { name: "Proves escrites", weight: 40 },
+      { name: "Expressió oral i exposicions", weight: 30 },
+      { name: "Treball diari, tasques i projectes", weight: 20 },
+      { name: "Actitud", weight: 10 }
+    ];
+
+    const weights = (group.areaWeights && group.areaWeights[areaName]) ? group.areaWeights[areaName] : DEFAULT_CAT;
+    const filteredGrades = student.grades.filter(g => g.area === areaName && (trimestreName === 'FINAL' || g.trimestre === trimestreName));
+    if (filteredGrades.length === 0) return null;
+
+    let totalWeightedScore = 0;
+    let totalWeightApplied = 0;
+
+    weights.forEach(w => {
+      const catGrades = filteredGrades.filter(g => g.category === w.name || (!g.category && w.name === DEFAULT_CAT[0].name));
+      if (catGrades.length > 0) {
+        const catAvg = catGrades.reduce((acc, curr) => acc + curr.val, 0) / catGrades.length;
+        totalWeightedScore += catAvg * (w.weight / 100);
+        totalWeightApplied += (w.weight / 100);
+      }
+    });
+
+    if (totalWeightApplied === 0) return null;
+    return (totalWeightedScore / totalWeightApplied).toFixed(1);
+  }
+
+  // EXPORTACIÓ EN FORMAT CSV / EXCEL
+  function exportToExcel() {
+    if (!importedDb || importedDb.groups.length === 0) {
+      alert("Carrega primer un fitxer JSON.");
+      return;
+    }
+
+    const groupIdx = document.getElementById('groupSelect').value;
+    const group = importedDb.groups[groupIdx];
+
+    if (!group || !group.students) return;
+
+    let csvContent = "\uFEFF"; // BOM per reconèixer accents i caràcters en català a Excel
+
+    // Capçalera Excel
+    const headers = ["#", "Nom i Cognoms", "Article"];
+    group.areas.forEach(a => headers.push(`Nota Final: ${a}`));
+    if (group.tasks) {
+      group.tasks.forEach(t => headers.push(`Tasca: ${typeof t === 'object' ? t.name : t}`));
+    }
+    headers.push("Observacions Totals");
+
+    csvContent += headers.map(h => `"${h}"`).join(";") + "\n";
+
+    // Files per alumne
+    group.students.forEach((s, idx) => {
+      const row = [(idx + 1), `"${s.name}"`, `"${s.article || 'En'}"`];
+
+      // Notes
+      group.areas.forEach(a => {
+        const score = calculateWeightedScore(group, s, a, 'FINAL');
+        row.push(`"${score !== null ? score : '-'}"`);
+      });
+
+      // Tasques
+      if (group.tasks) {
+        group.tasks.forEach(t => {
+          const taskId = typeof t === 'object' ? t.id : t;
+          const isDone = s.tasksCompleted && s.tasksCompleted[taskId];
+          row.push(`"${isDone ? 'Feta' : 'Pendent'}"`);
+        });
+      }
+
+      // Observacions
+      const obsText = (s.observations || [])
+        .map(o => `[${o.trimestre} - ${o.area}]: ${o.text}`)
+        .join(" | ")
+        .replace(/"/g, '""');
+      row.push(`"${obsText}"`);
+
+      csvContent += row.join(";") + "\n";
+    });
+
+    // Descarregar fitxer
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Traspas_Grup_${group.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+</script>
+
+</body>
+</html>
