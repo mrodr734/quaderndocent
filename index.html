@@ -15,6 +15,7 @@
       --primary-orange: #e06d3b;
       --primary-orange-dark: #c85a2b;
       --accent-green: #2d6a4f;
+      --accent-green-dark: #1b4332;
       --text: #2b2d42;
       --border: #d3e2d8;
     }
@@ -30,7 +31,7 @@
       margin: 0 auto;
     }
     header {
-      background: linear-gradient(135deg, var(--accent-green), #1b4332);
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
       color: white;
       padding: 20px;
       border-radius: 12px;
@@ -122,7 +123,7 @@
       background-color: var(--accent-green);
     }
     button.btn-green:hover {
-      background-color: #1b4332;
+      background-color: var(--accent-green-dark);
     }
     button.btn-danger {
       background-color: #e63946;
@@ -470,8 +471,8 @@
       border-top: 1px solid var(--border);
       text-align: center;
     }
-    .btn-privacy {
-      background: #1b4332;
+    .btn-footer {
+      background: var(--accent-green-dark, #1b4332);
       color: white;
       font-size: 12px;
       padding: 6px 14px;
@@ -480,8 +481,8 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-privacy:hover {
-      background: #2d6a4f;
+    .btn-footer:hover {
+      background: var(--accent-green, #2d6a4f);
     }
   </style>
 </head>
@@ -795,7 +796,11 @@
   </div>
 
   <footer>
-    <button type="button" class="btn-privacy" onclick="openPrivacyModal()">🔒 Avís de privacitat i bones pràctiques</button>
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button type="button" class="btn-footer" onclick="openPrivacyModal()">🔒 Avís de privacitat i bones pràctiques</button>
+      <button type="button" class="btn-footer" onclick="window.location.href='./pdf'">📊 Generador de PDF/CSV</button>
+      <button type="button" class="btn-footer" onclick="window.location.href='./gemini'">🤖 Generador de Prompt</button>
+    </div>
   </footer>
 </div>
 
@@ -2292,7 +2297,8 @@
       return `- Àrea: ${area} -> 1r Trim: ${score1 || 'sense dades'}, 2n Trim: ${score2 || 'sense dades'}, 3r Trim: ${score3 || 'sense dades'} | FINAL: ${scoreFinal || 'sense dades'}`;
     }).join('\n');
 
-    const instruccionsNormes = `REGLES DE REDACCIÓ LINGÜÍSTICA I COEDUCATIVA:\n` +
+    const instruccionsNormes = `ROL I REGLES DE REDACCIÓ LINGÜÍSTICA I COEDUCATIVA:\n` +
+      `- ACTUA COM UN MESTRE/A D'EDUCACIÓ PRIMÀRIA I REDACTA UN INFORME PEDAGÒGIC OPTIMITZAT.\n` +
       `- ESCRIU DIRECTAMENT L'INFORME EN CATALÀ. NO ESCRIGUIS CAP LLISTA DE COMPROVACIÓ, CHECKLIST, PENSAMENT INTERN NI METADADES (p. ex. "Checked", "No greetings", etc.).\n` +
       `- Utilitza una redacció fluïda, pedagògica i integradora en català.\n` +
       `- Fes servir el nom de l'alumne/a com a referència principal: "${nameWithArticle}".\n` +
@@ -2310,7 +2316,7 @@
       promptText = `${instruccionsNormes}\n` +
         `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
         `Resum de qualificacions ponderades per àrea:\n${summaryGradesFormatted}\n\n` +
-        `Observacions registrades:\n${obsFormatted || 'Sense observacions textuals avalulables'}\n\n` +
+        `Observacions registrades:\n${obsFormatted || 'Sense observacions textuals avaluables'}\n\n` +
         `Estructura desitjada:\n` +
         `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Actitud i treball a l'aula' i 'Aspectes a millorar'.`;
 
@@ -2320,7 +2326,7 @@
         `Informe GLOBAL de final de curs (juny) per a ${nameWithArticle}, centrant-te en el seu PROGRÉS I EVOLUCIÓ al llarg de l'any.\n` +
         `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
         `Resum de qualificacions ponderades per àrea al llarg dels 3 trimestres i nota final:\n${summaryGradesFormatted}\n\n` +
-        `Historial d'observacions:\n${obsFormatted || 'Sense observacions textuals avalulables'}\n\n` +
+        `Historial d'observacions:\n${obsFormatted || 'Sense observacions textuals avaluables'}\n\n` +
         `Estructura desitjada:\n` +
         `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Valoració global del curs' i 'Recomanacions per al curs vinent'.`;
     }
