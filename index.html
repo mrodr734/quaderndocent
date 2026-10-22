@@ -941,6 +941,60 @@
     { bg: '#ffd6a5', text: '#7c3a00' }
   ];
 
+  // DICCIONARI I MAPA DE COLORS PER MATÈRIA PERSONALITZADA
+  function getAreaColorObj(areaName) {
+    if (!areaName) return { bg: '#e9ecef', text: '#495057' };
+    
+    const nameLower = areaName.toLowerCase().trim();
+
+    // 1. Català (Groc)
+    if (nameLower.includes('català') || nameLower.includes('catala')) {
+      return { bg: '#fef9c3', text: '#854d0e' };
+    }
+    // 2. Matemàtiques (Vermell)
+    if (nameLower.includes('matemat') || nameLower.includes('mate') || nameLower.includes('math')) {
+      return { bg: '#fee2e2', text: '#991b1b' };
+    }
+    // 3. Medi (Verd clar)
+    if (nameLower.includes('medi')) {
+      return { bg: '#dcfce7', text: '#166534' };
+    }
+    // 4. Música i Art (Lila)
+    if (nameLower.includes('música') || nameLower.includes('musica') || nameLower.includes('art') || nameLower.includes('plàstica') || nameLower.includes('plastica')) {
+      return { bg: '#f3e8ff', text: '#6b21a8' };
+    }
+    // 5. Tutoria (Blau clar)
+    if (nameLower.includes('tuto')) {
+      return { bg: '#e0f2fe', text: '#075985' };
+    }
+    // 6. Castellà (Taronja)
+    if (nameLower.includes('castell') || nameLower.includes('spanish')) {
+      return { bg: '#ffedd5', text: '#9a3412' };
+    }
+    // 7. Anglès (Blau fosc)
+    if (nameLower.includes('anglès') || nameLower.includes('angles') || nameLower.includes('english')) {
+      return { bg: '#dbeafe', text: '#1e40af' };
+    }
+    // 8. Science (Verd fosc)
+    if (nameLower.includes('science')) {
+      return { bg: '#14532d', text: '#ffffff' };
+    }
+
+    // Per a qualsevol altra àrea, assigna un color de la paleta per defecte
+    if (selectedGroupIndex !== null && db.groups[selectedGroupIndex]) {
+      const areas = db.groups[selectedGroupIndex].areas || [];
+      const idx = areas.indexOf(areaName);
+      if (idx !== -1) return AREA_COLORS[idx % AREA_COLORS.length];
+    }
+    
+    return { bg: '#e9ecef', text: '#495057' };
+  }
+
+  function getAreaColorStyle(areaName) {
+    const color = getAreaColorObj(areaName);
+    return `background-color: ${color.bg}; color: ${color.text}; border: 1px solid ${color.text}33;`;
+  }
+
   function openApiHelpModal() {
     document.getElementById('apiHelpModal').style.display = 'flex';
   }
@@ -981,19 +1035,6 @@
 
     const obsSel = document.getElementById('obsTrimestre');
     if (obsSel) obsSel.value = (def === 'FINAL' ? '3r Trimestre' : def);
-  }
-
-  function getAreaColorObj(areaName) {
-    if (selectedGroupIndex === null || !db.groups[selectedGroupIndex]) return { bg: '#e9ecef', text: '#495057' };
-    const areas = db.groups[selectedGroupIndex].areas || [];
-    const idx = areas.indexOf(areaName);
-    if (idx === -1) return { bg: '#e9ecef', text: '#495057' };
-    return AREA_COLORS[idx % AREA_COLORS.length] || AREA_COLORS[0];
-  }
-
-  function getAreaColorStyle(areaName) {
-    const color = getAreaColorObj(areaName);
-    return `background-color: ${color.bg}; color: ${color.text}; border: 1px solid ${color.text}33;`;
   }
 
   try {
@@ -1236,8 +1277,8 @@
       div.className = 'group-item' + (selectedGroupIndex === index ? ' active' : '');
       div.onclick = () => selectGroup(index);
 
-      const areasBadges = group.areas.map((a, i) => {
-        const color = AREA_COLORS[i % AREA_COLORS.length];
+      const areasBadges = group.areas.map(a => {
+        const color = getAreaColorObj(a);
         return `<span class="badge" style="background-color:${color.bg}; color:${color.text}; border:1px solid ${color.text}33;">${a}</span>`;
       }).join('');
 
@@ -1290,7 +1331,8 @@
           <th style="text-align:left;">Nom i cognoms</th>`;
 
     group.areas.forEach(area => {
-      tableHtml += `<th>${area}</th>`;
+      const color = getAreaColorObj(area);
+      tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33;">${area}</th>`;
     });
 
     tableHtml += `</tr></thead><tbody>`;
@@ -1380,7 +1422,7 @@
     const container = document.getElementById('weightsFormContainer');
     container.innerHTML = '';
 
-    categories.forEach((cat, idx) => {
+    categories.forEach((cat) => {
       const div = document.createElement('div');
       div.style.cssText = "display:flex; gap:8px; align-items:center; margin-bottom:8px;";
       div.innerHTML = `
