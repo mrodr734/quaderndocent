@@ -125,6 +125,12 @@
     button.btn-green:hover {
       background-color: var(--accent-green-dark);
     }
+    button.btn-secondary {
+      background-color: #6c757d;
+    }
+    button.btn-secondary:hover {
+      background-color: #5a6268;
+    }
     button.btn-danger {
       background-color: #e63946;
       padding: 4px 8px;
@@ -376,8 +382,18 @@
       color: var(--text);
     }
 
+    /* CONTENIDOR AMB DESPLAÇAMENT HORITZONTAL */
+    #groupMatrixWrapper {
+      margin-top: 10px;
+      overflow-x: auto;
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
     .group-matrix-table, .student-grades-table {
       width: 100%;
+      min-width: max-content; /* Garanteix que la taula no es deforma i activa el lliscament */
       border-collapse: collapse;
       font-size: 12px;
       background: white;
@@ -406,6 +422,21 @@
       font-weight: bold;
     }
 
+    .matrix-inline-input {
+      width: 55px !important;
+      padding: 3px 4px !important;
+      font-size: 12px !important;
+      text-align: center !important;
+      margin-bottom: 0 !important;
+      background: #ffffff !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 4px !important;
+    }
+    .matrix-inline-input:focus {
+      border-color: var(--primary-orange) !important;
+      background-color: #fff8f3 !important;
+    }
+
     .area-block-card {
       margin-bottom: 20px;
       background: white;
@@ -428,7 +459,7 @@
       background: white;
       padding: 20px;
       border-radius: 10px;
-      width: 420px;
+      width: 480px;
       max-height: 85vh;
       display: flex;
       flex-direction: column;
@@ -436,22 +467,22 @@
     }
     .modal-scroll {
       overflow-y: auto;
-      max-height: 240px;
+      max-height: 280px;
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 8px;
       background: #fafdfb;
       margin-bottom: 10px;
     }
-    .student-checkbox-item {
+    .student-checkbox-item, .student-grade-row {
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 13px;
-      padding: 4px 0;
+      padding: 6px 0;
       border-bottom: 1px dashed #eee;
     }
-    .student-checkbox-item:last-child {
+    .student-checkbox-item:last-child, .student-grade-row:last-child {
       border-bottom: none;
     }
     .api-instructions-list {
@@ -463,6 +494,28 @@
     }
     .api-instructions-list li {
       margin-bottom: 6px;
+    }
+
+    .nav-arrow-btn {
+      background: var(--accent-green);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav-arrow-btn:hover {
+      background: var(--accent-green-dark);
+    }
+    .nav-arrow-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
     }
 
     footer {
@@ -584,7 +637,9 @@
         <div id="groupOverviewSection" style="display:none; margin-bottom:20px; background:#fafdfb; border:1px solid var(--border); padding:15px; border-radius:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <h3 style="margin:0; font-size:16px;">📊 Resum de les mitjanes del grup</h3>
+              <h3 style="margin:0; font-size:16px;">📊 Resum del grup</h3>
+              <button type="button" onclick="openBulkGradeModal()" class="btn-green" style="font-size:11px; padding:3px 8px;">📝 Notes per prova</button>
+              <button type="button" id="toggleMatrixViewBtn" onclick="toggleGroupMatrixViewMode()" style="font-size:11px; padding:3px 8px; background:#4a5568;">🔍 Desglossar proves</button>
               <button type="button" id="toggleMatrixBtn" onclick="toggleGroupMatrix()" style="font-size:11px; padding:3px 8px; background:#6c757d;">▲ Amagar</button>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
@@ -598,7 +653,7 @@
               <button type="button" onclick="exportGroupScoresCsv()" class="btn-green" style="font-size:11px; padding:4px 8px;" title="Exportar resum de notes en CSV">📊 Exportar CSV</button>
             </div>
           </div>
-          <div id="groupMatrixWrapper" style="margin-top:10px; overflow-x:auto;">
+          <div id="groupMatrixWrapper">
             <div id="groupMatrixContainer"></div>
           </div>
         </div>
@@ -606,6 +661,8 @@
         <div id="studentDetail" style="display:none;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
             <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" id="prevStudentBtn" class="nav-arrow-btn" onclick="navigateStudent(-1)" title="Alumne/a anterior">◀</button>
+              <button type="button" id="nextStudentBtn" class="nav-arrow-btn" onclick="navigateStudent(1)" title="Alumne/a següent">▶</button>
               <h2 id="currentStudentHeader" style="margin: 0;">Selecciona un alumne</h2>
               <button type="button" onclick="editStudentName()" style="font-size: 11px; padding: 4px 8px; background-color: #6c757d;" title="Editar el nom d'aquest infant">✏️ Editar nom</button>
             </div>
@@ -762,8 +819,9 @@
             <select id="schoolMeetingType">
               <option value="Claustre">🏛️ Claustre de mestres</option>
               <option value="Cicle">🔄 Reunió de cicle</option>
-              <option value="Escola/Direcció">🏫 Escola / Direcció</option>
-              <option value="Comissió">💬 Comissió / Altres</option>
+              <option value="Escola">🏫 Escola</option>
+              <option value="Comissió">👥 Comissions</option>
+              <option value="Altres">📌 Altres</option>
             </select>
           </div>
           <div>
@@ -785,8 +843,9 @@
             <option value="ALL">Tots els tipus</option>
             <option value="Claustre">🏛️ Claustre</option>
             <option value="Cicle">🔄 Cicle</option>
-            <option value="Escola/Direcció">🏫 Escola / Direcció</option>
-            <option value="Comissió">💬 Comissió / Altres</option>
+            <option value="Escola">🏫 Escola</option>
+            <option value="Comissió">👥 Comissions</option>
+            <option value="Altres">📌 Altres</option>
           </select>
         </div>
       </div>
@@ -805,6 +864,53 @@
 </div>
 
 <!-- MODALS -->
+<div id="bulkGradeModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <h4 style="margin-top:0; margin-bottom:10px;">📝 Gestió de notes per prova de grup</h4>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+      <div>
+        <label style="font-size:12px; font-weight:600;">Àrea:</label>
+        <select id="bulkGradeArea" onchange="onBulkAreaChange()"></select>
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:600;">Instrument:</label>
+        <select id="bulkGradeCategory"></select>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
+      <div>
+        <label style="font-size:12px; font-weight:600;">Nom/Títol de la prova (opcional):</label>
+        <input type="text" id="bulkGradeTitle" placeholder="P. ex. Examen Tema 1, Fraccions...">
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:600;">Trimestre:</label>
+        <select id="bulkGradeTrimestre" onchange="renderBulkGradeStudents()">
+          <option value="1r Trimestre">1r Trimestre</option>
+          <option value="2n Trimestre">2n Trimestre</option>
+          <option value="3r Trimestre">3r Trimestre</option>
+        </select>
+      </div>
+    </div>
+
+    <label style="font-size:12px; font-weight:600; display:block; margin-top:5px;">Carregar o editar prova existent:</label>
+    <select id="bulkExistingTestsSelect" onchange="loadExistingTestIntoBulkModal()" style="margin-bottom:10px;">
+      <option value="NEW">✨ Nova prova (crear des de zero)</option>
+    </select>
+
+    <div class="modal-scroll" id="bulkGradeStudentList"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+      <span style="font-size:11px; color:#666;">Pots deixar les caselles en blanc si la prova està pendent.</span>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-secondary" onclick="closeBulkGradeModal()">Cancel·lar</button>
+        <button type="button" class="btn-green" onclick="saveBulkGrades()">Desar notes del grup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="weightsModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
     <h4 style="margin-top:0; margin-bottom:10px;">⚙️ Ponderacions per àrees</h4>
@@ -820,7 +926,7 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
       <button type="button" onclick="addCategoryToWeights()" style="font-size:11px; padding:4px 8px;">+ Categoria</button>
       <div style="display:flex; gap:8px;">
-        <button type="button" style="background:#6c757d;" onclick="closeWeightsModal()">Cancel·lar</button>
+        <button type="button" class="btn-secondary" onclick="closeWeightsModal()">Cancel·lar</button>
         <button type="button" class="btn-green" onclick="saveWeightsConfig()">Desar ponderació</button>
       </div>
     </div>
@@ -854,7 +960,7 @@
     <div class="modal-scroll" id="modalStudentList"></div>
 
     <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:5px;">
-      <button type="button" style="background:#6c757d;" onclick="closeAddTaskModal()">Cancel·lar</button>
+      <button type="button" class="btn-secondary" onclick="closeAddTaskModal()">Cancel·lar</button>
       <button type="button" class="btn-green" onclick="confirmAddTask()">Crear tasca</button>
     </div>
   </div>
@@ -898,7 +1004,7 @@
       
       <div style="background:#e8f5e9; border-left:4px solid var(--accent-green); padding:10px; border-radius:4px; margin-bottom:12px;">
         <strong>1. Ús del compte educatiu XTEC:</strong><br>
-        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institucional <strong>XTEC</strong>. Els entorns educatius corporatius de Google disposen de garanties addicionals de protecció de dades i privacitat contractuals ajustades al Reglament General de Protecció de Dades (RGPD) per als centres docents.
+        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institutional <strong>XTEC</strong>. Els entorns educatius corporatius de Google disposen de garanties addicionals de protecció de dades i privacitat contractuals ajustades al Reglament General de Protecció de Dades (RGPD) per als centres docents.
       </div>
 
       <div style="background:#fafdfb; border:1px solid var(--border); padding:10px; border-radius:6px; margin-bottom:12px;">
@@ -928,6 +1034,7 @@
   let selectedGroupIndex = null;
   let selectedStudentIndex = null;
   let reportTimerInterval = null;
+  let matrixViewMode = 'summary'; // 'summary' o 'detailed'
 
   const DEFAULT_CATEGORIES = [
     { name: "Prova escrita", weight: 40 },
@@ -946,46 +1053,36 @@
     { bg: '#ffd6a5', text: '#7c3a00' }
   ];
 
-  // DICCIONARI I MAPA DE COLORS PER MATÈRIA PERSONALITZADA
   function getAreaColorObj(areaName) {
     if (!areaName) return { bg: '#e9ecef', text: '#495057' };
     
     const nameLower = areaName.toLowerCase().trim();
 
-    // 1. Català (Groc)
     if (nameLower.includes('català') || nameLower.includes('catala')) {
       return { bg: '#fef9c3', text: '#854d0e' };
     }
-    // 2. Matemàtiques (Vermell)
     if (nameLower.includes('matemat') || nameLower.includes('mate') || nameLower.includes('math')) {
       return { bg: '#fee2e2', text: '#991b1b' };
     }
-    // 3. Medi (Verd clar)
     if (nameLower.includes('medi')) {
       return { bg: '#dcfce7', text: '#166534' };
     }
-    // 4. Música i Art (Lila)
     if (nameLower.includes('música') || nameLower.includes('musica') || nameLower.includes('art') || nameLower.includes('plàstica') || nameLower.includes('plastica')) {
       return { bg: '#f3e8ff', text: '#6b21a8' };
     }
-    // 5. Tutoria (Blau clar)
     if (nameLower.includes('tuto')) {
       return { bg: '#e0f2fe', text: '#075985' };
     }
-    // 6. Castellà (Taronja)
     if (nameLower.includes('castell') || nameLower.includes('spanish')) {
       return { bg: '#ffedd5', text: '#9a3412' };
     }
-    // 7. Anglès (Blau fosc)
     if (nameLower.includes('anglès') || nameLower.includes('angles') || nameLower.includes('english')) {
       return { bg: '#dbeafe', text: '#1e40af' };
     }
-    // 8. Science (Verd fosc)
     if (nameLower.includes('science')) {
       return { bg: '#14532d', text: '#ffffff' };
     }
 
-    // Per a qualsevol altra àrea, assigna un color de la paleta per defecte
     if (selectedGroupIndex !== null && db.groups[selectedGroupIndex]) {
       const areas = db.groups[selectedGroupIndex].areas || [];
       const idx = areas.indexOf(areaName);
@@ -1040,6 +1137,9 @@
 
     const obsSel = document.getElementById('obsTrimestre');
     if (obsSel) obsSel.value = (def === 'FINAL' ? '3r Trimestre' : def);
+
+    const bulkTriSel = document.getElementById('bulkGradeTrimestre');
+    if (bulkTriSel) bulkTriSel.value = (def === 'FINAL' ? '3r Trimestre' : def);
   }
 
   try {
@@ -1205,6 +1305,7 @@
   }
 
   function getQualificacioOficial(val) {
+    if (val === null || val === undefined || val === '') return { text: '-', class: '' };
     const num = parseFloat(val);
     if (isNaN(num)) return { text: '-', class: '' };
     if (num < 5.0) return { text: 'NA', class: 'grade-na', fullText: 'No Assolit (NA)' };
@@ -1223,6 +1324,13 @@
       wrapper.style.display = 'none';
       btn.innerText = '▼ Mostrar';
     }
+  }
+
+  function toggleGroupMatrixViewMode() {
+    matrixViewMode = (matrixViewMode === 'summary') ? 'detailed' : 'summary';
+    const btn = document.getElementById('toggleMatrixViewBtn');
+    btn.innerText = (matrixViewMode === 'summary') ? '🔍 Desglossar proves' : '📊 Resum àrees';
+    renderGroupMatrix();
   }
 
   function addGroup() {
@@ -1316,6 +1424,108 @@
     renderGroupMatrix();
   }
 
+  function navigateStudent(direction) {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const students = db.groups[selectedGroupIndex].students;
+    if (!students || students.length === 0) return;
+
+    let newIndex = selectedStudentIndex + direction;
+    if (newIndex >= 0 && newIndex < students.length) {
+      selectStudent(newIndex);
+    }
+  }
+
+  function updateStudentNavButtons() {
+    const prevBtn = document.getElementById('prevStudentBtn');
+    const nextBtn = document.getElementById('nextStudentBtn');
+    if (!prevBtn || !nextBtn) return;
+
+    if (selectedGroupIndex === null || selectedStudentIndex === null) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    const totalStudents = db.groups[selectedGroupIndex].students.length;
+    prevBtn.disabled = (selectedStudentIndex <= 0);
+    nextBtn.disabled = (selectedStudentIndex >= totalStudents - 1);
+  }
+
+  function getAllGroupTests(group, currentTrimestre) {
+    const tests = [];
+    const testKeySet = new Set();
+
+    group.students.forEach(student => {
+      if (student.grades) {
+        student.grades.forEach(g => {
+          if (currentTrimestre === 'FINAL' || g.trimestre === currentTrimestre) {
+            const key = `${g.area}|||${g.category}|||${g.testTitle || ''}|||${g.trimestre}`;
+            if (!testKeySet.has(key)) {
+              testKeySet.add(key);
+              tests.push({
+                key: key,
+                area: g.area,
+                category: g.category,
+                testTitle: g.testTitle || g.category,
+                trimestre: g.trimestre
+              });
+            }
+          }
+        });
+      }
+    });
+
+    return tests;
+  }
+
+  function updateInlineGradeFromMatrix(inputElem, sIdx, area, category, testTitle, trimestre) {
+    if (selectedGroupIndex === null) return;
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[sIdx];
+    if (!student) return;
+
+    if (!student.grades) student.grades = [];
+
+    const valStr = inputElem.value.trim();
+    const valNum = valStr !== '' ? parseFloat(valStr) : null;
+
+    if (valNum !== null && (isNaN(valNum) || valNum < 0 || valNum > 10)) {
+      alert("Introdueix una nota vàlida entre 0 i 10.");
+      return;
+    }
+
+    const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    const existingIdx = student.grades.findIndex(g => 
+      g.area === area && 
+      g.category === category && 
+      (g.testTitle || g.category) === testTitle && 
+      g.trimestre === trimestre
+    );
+
+    if (existingIdx !== -1) {
+      student.grades[existingIdx].val = valNum;
+      student.grades[existingIdx].date = todayStr;
+    } else {
+      student.grades.unshift({
+        id: Date.now() + Math.random(),
+        date: todayStr,
+        area: area,
+        category: category,
+        testTitle: testTitle,
+        trimestre: trimestre,
+        val: valNum
+      });
+    }
+
+    saveDb();
+
+    if (selectedStudentIndex === sIdx) {
+      renderGrades();
+      renderSummaryDashboard();
+    }
+  }
+
   function renderGroupMatrix() {
     const container = document.getElementById('groupMatrixContainer');
     if (!container || selectedGroupIndex === null) return;
@@ -1329,69 +1539,297 @@
 
     const currentTrimestre = document.getElementById('groupMatrixTrimestreSelector').value;
 
-    let tableHtml = `<table class="group-matrix-table">
-      <thead>
-        <tr>
-          <th style="width:40px;">#</th>
-          <th style="text-align:left;">Nom i cognoms</th>`;
-
-    group.areas.forEach(area => {
-      const color = getAreaColorObj(area);
-      tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33;">${area}</th>`;
-    });
-
-    tableHtml += `</tr></thead><tbody>`;
-
-    const areaSums = {};
-    const areaCounts = {};
-    group.areas.forEach(a => { areaSums[a] = 0; areaCounts[a] = 0; });
-
-    group.students.forEach((student, sIdx) => {
-      const totalObs = student.observations ? student.observations.length : 0;
-      const totalGrades = (student.grades ? student.grades.length : 0) + 
-                          (student.tasksCompleted ? Object.values(student.tasksCompleted).filter(Boolean).length : 0);
-
-      const obsBadge = `<span class="badge-obs" title="${totalObs} observacions pedagògiques">📝 ${totalObs}</span>`;
-      const gradesBadge = `<span class="badge-grades" title="${totalGrades} proves i tasques assolides">📊 ${totalGrades}</span>`;
-
-      tableHtml += `<tr onclick="selectStudent(${sIdx})">
-        <td style="font-weight:bold; color:#1b4332;">${sIdx + 1}</td>
-        <td class="student-name-td" style="font-weight:600;">
-          <span style="display:inline-flex; align-items:center;">
-            ${obsBadge}${gradesBadge}<span>${student.name}</span>
-          </span>
-        </td>`;
+    if (matrixViewMode === 'summary') {
+      let tableHtml = `<table class="group-matrix-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th style="text-align:left;">Nom i cognoms</th>`;
 
       group.areas.forEach(area => {
-        const score = calculateWeightedScore(student, area, currentTrimestre);
-        if (score !== null) {
-          const q = getQualificacioOficial(score);
-          areaSums[area] += parseFloat(score);
-          areaCounts[area]++;
-          tableHtml += `<td><b>${score}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>`;
+        const color = getAreaColorObj(area);
+        tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33;">${area}</th>`;
+      });
+
+      tableHtml += `</tr></thead><tbody>`;
+
+      const areaSums = {};
+      const areaCounts = {};
+      group.areas.forEach(a => { areaSums[a] = 0; areaCounts[a] = 0; });
+
+      group.students.forEach((student, sIdx) => {
+        const totalObs = student.observations ? student.observations.length : 0;
+        const totalGrades = (student.grades ? student.grades.length : 0) + 
+                            (student.tasksCompleted ? Object.values(student.tasksCompleted).filter(Boolean).length : 0);
+
+        const obsBadge = `<span class="badge-obs" title="${totalObs} observacions pedagògiques">📝 ${totalObs}</span>`;
+        const gradesBadge = `<span class="badge-grades" title="${totalGrades} proves i tasques assolides">📊 ${totalGrades}</span>`;
+
+        tableHtml += `<tr onclick="selectStudent(${sIdx})">
+          <td style="font-weight:bold; color:#1b4332;">${sIdx + 1}</td>
+          <td class="student-name-td" style="font-weight:600;">
+            <span style="display:inline-flex; align-items:center;">
+              ${obsBadge}${gradesBadge}<span>${student.name}</span>
+            </span>
+          </td>`;
+
+        group.areas.forEach(area => {
+          const score = calculateWeightedScore(student, area, currentTrimestre);
+          if (score !== null) {
+            const q = getQualificacioOficial(score);
+            areaSums[area] += parseFloat(score);
+            areaCounts[area]++;
+            tableHtml += `<td><b>${score}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>`;
+          } else {
+            tableHtml += `<td style="color:#aaa;">-</td>`;
+          }
+        });
+
+        tableHtml += `</tr>`;
+      });
+
+      tableHtml += `<tr class="avg-row">
+        <td colspan="2" style="text-align:right;">Mitjana del grup:</td>`;
+
+      group.areas.forEach(area => {
+        if (areaCounts[area] > 0) {
+          const avg = (areaSums[area] / areaCounts[area]).toFixed(1);
+          const q = getQualificacioOficial(avg);
+          tableHtml += `<td><b>${avg}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>`;
         } else {
           tableHtml += `<td style="color:#aaa;">-</td>`;
         }
       });
 
-      tableHtml += `</tr>`;
+      tableHtml += `</tr></tbody></table>`;
+      container.innerHTML = tableHtml;
+
+    } else {
+      const tests = getAllGroupTests(group, currentTrimestre);
+
+      if (tests.length === 0) {
+        container.innerHTML = `<span style="font-size:12px; color:#888;">No hi ha cap prova registrada per al període "${currentTrimestre}". Fes clic a <strong>"📝 Notes per prova"</strong> per crear-ne una.</span>`;
+        return;
+      }
+
+      let tableHtml = `<table class="group-matrix-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th style="text-align:left;">Nom i cognoms</th>`;
+
+      tests.forEach(test => {
+        const color = getAreaColorObj(test.area);
+        tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33; font-size:11px; white-space:nowrap; padding:4px 6px;">
+          <div>${test.area}</div>
+          <div style="font-weight:normal; font-size:10px;">${test.testTitle}</div>
+        </th>`;
+      });
+
+      tableHtml += `</tr></thead><tbody>`;
+
+      group.students.forEach((student, sIdx) => {
+        tableHtml += `<tr>
+          <td style="font-weight:bold; color:#1b4332;" onclick="selectStudent(${sIdx})">${sIdx + 1}</td>
+          <td class="student-name-td" style="font-weight:600; cursor:pointer;" onclick="selectStudent(${sIdx})">${student.name}</td>`;
+
+        tests.forEach(test => {
+          const gradeObj = (student.grades || []).find(g => 
+            g.area === test.area && 
+            g.category === test.category && 
+            (g.testTitle || g.category) === test.testTitle && 
+            g.trimestre === test.trimestre
+          );
+
+          const val = (gradeObj && gradeObj.val !== null && gradeObj.val !== undefined) ? gradeObj.val : '';
+
+          const escArea = test.area.replace(/'/g, "\\'");
+          const escCat = test.category.replace(/'/g, "\\'");
+          const escTitle = test.testTitle.replace(/'/g, "\\'");
+          const escTri = test.trimestre.replace(/'/g, "\\'");
+
+          tableHtml += `<td style="padding:2px 4px;">
+            <input type="number" class="matrix-inline-input" value="${val}" min="0" max="10" step="0.1" placeholder="-" 
+              onchange="updateInlineGradeFromMatrix(this, ${sIdx}, '${escArea}', '${escCat}', '${escTitle}', '${escTri}')">
+          </td>`;
+        });
+
+        tableHtml += `</tr>`;
+      });
+
+      tableHtml += `</tbody></table>`;
+      container.innerHTML = tableHtml;
+    }
+  }
+
+  function openBulkGradeModal() {
+    if (selectedGroupIndex === null) return;
+    const group = db.groups[selectedGroupIndex];
+    if (!group.students || group.students.length === 0) {
+      alert("Afegeix alumnes al grup abans d'introduir notes.");
+      return;
+    }
+
+    const areaSelect = document.getElementById('bulkGradeArea');
+    areaSelect.innerHTML = '';
+    group.areas.forEach(area => {
+      const opt = document.createElement('option');
+      opt.value = area;
+      opt.innerText = area;
+      areaSelect.appendChild(opt);
     });
 
-    tableHtml += `<tr class="avg-row">
-      <td colspan="2" style="text-align:right;">Mitjana del grup:</td>`;
+    applyDefaultTrimestres();
+    onBulkAreaChange();
+    document.getElementById('bulkGradeModal').style.display = 'flex';
+  }
 
-    group.areas.forEach(area => {
-      if (areaCounts[area] > 0) {
-        const avg = (areaSums[area] / areaCounts[area]).toFixed(1);
-        const q = getQualificacioOficial(avg);
-        tableHtml += `<td><b>${avg}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>`;
+  function closeBulkGradeModal() {
+    document.getElementById('bulkGradeModal').style.display = 'none';
+  }
+
+  function onBulkAreaChange() {
+    const area = document.getElementById('bulkGradeArea').value;
+    const group = db.groups[selectedGroupIndex];
+    const categorySelect = document.getElementById('bulkGradeCategory');
+    categorySelect.innerHTML = '';
+
+    const weights = (group.areaWeights && group.areaWeights[area]) ? group.areaWeights[area] : DEFAULT_CATEGORIES;
+    weights.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w.name;
+      opt.innerText = `${w.name} (${w.weight}%)`;
+      categorySelect.appendChild(opt);
+    });
+
+    updateBulkExistingTestsList();
+    renderBulkGradeStudents();
+  }
+
+  function updateBulkExistingTestsList() {
+    const area = document.getElementById('bulkGradeArea').value;
+    const trimestre = document.getElementById('bulkGradeTrimestre').value;
+    const group = db.groups[selectedGroupIndex];
+    const select = document.getElementById('bulkExistingTestsSelect');
+    select.innerHTML = '<option value="NEW">✨ Nova prova (crear des de zero)</option>';
+
+    const testSet = new Set();
+    group.students.forEach(student => {
+      if (student.grades) {
+        student.grades.forEach(g => {
+          if (g.area === area && g.trimestre === trimestre) {
+            const name = g.testTitle || g.category;
+            const key = `${g.category}|||${name}`;
+            if (!testSet.has(key)) {
+              testSet.add(key);
+              const opt = document.createElement('option');
+              opt.value = key;
+              opt.innerText = `✏️ ${name} (${g.category})`;
+              select.appendChild(opt);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  function loadExistingTestIntoBulkModal() {
+    const key = document.getElementById('bulkExistingTestsSelect').value;
+    if (key === 'NEW') {
+      document.getElementById('bulkGradeTitle').value = '';
+      renderBulkGradeStudents();
+      return;
+    }
+
+    const [category, testTitle] = key.split('|||');
+    document.getElementById('bulkGradeCategory').value = category;
+    document.getElementById('bulkGradeTitle').value = testTitle;
+
+    renderBulkGradeStudents(category, testTitle);
+  }
+
+  function renderBulkGradeStudents(filterCat = null, filterTitle = null) {
+    const container = document.getElementById('bulkGradeStudentList');
+    container.innerHTML = '';
+    const group = db.groups[selectedGroupIndex];
+
+    const currentArea = document.getElementById('bulkGradeArea').value;
+    const currentCat = filterCat || document.getElementById('bulkGradeCategory').value;
+    const currentTitle = filterTitle || document.getElementById('bulkGradeTitle').value.trim() || currentCat;
+    const currentTrimestre = document.getElementById('bulkGradeTrimestre').value;
+
+    group.students.forEach((student, idx) => {
+      const existingGrade = (student.grades || []).find(g => 
+        g.area === currentArea && 
+        g.category === currentCat && 
+        (g.testTitle || g.category) === currentTitle && 
+        g.trimestre === currentTrimestre
+      );
+
+      const val = (existingGrade && existingGrade.val !== null && existingGrade.val !== undefined) ? existingGrade.val : '';
+
+      const div = document.createElement('div');
+      div.className = 'student-grade-row';
+      div.innerHTML = `
+        <span class="student-number">${idx + 1}</span>
+        <span style="flex:1; font-weight:600;">${student.name}</span>
+        <input type="number" class="bulk-student-input" data-student-idx="${idx}" min="0" max="10" step="0.1" placeholder="Nota..." value="${val}" style="width:100px; margin-bottom:0; text-align:center;">
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function saveBulkGrades() {
+    const area = document.getElementById('bulkGradeArea').value;
+    const category = document.getElementById('bulkGradeCategory').value;
+    const titleInput = document.getElementById('bulkGradeTitle').value.trim();
+    const testTitle = titleInput || category;
+    const trimestre = document.getElementById('bulkGradeTrimestre').value;
+
+    const group = db.groups[selectedGroupIndex];
+    const inputs = document.querySelectorAll('.bulk-student-input');
+    const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    inputs.forEach(input => {
+      const sIdx = parseInt(input.getAttribute('data-student-idx'));
+      const student = group.students[sIdx];
+      if (!student) return;
+
+      if (!student.grades) student.grades = [];
+
+      const valStr = input.value.trim();
+      const valNum = valStr !== '' ? parseFloat(valStr) : null;
+
+      const existingIdx = student.grades.findIndex(g => 
+        g.area === area && 
+        g.category === category && 
+        (g.testTitle || g.category) === testTitle && 
+        g.trimestre === trimestre
+      );
+
+      if (existingIdx !== -1) {
+        student.grades[existingIdx].val = valNum;
+        student.grades[existingIdx].date = todayStr;
       } else {
-        tableHtml += `<td style="color:#aaa;">-</td>`;
+        student.grades.unshift({
+          id: Date.now() + Math.random(),
+          date: todayStr,
+          area: area,
+          category: category,
+          testTitle: testTitle,
+          trimestre: trimestre,
+          val: valNum
+        });
       }
     });
 
-    tableHtml += `</tr></tbody></table>`;
-    container.innerHTML = tableHtml;
+    saveDb();
+    closeBulkGradeModal();
+    renderGroupMatrix();
+    if (selectedStudentIndex !== null) {
+      renderGrades();
+      renderSummaryDashboard();
+    }
   }
 
   function openWeightsModal() {
@@ -1562,7 +2000,7 @@
     const group = db.groups[selectedGroupIndex];
     if (!group.tasks) group.tasks = [];
 
-    group.tasks = group.tasks.map(t => typeof t === 'string' ? { id: t, name: t, area: 'General', date: '' } : t);
+    group.tasks = group.tasks.map(t => typeof t === 'object' ? t : { id: t, name: t, area: 'General', date: '' });
     group.tasks.push(taskObj);
 
     selectedStudentIndexes.forEach(sIdx => {
@@ -1760,6 +2198,8 @@
     document.getElementById('noStudentSelected').style.display = 'none';
     document.getElementById('reportContainer').style.display = 'none';
 
+    updateStudentNavButtons();
+
     const obsAreaSelect = document.getElementById('obsArea');
     const gradeAreaSelect = document.getElementById('gradeArea');
     const filterObsAreaSelect = document.getElementById('filterObsArea');
@@ -1902,6 +2342,7 @@
       date: new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
       area: area,
       category: category,
+      testTitle: category,
       trimestre: trimestre,
       val: val
     });
@@ -1927,7 +2368,11 @@
     const group = db.groups[selectedGroupIndex];
     const weights = (group.areaWeights && group.areaWeights[areaName]) ? group.areaWeights[areaName] : DEFAULT_CATEGORIES;
 
-    const filteredGrades = student.grades.filter(g => g.area === areaName && (trimestreName === 'FINAL' || g.trimestre === trimestreName));
+    const filteredGrades = student.grades.filter(g => 
+      g.area === areaName && 
+      (trimestreName === 'FINAL' || g.trimestre === trimestreName) &&
+      g.val !== null && g.val !== undefined && g.val !== ''
+    );
     if (filteredGrades.length === 0) return null;
 
     let totalWeightedScore = 0;
@@ -1936,7 +2381,7 @@
     weights.forEach(w => {
       const catGrades = filteredGrades.filter(g => g.category === w.name || (w.name === 'Prova escrita' && g.category === 'Proves escrites') || (!g.category && w.name === DEFAULT_CATEGORIES[0].name));
       if (catGrades.length > 0) {
-        const catAvg = catGrades.reduce((acc, curr) => acc + curr.val, 0) / catGrades.length;
+        const catAvg = catGrades.reduce((acc, curr) => acc + parseFloat(curr.val), 0) / catGrades.length;
         totalWeightedScore += catAvg * (w.weight / 100);
         totalWeightApplied += (w.weight / 100);
       }
@@ -2006,7 +2451,7 @@
             <table class="student-grades-table">
               <thead>
                 <tr style="background-color: ${areaColor.bg}; color: ${areaColor.text};">
-                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Instrument / categoria</th>
+                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Instrument / Prova</th>
                   <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Nota</th>
                   <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Ponderació</th>
                   <th style="width:100px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Data</th>
@@ -2017,16 +2462,19 @@
         `;
 
         areaGrades.forEach(g => {
-          const q = getQualificacioOficial(g.val);
+          const hasVal = (g.val !== null && g.val !== undefined && g.val !== '');
+          const q = hasVal ? getQualificacioOficial(g.val) : { text: 'Pendent', class: 'grade-na' };
           const catObj = weights.find(w => w.name === g.category || (w.name === 'Prova escrita' && g.category === 'Proves escrites')) || { weight: '-' };
           
           html += `
             <tr>
               <td style="text-align:left; padding-left:12px; font-weight:600; color:#2b2d42;">
-                ${g.category || 'General'} 
-                <span style="font-size:10px; color:#888; font-weight:normal;">(${g.trimestre})</span>
+                ${g.testTitle || g.category || 'General'} 
+                <span style="font-size:10px; color:#666; font-weight:normal;">[${g.category}] (${g.trimestre})</span>
               </td>
-              <td><b>${g.val}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>
+              <td>
+                ${hasVal ? `<b>${g.val}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span>` : `<span style="color:#856404; background:#fff3cd; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">Pendent</span>`}
+              </td>
               <td style="color:${areaColor.text}; font-weight:bold;">${catObj.weight}%</td>
               <td style="font-size:11px; color:#666;">📅 ${g.date || '-'}</td>
               <td>
@@ -2181,7 +2629,11 @@
     const searchText = document.getElementById('searchSchoolMeetings').value.toLowerCase().trim();
 
     const filtered = db.schoolMeetings.filter(m => {
-      const matchType = (filterType === 'ALL' || m.type === filterType);
+      // Compatibilitat en cas de registres antics que tinguessin 'Escola/Direcció'
+      let mType = m.type;
+      if (mType === 'Escola/Direcció') mType = 'Escola';
+
+      const matchType = (filterType === 'ALL' || mType === filterType);
       const matchSearch = (!searchText || m.title.toLowerCase().includes(searchText) || m.content.toLowerCase().includes(searchText));
       return matchType && matchSearch;
     });
@@ -2195,8 +2647,10 @@
       let typeBadge = '';
       if (m.type === 'Claustre') typeBadge = '🏛️ Claustre';
       else if (m.type === 'Cicle') typeBadge = '🔄 Cicle';
-      else if (m.type === 'Escola/Direcció') typeBadge = '🏫 Escola';
-      else typeBadge = '💬 Comissió';
+      else if (m.type === 'Escola' || m.type === 'Escola/Direcció') typeBadge = '🏫 Escola';
+      else if (m.type === 'Comissió') typeBadge = '👥 Comissions';
+      else if (m.type === 'Altres') typeBadge = '📌 Altres';
+      else typeBadge = '💬 ' + m.type;
 
       const div = document.createElement('div');
       div.className = 'obs-card';
@@ -2359,7 +2813,9 @@
           }
 
           clearInterval(reportTimerInterval);
-          if (msg.includes('API key not valid')) {
+          if (msg.includes('high demand') || response.status === 503) {
+            reportTextDiv.innerText = "⚠️ L'API no funciona en aquests moments. Prova a generar l'informe utilitzant el Prompt.";
+          } else if (msg.includes('API key not valid')) {
             reportTextDiv.innerText = "🔑 La clau API introduïda no és vàlida.";
           } else if (msg.includes('quota')) {
             reportTextDiv.innerText = "⚠️ Has excedit la quota gratuïta de la teva clau API per avui.";
@@ -2413,7 +2869,7 @@
           await new Promise(r => setTimeout(r, 2000));
         } else {
           clearInterval(reportTimerInterval);
-          reportTextDiv.innerText = "❌ No s'ha pogut connectar amb el servei: " + e.message;
+          reportTextDiv.innerText = "⚠️ L'API no funciona en aquests moments. Prova a generar l'informe utilitzant el Prompt.";
         }
       }
     }
