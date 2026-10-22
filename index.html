@@ -77,7 +77,7 @@
     }
     .layout {
       display: grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 320px minmax(0, 1fr);
       gap: 20px;
     }
     .panel {
@@ -86,6 +86,7 @@
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(45, 106, 79, 0.06);
       border: 1px solid var(--border);
+      min-width: 0;
     }
     h2, h3, h4 {
       margin-top: 0;
@@ -308,7 +309,7 @@
       border-left: 4px solid var(--primary-orange);
       padding: 8px 12px;
       font-size: 12px;
-      color: #883b14;
+      color: #8883b14;
       margin-bottom: 15px;
       border-radius: 4px;
     }
@@ -382,18 +383,20 @@
       color: var(--text);
     }
 
-    /* CONTENIDOR AMB DESPLAÇAMENT HORITZONTAL */
     #groupMatrixWrapper {
       margin-top: 10px;
       overflow-x: auto;
+      width: 100%;
       max-width: 100%;
       border-radius: 8px;
       border: 1px solid var(--border);
+      display: block;
+      box-sizing: border-box;
     }
 
     .group-matrix-table, .student-grades-table {
-      width: 100%;
-      min-width: max-content; /* Garanteix que la taula no es deforma i activa el lliscament */
+      width: max-content;
+      min-width: 100%;
       border-collapse: collapse;
       font-size: 12px;
       background: white;
@@ -404,6 +407,7 @@
       border: 1px solid var(--border);
       padding: 6px 8px;
       text-align: center;
+      white-space: nowrap;
     }
     .group-matrix-table th, .group-matrix-table td.student-name-td {
       text-align: left;
@@ -1451,34 +1455,69 @@
     nextBtn.disabled = (selectedStudentIndex >= totalStudents - 1);
   }
 
+  // --- AGRUPACIÓ PER ÀREES I ORDENACIÓ NETES DE LES PROVES ---
   function getAllGroupTests(group, currentTrimestre) {
-    const tests = [];
-    const testKeySet = new Set();
+    const rawTests = [];
 
     group.students.forEach(student => {
-      if (student.grades) {
-        student.grades.forEach(g => {
-          if (currentTrimestre === 'FINAL' || g.trimestre === currentTrimestre) {
-            const key = `${g.area}|||${g.category}|||${g.testTitle || ''}|||${g.trimestre}`;
-            if (!testKeySet.has(key)) {
-              testKeySet.add(key);
-              tests.push({
-                key: key,
-                area: g.area,
-                category: g.category,
-                testTitle: g.testTitle || g.category,
-                trimestre: g.trimestre
-              });
-            }
+      if (!student.grades) return;
+
+      const typeCounters = {};
+      const sortedGrades = [...student.grades].reverse();
+
+      sortedGrades.forEach(g => {
+        if (currentTrimestre === 'FINAL' || g.trimestre === currentTrimestre) {
+          const testTitle = g.testTitle || g.category || 'General';
+          const typeKey = `${g.area}|||${g.category}|||${testTitle}|||${g.trimestre}`;
+          
+          typeCounters[typeKey] = (typeCounters[typeKey] || 0) + 1;
+          const occurrenceIndex = typeCounters[typeKey];
+
+          const activityId = g.activityId || `${typeKey}|||#${occurrenceIndex}`;
+
+          let existingTest = rawTests.find(t => t.activityId === activityId);
+
+          if (!existingTest) {
+            const sameTypeTests = rawTests.filter(t => t.typeKey === typeKey);
+            const occurrenceNum = sameTypeTests.length + 1;
+            const displayTitle = occurrenceNum > 1 ? `${testTitle} #${occurrenceNum}` : testTitle;
+
+            existingTest = {
+              activityId: activityId,
+              typeKey: typeKey,
+              area: g.area,
+              category: g.category,
+              testTitle: testTitle,
+              displayTitle: displayTitle,
+              trimestre: g.trimestre,
+              occurrenceIndex: occurrenceNum,
+              studentIds: new Set()
+            };
+            rawTests.push(existingTest);
           }
-        });
+          existingTest.studentIds.add(student.name);
+        }
+      });
+    });
+
+    // Agrupem per l'ordre de les àrees configurades al grup (group.areas)
+    const sortedTests = [];
+    group.areas.forEach(areaName => {
+      const areaTests = rawTests.filter(t => t.area === areaName);
+      sortedTests.push(...areaTests);
+    });
+
+    // Afegim qualsevol altra prova d'àrees no llistades per seguretat
+    rawTests.forEach(t => {
+      if (!group.areas.includes(t.area) && !sortedTests.includes(t)) {
+        sortedTests.push(t);
       }
     });
 
-    return tests;
+    return sortedTests;
   }
 
-  function updateInlineGradeFromMatrix(inputElem, sIdx, area, category, testTitle, trimestre) {
+  function updateInlineGradeFromMatrixById(inputElem, sIdx, activityId, area, category, testTitle, trimestre, occurrenceIndex) {
     if (selectedGroupIndex === null) return;
     const group = db.groups[selectedGroupIndex];
     const student = group.students[sIdx];
@@ -1496,19 +1535,26 @@
 
     const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-    const existingIdx = student.grades.findIndex(g => 
-      g.area === area && 
-      g.category === category && 
-      (g.testTitle || g.category) === testTitle && 
-      g.trimestre === trimestre
-    );
+    let existingGrade = student.grades.find(g => (g.activityId && g.activityId === activityId) || g.id === activityId);
 
-    if (existingIdx !== -1) {
-      student.grades[existingIdx].val = valNum;
-      student.grades[existingIdx].date = todayStr;
-    } else {
+    if (!existingGrade) {
+      const matchingGrades = student.grades
+        .filter(g => g.area === area && g.category === category && (g.testTitle || g.category) === testTitle && g.trimestre === trimestre)
+        .reverse();
+
+      if (matchingGrades.length >= occurrenceIndex) {
+        existingGrade = matchingGrades[occurrenceIndex - 1];
+      }
+    }
+
+    if (existingGrade) {
+      existingGrade.val = valNum;
+      existingGrade.date = todayStr;
+      if (!existingGrade.activityId) existingGrade.activityId = activityId;
+    } else if (valNum !== null) {
       student.grades.unshift({
         id: Date.now() + Math.random(),
+        activityId: activityId,
         date: todayStr,
         area: area,
         category: category,
@@ -1622,7 +1668,7 @@
         const color = getAreaColorObj(test.area);
         tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33; font-size:11px; white-space:nowrap; padding:4px 6px;">
           <div>${test.area}</div>
-          <div style="font-weight:normal; font-size:10px;">${test.testTitle}</div>
+          <div style="font-weight:bold; font-size:11px;">${test.displayTitle}</div>
         </th>`;
       });
 
@@ -1634,12 +1680,20 @@
           <td class="student-name-td" style="font-weight:600; cursor:pointer;" onclick="selectStudent(${sIdx})">${student.name}</td>`;
 
         tests.forEach(test => {
-          const gradeObj = (student.grades || []).find(g => 
-            g.area === test.area && 
-            g.category === test.category && 
-            (g.testTitle || g.category) === test.testTitle && 
-            g.trimestre === test.trimestre
+          let gradeObj = (student.grades || []).find(g => 
+            (g.activityId && g.activityId === test.activityId) ||
+            (g.id && g.id === test.activityId)
           );
+
+          if (!gradeObj && student.grades) {
+            const matchingGrades = student.grades
+              .filter(g => g.area === test.area && g.category === test.category && (g.testTitle || g.category) === test.testTitle && g.trimestre === test.trimestre)
+              .reverse();
+
+            if (matchingGrades.length >= test.occurrenceIndex) {
+              gradeObj = matchingGrades[test.occurrenceIndex - 1];
+            }
+          }
 
           const val = (gradeObj && gradeObj.val !== null && gradeObj.val !== undefined) ? gradeObj.val : '';
 
@@ -1647,10 +1701,11 @@
           const escCat = test.category.replace(/'/g, "\\'");
           const escTitle = test.testTitle.replace(/'/g, "\\'");
           const escTri = test.trimestre.replace(/'/g, "\\'");
+          const actIdParam = `'${test.activityId.replace(/'/g, "\\'")}'`;
 
           tableHtml += `<td style="padding:2px 4px;">
             <input type="number" class="matrix-inline-input" value="${val}" min="0" max="10" step="0.1" placeholder="-" 
-              onchange="updateInlineGradeFromMatrix(this, ${sIdx}, '${escArea}', '${escCat}', '${escTitle}', '${escTri}')">
+              onchange="updateInlineGradeFromMatrixById(this, ${sIdx}, ${actIdParam}, '${escArea}', '${escCat}', '${escTitle}', '${escTri}', ${test.occurrenceIndex})">
           </td>`;
         });
 
@@ -1713,23 +1768,12 @@
     const select = document.getElementById('bulkExistingTestsSelect');
     select.innerHTML = '<option value="NEW">✨ Nova prova (crear des de zero)</option>';
 
-    const testSet = new Set();
-    group.students.forEach(student => {
-      if (student.grades) {
-        student.grades.forEach(g => {
-          if (g.area === area && g.trimestre === trimestre) {
-            const name = g.testTitle || g.category;
-            const key = `${g.category}|||${name}`;
-            if (!testSet.has(key)) {
-              testSet.add(key);
-              const opt = document.createElement('option');
-              opt.value = key;
-              opt.innerText = `✏️ ${name} (${g.category})`;
-              select.appendChild(opt);
-            }
-          }
-        });
-      }
+    const tests = getAllGroupTests(group, trimestre);
+    tests.filter(t => t.area === area).forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = `${t.activityId}|||${t.category}|||${t.testTitle}|||${t.occurrenceIndex}`;
+      opt.innerText = `✏️ ${t.displayTitle} (${t.category})`;
+      select.appendChild(opt);
     });
   }
 
@@ -1741,14 +1785,14 @@
       return;
     }
 
-    const [category, testTitle] = key.split('|||');
+    const [testId, category, testTitle, occurrenceIndex] = key.split('|||');
     document.getElementById('bulkGradeCategory').value = category;
     document.getElementById('bulkGradeTitle').value = testTitle;
 
-    renderBulkGradeStudents(category, testTitle);
+    renderBulkGradeStudents(category, testTitle, testId, parseInt(occurrenceIndex));
   }
 
-  function renderBulkGradeStudents(filterCat = null, filterTitle = null) {
+  function renderBulkGradeStudents(filterCat = null, filterTitle = null, filterId = null, occurrenceIndex = 1) {
     const container = document.getElementById('bulkGradeStudentList');
     container.innerHTML = '';
     const group = db.groups[selectedGroupIndex];
@@ -1759,12 +1803,17 @@
     const currentTrimestre = document.getElementById('bulkGradeTrimestre').value;
 
     group.students.forEach((student, idx) => {
-      const existingGrade = (student.grades || []).find(g => 
-        g.area === currentArea && 
-        g.category === currentCat && 
-        (g.testTitle || g.category) === currentTitle && 
-        g.trimestre === currentTrimestre
-      );
+      let existingGrade = (student.grades || []).find(g => filterId && (g.activityId == filterId || g.id == filterId));
+
+      if (!existingGrade && student.grades) {
+        const matchingGrades = student.grades
+          .filter(g => g.area === currentArea && g.category === currentCat && (g.testTitle || g.category) === currentTitle && g.trimestre === currentTrimestre)
+          .reverse();
+
+        if (matchingGrades.length >= occurrenceIndex) {
+          existingGrade = matchingGrades[occurrenceIndex - 1];
+        }
+      }
 
       const val = (existingGrade && existingGrade.val !== null && existingGrade.val !== undefined) ? existingGrade.val : '';
 
@@ -1786,6 +1835,16 @@
     const testTitle = titleInput || category;
     const trimestre = document.getElementById('bulkGradeTrimestre').value;
 
+    const selectedExisting = document.getElementById('bulkExistingTestsSelect').value;
+    let activityId = Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+    let targetOccurrenceIndex = null;
+
+    if (selectedExisting !== 'NEW') {
+      const parts = selectedExisting.split('|||');
+      activityId = parts[0];
+      targetOccurrenceIndex = parseInt(parts[3]);
+    }
+
     const group = db.groups[selectedGroupIndex];
     const inputs = document.querySelectorAll('.bulk-student-input');
     const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -1800,19 +1859,26 @@
       const valStr = input.value.trim();
       const valNum = valStr !== '' ? parseFloat(valStr) : null;
 
-      const existingIdx = student.grades.findIndex(g => 
-        g.area === area && 
-        g.category === category && 
-        (g.testTitle || g.category) === testTitle && 
-        g.trimestre === trimestre
-      );
+      let existingGrade = student.grades.find(g => (g.activityId && g.activityId === activityId) || g.id === activityId);
 
-      if (existingIdx !== -1) {
-        student.grades[existingIdx].val = valNum;
-        student.grades[existingIdx].date = todayStr;
-      } else {
+      if (!existingGrade && targetOccurrenceIndex) {
+        const matchingGrades = student.grades
+          .filter(g => g.area === area && g.category === category && (g.testTitle || g.category) === testTitle && g.trimestre === trimestre)
+          .reverse();
+
+        if (matchingGrades.length >= targetOccurrenceIndex) {
+          existingGrade = matchingGrades[targetOccurrenceIndex - 1];
+        }
+      }
+
+      if (existingGrade) {
+        existingGrade.val = valNum;
+        existingGrade.date = todayStr;
+        if (!existingGrade.activityId) existingGrade.activityId = activityId;
+      } else if (valNum !== null) {
         student.grades.unshift({
           id: Date.now() + Math.random(),
+          activityId: activityId,
           date: todayStr,
           area: area,
           category: category,
@@ -2337,8 +2403,11 @@
     const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
     if (!student.grades) student.grades = [];
 
+    const activityId = Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+
     student.grades.unshift({
-      id: Date.now(),
+      id: Date.now() + Math.random(),
+      activityId: activityId,
       date: new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
       area: area,
       category: category,
@@ -2629,7 +2698,6 @@
     const searchText = document.getElementById('searchSchoolMeetings').value.toLowerCase().trim();
 
     const filtered = db.schoolMeetings.filter(m => {
-      // Compatibilitat en cas de registres antics que tinguessin 'Escola/Direcció'
       let mType = m.type;
       if (mType === 'Escola/Direcció') mType = 'Escola';
 
