@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Prompt per a Gemini (Sense API)</title>
+  
+  <!-- FAVICON AMB EMOJI DE ROBOT/LLAPIS -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+
+  <style>
+    :root {
+      --bg-green: #eef6f2;
+      --card-bg: #ffffff;
+      --primary-orange: #e06d3b;
+      --primary-orange-dark: #c85a2b;
+      --accent-green: #2d6a4f;
+      --accent-green-dark: #1b4332;
+      --text: #2b2d42;
+      --border: #d3e2d8;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-green);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+      color: white;
+      padding: 20px 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+    }
+    header p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .panel {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(45, 106, 79, 0.06);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    h2, h3, h4 {
+      margin-top: 0;
+      color: var(--accent-green);
+    }
+    .step-card {
+      background: #fafdfb;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary-orange);
+      padding: 15px 18px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .step-number {
+      display: inline-block;
+      background: var(--primary-orange);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-weight: bold;
+      font-size: 13px;
+      margin-right: 8px;
+    }
+    .step-title {
+      font-weight: bold;
+      font-size: 15px;
+      color: var(--accent-green-dark);
+    }
+    select, input[type="file"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-top: 8px;
+      background-color: #ffffff;
+    }
+    button {
+      background-color: var(--primary-orange);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: var(--primary-orange-dark);
+    }
+    button.btn-green {
+      background-color: var(--accent-green);
+    }
+    button.btn-green:hover {
+      background-color: var(--accent-green-dark);
+    }
+    .prompt-box {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 18px;
+      border-radius: 8px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 350px;
+      overflow-y: auto;
+      border: 1px solid #334155;
+      margin-top: 10px;
+    }
+    .alert-orange {
+      background-color: #fff4ed;
+      border-left: 4px solid var(--primary-orange);
+      padding: 12px 15px;
+      font-size: 13px;
+      color: #883b14;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🤖 Generador de Prompt per a la web de Gemini</h1>
+    <p>Generador d'informes alternatiu per quan s'ha esgotat la quota diària de la clau API de Google.</p>
+  </header>
+
+  <div class="alert-orange">
+    💡 <strong>Com funciona aquesta alternativa?</strong> Carrega la còpia de seguretat JSON del teu Quadern Docent, tria l'alumne/a i es generarà un prompt especialment redactat amb el rol de mestre/a d'educació primària. Només l'hauràs de copiar i enganxar al xat gratuït de <a href="https://gemini.google.com" target="_blank" style="color:var(--primary-orange-dark); font-weight:bold;">Gemini Web</a> juntament amb el teu fitxer.
+  </div>
+
+  <div class="panel">
+    <h3>📋 Passos per generar l'informe manualment</h3>
+
+    <!-- PAS 1 -->
+    <div class="step-card">
+      <div>
+        <span class="step-number">1</span>
+        <span class="step-title">Carrega el teu fitxer JSON de seguretat</span>
+      </div>
+      <p style="font-size: 13px; color: #555; margin: 8px 0 0 0;">
+        Selecciona el fitxer <code>.json</code> que vas exportar des de la teva aplicació principal amb el botó <em>"💾 Exportar còpia"</em>.
+      </p>
+      <input type="file" id="jsonFile" accept=".json" onchange="loadJsonFile(event)">
+    </div>
+
+    <!-- PAS 2 -->
+    <div id="step2Container" class="step-card" style="display:none;">
+      <div>
+        <span class="step-number">2</span>
+        <span class="step-title">Selecciona el grup, l'alumne/a i el tipus d'informe</span>
+      </div>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
+        <div>
+          <label style="font-size:12px; font-weight:600;">Grup:</label>
+          <select id="groupSelect" onchange="onGroupChange()"></select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:600;">Alumne/a:</label>
+          <select id="studentSelect" onchange="generatePrompt()"></select>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label style="font-size:12px; font-weight:600;">Tipus d'informe:</label>
+        <select id="reportTypeSelect" onchange="generatePrompt()">
+          <option value="trimestral">📝 Informe Trimestral</option>
+          <option value="anual">🎓 Informe Global de Curs (Juny)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PAS 3 -->
+    <div id="step3Container" class="step-card" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="step-number">3</span>
+          <span class="step-title">Copia el prompt resultant</span>
+        </div>
+        <button type="button" id="copyBtn" onclick="copyPromptText()" class="btn-green">📋 Copiar Prompt</button>
+      </div>
+
+      <div id="promptOutput" class="prompt-box">El prompt apareixerà aquí un cop seleccionis un alumne/a...</div>
+    </div>
+
+    <!-- PAS 4 -->
+    <div id="step4Container" class="step-card" style="border-left-color: var(--accent-green); display:none;">
+      <div>
+        <span class="step-number" style="background: var(--accent-green);">4</span>
+        <span class="step-title">Executa-ho a Gemini Web</span>
+      </div>
+      <ol style="font-size: 13px; color: #333; line-height: 1.6; margin: 8px 0 0 20px; padding: 0;">
+        <li>Entra a <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--primary-orange); font-weight:bold;">gemini.google.com</a>.</li>
+        <li>Adjunta el mateix fitxer <code>.json</code> fent clic a la icona del clip 📎 o d'afegir fitxers.</li>
+        <li>Enganxa el prompt que acabes de copiar al quadre de text i prem **Enviar**.</li>
+      </ol>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let importedDb = null;
+
+  function loadJsonFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const parsed = JSON.parse(evt.target.result);
+        if (parsed && Array.isArray(parsed.groups)) {
+          importedDb = parsed;
+          populateGroups();
+          document.getElementById('step2Container').style.display = 'block';
+          document.getElementById('step3Container').style.display = 'block';
+          document.getElementById('step4Container').style.display = 'block';
+        } else {
+          alert("El fitxer no té un format vàlid de còpia de seguretat.");
+        }
+      } catch (err) {
+        alert("Error en llegir el JSON: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function populateGroups() {
+    const groupSelect = document.getElementById('groupSelect');
+    groupSelect.innerHTML = '';
+    
+    importedDb.groups.forEach((g, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.innerText = g.name;
+      groupSelect.appendChild(opt);
+    });
+
+    onGroupChange();
+  }
+
+  function onGroupChange() {
+    const gIdx = document.getElementById('groupSelect').value;
+    const studentSelect = document.getElementById('studentSelect');
+    studentSelect.innerHTML = '';
+
+    const group = importedDb.groups[gIdx];
+    if (group && group.students) {
+      group.students.forEach((s, sIdx) => {
+        const opt = document.createElement('option');
+        opt.value = sIdx;
+        opt.innerText = `${sIdx + 1}. ${s.name}`;
+        studentSelect.appendChild(opt);
+      });
+    }
+
+    generatePrompt();
+  }
+
+  function calculateWeightedScore(group, student, areaName, trimestreName) {
+    if (!student.grades) return null;
+    const defaultCategories = [
+      { name: "Prova escrita", weight: 40 },
+      { name: "Expressió oral i exposicions", weight: 30 },
+      { name: "Treball diari, tasques i projectes", weight: 20 },
+      { name: "Actitud", weight: 10 }
+    ];
+    
+    const weights = (group.areaWeights && group.areaWeights[areaName]) ? group.areaWeights[areaName] : defaultCategories;
+    const filteredGrades = student.grades.filter(g => g.area === areaName && (trimestreName === 'FINAL' || g.trimestre === trimestreName));
+    if (filteredGrades.length === 0) return null;
+
+    let totalWeightedScore = 0;
+    let totalWeightApplied = 0;
+
+    weights.forEach(w => {
+      const catGrades = filteredGrades.filter(g => g.category === w.name || (w.name === 'Prova escrita' && g.category === 'Proves escrites') || (!g.category && w.name === defaultCategories[0].name));
+      if (catGrades.length > 0) {
+        const catAvg = catGrades.reduce((acc, curr) => acc + curr.val, 0) / catGrades.length;
+        totalWeightedScore += catAvg * (w.weight / 100);
+        totalWeightApplied += (w.weight / 100);
+      }
+    });
+
+    if (totalWeightApplied === 0) return null;
+    return (totalWeightedScore / totalWeightApplied).toFixed(1);
+  }
+
+  function generatePrompt() {
+    if (!importedDb) return;
+
+    const gIdx = document.getElementById('groupSelect').value;
+    const sIdx = document.getElementById('studentSelect').value;
+    const type = document.getElementById('reportTypeSelect').value;
+
+    const group = importedDb.groups[gIdx];
+    if (!group || !group.students[sIdx]) return;
+
+    const student = group.students[sIdx];
+
+    const articleConfig = student.article || 'En';
+    let nameWithArticle = student.name;
+    let pronounInstruction = "";
+
+    if (articleConfig === 'En') {
+      nameWithArticle = `en ${student.name}`;
+      pronounInstruction = "Fes servir el pronom 'ell' o concordança masculina quan calgui.";
+    } else if (articleConfig === 'El') {
+      nameWithArticle = `el ${student.name}`;
+      pronounInstruction = "Fes servir el pronom 'ell' o concordança masculina quan calgui.";
+    } else if (articleConfig === 'La') {
+      nameWithArticle = `la ${student.name}`;
+      pronounInstruction = "Fes servir el pronom 'ella' o concordança femenina quan calgui.";
+    } else if (articleConfig === "Ell / L'") {
+      nameWithArticle = `l'${student.name}`;
+      pronounInstruction = "Prefixa l'article apostrofat (l') al nom i fes servir el pronom 'ell' o concordança masculina.";
+    } else if (articleConfig === "Ella / L'") {
+      nameWithArticle = `l'${student.name}`;
+      pronounInstruction = "Prefixa l'article apostrofat (l') al nom i fes servir el pronom 'ella' o concordança femenina.";
+    } else if (articleConfig === "L'") {
+      nameWithArticle = `l'${student.name}`;
+      pronounInstruction = "Prefixa l'article apostrofat (l') al nom de l'infant.";
+    }
+
+    const obsFormatted = (student.observations || [])
+      .filter(o => !o.isInternal)
+      .map(o => `- [${o.trimestre}] [Àrea: ${o.area}] (${o.date}): ${o.text}`)
+      .join('\n');
+
+    const summaryGradesFormatted = group.areas.map(area => {
+      const score1 = calculateWeightedScore(group, student, area, "1r Trimestre");
+      const score2 = calculateWeightedScore(group, student, area, "2n Trimestre");
+      const score3 = calculateWeightedScore(group, student, area, "3r Trimestre");
+      const scoreFinal = calculateWeightedScore(group, student, area, "FINAL");
+      return `- Àrea: ${area} -> 1r Trim: ${score1 || 'sense dades'}, 2n Trim: ${score2 || 'sense dades'}, 3r Trim: ${score3 || 'sense dades'} | FINAL: ${scoreFinal || 'sense dades'}`;
+    }).join('\n');
+
+    const instruccionsNormes = `ROL I REGLES DE REDACCIÓ LINGÜÍSTICA I COEDUCATIVA:\n` +
+      `- ACTUA COM UN MESTRE/A D'EDUCACIÓ PRIMÀRIA I REDACTA UN INFORME PEDAGÒGIC OPTIMITZAT.\n` +
+      `- ESCRIU DIRECTAMENT L'INFORME EN CATALÀ. NO ESCRIGUIS CAP LLISTA DE COMPROVACIÓ, CHECKLIST, PENSAMENT INTERN NI METADADES.\n` +
+      `- Utilitza una redacció fluïda, pedagògica i integradora en català.\n` +
+      `- Fes servir el nom de l'alumne/a com a referència principal: "${nameWithArticle}".\n` +
+      `- ${pronounInstruction}\n` +
+      `- NO FACIS SERVIR MAI INTRODUCCIONS, SALUTACIONS, NI ET DIRIGEIXIS A LA FAMÍLIA ("Benvolguda família...", etc.).\n` +
+      `- NO FACIS SERVIR MAI NOMS D'EXÀMENS, PROVES NI NOTES NUMÈRIQUES A L'INFORME.\n` +
+      `- Totes les àrees definides del grup (${group.areas.join(', ')}) HAN D'APARÈIXER A L'INFORME.\n` +
+      `- SI NO HI HA CAP DADA O OBSERVACIÓ REGISTRADA PER A UNA ÀREA CONCRETA, escriu literalment sota el nom d'aquesta àrea: "No hi ha dades per avaluar aquesta àrea".\n` +
+      `- Format del text: Posa el NOM DE L'ÀREA (en negreta) i, immediatament a continuació, la descripció pedagògica o la frase de no dades.\n`;
+
+    let promptContent = "";
+
+    if (type === 'trimestral') {
+      promptContent = `Actua com un mestre/a d'educació primària i elabora un INFORME TRIMESTRAL per a l'alumne/a "${student.name}" basant-te en el fitxer JSON adjuntat.\n\n` +
+        `${instruccionsNormes}\n` +
+        `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
+        `Resum de qualificacions ponderades per àrea:\n${summaryGradesFormatted}\n\n` +
+        `Observacions registrades:\n${obsFormatted || 'Sense observacions textuals avaluables'}\n\n` +
+        `Estructura desitjada:\n` +
+        `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Actitud i treball a l'aula' i 'Aspectes a millorar'.`;
+
+    } else if (type === 'anual') {
+      promptContent = `Actua com un mestre/a d'educació primària i elabora un INFORME GLOBAL DE FINAL DE CURS (JUNY) per a l'alumne/a "${student.name}" basant-te en el fitxer JSON adjuntat.\n\n` +
+        `${instruccionsNormes}\n` +
+        `Informe GLOBAL de final de curs per a ${nameWithArticle}, centrant-te en el seu PROGRÉS I EVOLUCIÓ al llarg de l'any.\n` +
+        `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
+        `Resum de qualificacions ponderades per àrea al llarg dels 3 trimestres i nota final:\n${summaryGradesFormatted}\n\n` +
+        `Historial d'observacions:\n${obsFormatted || 'Sense observacions textuals avaluables'}\n\n` +
+        `Estructura desitjada:\n` +
+        `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Valoració global del curs' i 'Recomanacions per al curs vinent'.`;
+    }
+
+    document.getElementById('promptOutput').innerText = promptContent;
+  }
+
+  function copyPromptText() {
+    const text = document.getElementById('promptOutput').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.innerText = '✅ Copiat!';
+      setTimeout(() => {
+        btn.innerText = '📋 Copiar Prompt';
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
