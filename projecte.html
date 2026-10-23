@@ -1,0 +1,3223 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quadern de registre i seguiment de l'alumnat</title>
+  
+  <!-- FAVICON AMB EMOJI DE LLAPIS -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
+
+  <style>
+    :root {
+      --bg-green: #eef6f2;
+      --card-bg: #ffffff;
+      --primary-orange: #e06d3b;
+      --primary-orange-dark: #c85a2b;
+      --accent-green: #2d6a4f;
+      --accent-green-dark: #1b4332;
+      --text: #2b2d42;
+      --border: #d3e2d8;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-green);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    header h1 {
+      margin: 0 0 10px 0;
+      font-size: 24px;
+    }
+    .top-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px 15px;
+      border-radius: 8px;
+    }
+    .main-nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .nav-btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 15px;
+      background-color: #d3e2d8;
+      color: #1b4332;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .nav-btn.active {
+      background-color: var(--accent-green);
+      color: white;
+      border-color: var(--accent-green);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 20px;
+    }
+    .panel {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(45, 106, 79, 0.06);
+      border: 1px solid var(--border);
+      min-width: 0;
+    }
+    h2, h3, h4 {
+      margin-top: 0;
+      color: var(--accent-green);
+    }
+    input[type="text"], input[type="password"], input[type="number"], input[type="email"], select, textarea {
+      font-family: inherit;
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+      background-color: #fafdfb;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--primary-orange);
+      border-color: transparent;
+    }
+    button {
+      background-color: var(--primary-orange);
+      color: white;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: var(--primary-orange-dark);
+    }
+    button.btn-green {
+      background-color: var(--accent-green);
+    }
+    button.btn-green:hover {
+      background-color: var(--accent-green-dark);
+    }
+    button.btn-orange {
+      background-color: var(--primary-orange);
+    }
+    button.btn-orange:hover {
+      background-color: var(--primary-orange-dark);
+    }
+    button.btn-secondary {
+      background-color: #6c757d;
+    }
+    button.btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    button.btn-danger {
+      background-color: #e63946;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    
+    .btn-help {
+      background: #ffffff;
+      color: var(--accent-green);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .btn-help:hover {
+      background: #f0f7f3;
+    }
+
+    .group-item, .student-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f7fbf9;
+    }
+    .group-item.active, .student-item.active {
+      background-color: #ffe8dc;
+      border-color: var(--primary-orange);
+      font-weight: bold;
+    }
+    .student-number {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      background-color: #d3e2d8;
+      color: #1b4332;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 22px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    .student-item.active .student-number {
+      background-color: var(--primary-orange);
+      color: white;
+    }
+    .badge {
+      display: inline-block;
+      background: #d8f3dc;
+      color: #1b4332;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    
+    .badge-obs {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      box-sizing: border-box;
+      background: #e2e8f0;
+      color: #334155;
+      font-size: 10px;
+      padding: 2px 0;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+    .badge-grades {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      box-sizing: border-box;
+      background: #d1e7dd;
+      color: #0f5132;
+      font-size: 10px;
+      padding: 2px 0;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #a3cfbb;
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+
+    .badge-article {
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-weight: normal;
+    }
+    .badge-internal {
+      background: #e9ecef;
+      color: #495057;
+      border: 1px dashed #adb5bd;
+    }
+    .grade-badge {
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .grade-na { background: #f8d7da; color: #842029; }
+    .grade-as { background: #fff3cd; color: #664d03; }
+    .grade-an { background: #d1e7dd; color: #0f5132; }
+    .grade-ae { background: #cff4fc; color: #055160; }
+    .obs-card {
+      background: #f8fbf9;
+      border-left: 4px solid var(--primary-orange);
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+    }
+    .obs-card.internal-note {
+      background: #f1f3f5;
+      border-left-color: #6c757d;
+      opacity: 0.9;
+    }
+    .obs-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .report-box {
+      background: #fff8f3;
+      border: 1px solid #ffd8c2;
+      padding: 18px;
+      border-radius: 8px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .privacy-notice {
+      background-color: #e8f5e9;
+      border-left: 4px solid var(--accent-green);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #1b4332;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+    .storage-warning {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #664d03;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+    .usage-disclaimer {
+      background-color: #fff4ed;
+      border-left: 4px solid var(--primary-orange);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #8883b14;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+    .task-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #f1f5f3;
+      user-select: none;
+      transition: all 0.2s;
+    }
+    .task-chip.delivered {
+      background: #d1e7dd;
+      color: #0f5132;
+      border-color: #a3cfbb;
+    }
+    .task-chip.pending {
+      background: #f8d7da;
+      color: #842029;
+      border-color: #f5c2c7;
+    }
+    .task-date {
+      font-size: 10px;
+      opacity: 0.8;
+      background: rgba(0,0,0,0.06);
+      padding: 1px 5px;
+      border-radius: 8px;
+    }
+    .group-task-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fbf9;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .summary-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .area-summary-box {
+      background: #fafdfb;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .area-summary-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--accent-green);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .area-summary-score {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    #groupMatrixWrapper {
+      margin-top: 10px;
+      overflow-x: auto;
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: block;
+      box-sizing: border-box;
+    }
+
+    .group-matrix-table, .student-grades-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      background: white;
+      margin-bottom: 0;
+    }
+    .group-matrix-table th, .group-matrix-table td,
+    .student-grades-table th, .student-grades-table td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .group-matrix-table th, .group-matrix-table td.student-name-td {
+      text-align: left;
+    }
+    .group-matrix-table th, .student-grades-table th {
+      background-color: var(--accent-green);
+      color: white;
+      font-weight: 600;
+    }
+    .group-matrix-table tr:hover {
+      background-color: #ffe8dc;
+      cursor: pointer;
+    }
+    .group-matrix-table .avg-row, .student-grades-table .avg-row {
+      background-color: #eef6f2;
+      font-weight: bold;
+    }
+
+    .matrix-inline-input {
+      width: 55px !important;
+      padding: 3px 4px !important;
+      font-size: 12px !important;
+      text-align: center !important;
+      margin-bottom: 0 !important;
+      background: #ffffff !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 4px !important;
+    }
+    .matrix-inline-input:focus {
+      border-color: var(--primary-orange) !important;
+      background-color: #fff8f3 !important;
+    }
+
+    .area-block-card {
+      margin-bottom: 20px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      overflow: hidden;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 480px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .modal-scroll {
+      overflow-y: auto;
+      max-height: 280px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      background: #fafdfb;
+      margin-bottom: 10px;
+    }
+    .student-checkbox-item, .student-grade-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px dashed #eee;
+    }
+    .student-checkbox-item:last-child, .student-grade-row:last-child {
+      border-bottom: none;
+    }
+    .api-instructions-list {
+      margin: 10px 0;
+      padding-left: 20px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #2b2d42;
+    }
+    .api-instructions-list li {
+      margin-bottom: 6px;
+    }
+
+    .nav-arrow-btn {
+      background: var(--accent-green);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav-arrow-btn:hover {
+      background: var(--accent-green-dark);
+    }
+    .nav-arrow-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* ESTILS DE L'EDITOR DE REUNIONS */
+    .editor-toolbar {
+      display: flex;
+      gap: 6px;
+      background: #eef6f2;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+    }
+    .editor-btn {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .editor-btn:hover {
+      background: #d3e2d8;
+    }
+    .editor-btn-highlight {
+      background: #ffd8c2;
+      color: #c85a2b;
+      border-color: #f1b08c;
+    }
+    .editor-btn-highlight:hover {
+      background: #ffc2a1;
+    }
+    .rich-editor {
+      min-height: 100px;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 0 0 6px 6px;
+      padding: 9px 12px;
+      font-size: 14px;
+      background-color: #fafdfb;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .rich-editor:focus {
+      border-color: var(--primary-orange);
+      box-shadow: 0 0 0 1px var(--primary-orange);
+    }
+
+    mark.orange-highlight {
+      background-color: #ffd8c2;
+      color: #2b2d42;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .btn-footer {
+      background: var(--accent-green-dark, #1b4332);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-footer:hover {
+      background: var(--accent-green, #2d6a4f);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>✏️ Quadern de registre i seguiment de l'alumnat</h1>
+    <div class="top-controls">
+      <div style="flex: 2; display:flex; gap:8px; align-items:center;">
+        <label for="apiKey" style="white-space:nowrap;"><strong>Clau API:</strong></label>
+        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC.">
+        <button type="button" onclick="saveApiKey()">Desar clau</button>
+        <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?">❓</button>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" onclick="exportData()" class="btn-green">💾 Exportar còpia</button>
+        <button type="button" onclick="document.getElementById('importFile').click()">📂 Importar còpia</button>
+        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+      </div>
+    </div>
+  </header>
+
+  <div class="main-nav">
+    <button type="button" id="tabGroupsBtn" class="nav-btn active" onclick="switchMainTab('groups')">📋 Quadern de grups i alumnat</button>
+    <button type="button" id="tabSchoolBtn" class="nav-btn" onclick="switchMainTab('school')">🏫 Reunions i acords del centre</button>
+  </div>
+
+  <div class="privacy-notice">
+    🔒 <strong>Privacitat protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes.
+  </div>
+
+  <div class="storage-warning">
+    ⚠️ <strong>Atenció sobre les dades:</strong> Totes les dades s'emmagatzemen al teu navegador. Eliminar l'historial o la memòria pot fer que perdis la informació desada. Recorda exportar una còpia de seguretat periòdicament per no perdre cap dada.
+  </div>
+
+  <div class="usage-disclaimer">
+    ℹ️ Aquest full de seguiment s'ha dissenyat per facilitar la tasca docent. Utilitza'l sota la teva responsabilitat i fes-ne un bon ús.
+  </div>
+
+  <!-- SECCIÓ 1: QUADERN DE GRUPS I ALUMNES -->
+  <div id="sectionGroups">
+    <div class="layout">
+      <!-- PANEL ESQUERRA: GRUPS I ALUMNES -->
+      <div class="panel">
+        <h3>1. Gestió de grups</h3>
+        <div style="margin-bottom: 15px;">
+          <input type="text" id="newGroupName" placeholder="Nom del grup (p. ex., 3r A)">
+          <input type="text" id="newGroupAreas" placeholder="Àrees separades per comes (p. ex., Mates, Art)">
+          <button type="button" onclick="addGroup()" style="width: 100%;">+ Crear grup</button>
+        </div>
+
+        <div id="groupList"></div>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
+
+        <div id="studentSection" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="margin:0;">2. Alumnes de <span id="selectedGroupTitle"></span></h3>
+            <button type="button" onclick="openWeightsModal()" style="font-size:11px; padding:4px 8px; background-color:#4a5568;" title="Configurar percentatges de les àrees">⚙️ Ponderacions</button>
+          </div>
+
+          <div style="background: #fafdfb; border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="font-size: 13px; color: var(--accent-green);">📋 Tasques de grup</strong>
+              <button type="button" onclick="openAddTaskModal()" style="font-size: 11px; padding: 3px 6px;" class="btn-green">+ Nova tasca</button>
+            </div>
+            <div id="groupTasksList" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
+          </div>
+          
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; background: #f8fbf9; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            <input type="text" id="newStudentName" placeholder="Nom i cognoms..." style="margin-bottom: 0;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <select id="newStudentArticle" style="margin-bottom: 0; flex: 1.2;">
+                <option value="En">En</option>
+                <option value="El">El</option>
+                <option value="La">La</option>
+                <option value="Ell / L'">Ell / L'</option>
+                <option value="Ella / L'">Ella / L'</option>
+                <option value="L'">L'</option>
+                <option value="Sense">Sense article</option>
+              </select>
+              <button type="button" onclick="addStudent()" style="flex: 1;">+ Afegir</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <button type="button" onclick="document.getElementById('importCsvFile').click()" class="btn-green" style="width:100%; font-size:12px; padding:6px;">📥 Importar alumnes (CSV)</button>
+            <input type="file" id="importCsvFile" accept=".csv, .txt" style="display:none" onchange="importStudentsCsv(event)">
+          </div>
+
+          <div id="studentList"></div>
+        </div>
+      </div>
+
+      <!-- PANEL DRETA: DETALL I MATRIU DEL GRUP -->
+      <div class="panel">
+        
+        <div id="groupOverviewSection" style="display:none; margin-bottom:20px; background:#fafdfb; border:1px solid var(--border); padding:15px; border-radius:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h3 style="margin:0; font-size:16px;">📊 Resum del grup</h3>
+              <button type="button" onclick="openBulkGradeModal()" class="btn-green" style="font-size:11px; padding:3px 8px;">📝 Notes per prova</button>
+              <button type="button" id="toggleMatrixViewBtn" onclick="toggleGroupMatrixViewMode()" style="font-size:11px; padding:3px 8px; background:#4a5568;">🔍 Desglossar proves</button>
+              <button type="button" id="toggleMatrixBtn" onclick="toggleGroupMatrix()" style="font-size:11px; padding:3px 8px; background:#6c757d;">▲ Amagar</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <label for="groupMatrixTrimestreSelector" style="font-size:12px; font-weight:bold;">Període:</label>
+              <select id="groupMatrixTrimestreSelector" onchange="renderGroupMatrix()" style="width:auto; margin-bottom:0; font-size:12px; padding:3px 8px; font-weight:bold;">
+                <option value="1r Trimestre">1r Trimestre</option>
+                <option value="2n Trimestre">2n Trimestre</option>
+                <option value="3r Trimestre">3r Trimestre</option>
+                <option value="FINAL">🎓 Curs global (FINAL)</option>
+              </select>
+              <button type="button" onclick="exportGroupScoresCsv()" class="btn-green" style="font-size:11px; padding:4px 8px;" title="Exportar resum de notes en CSV">📊 Exportar CSV</button>
+            </div>
+          </div>
+          <div id="groupMatrixWrapper">
+            <div id="groupMatrixContainer"></div>
+          </div>
+        </div>
+
+        <div id="studentDetail" style="display:none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" id="prevStudentBtn" class="nav-arrow-btn" onclick="navigateStudent(-1)" title="Alumne/a anterior">◀</button>
+              <button type="button" id="nextStudentBtn" class="nav-arrow-btn" onclick="navigateStudent(1)" title="Alumne/a següent">▶</button>
+              <h2 id="currentStudentHeader" style="margin: 0;">Selecciona un alumne</h2>
+              <button type="button" onclick="editStudentName()" style="font-size: 11px; padding: 4px 8px; background-color: #6c757d;" title="Editar el nom d'aquest infant">✏️ Editar nom</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <label style="font-size:12px; font-weight:600;">Article/Pronom:</label>
+              <select id="studentArticleSelector" onchange="updateStudentArticle()" style="width: auto; margin-bottom: 0; font-weight: bold;">
+                <option value="En">En</option>
+                <option value="El">El</option>
+                <option value="La">La</option>
+                <option value="Ell / L'">Ell / L'</option>
+                <option value="Ella / L'">Ella / L'</option>
+                <option value="L'">L'</option>
+                <option value="Sense">Sense article</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="background: linear-gradient(135deg, #2d6a4f, #1b4332); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+              <h4 style="margin:0; color:white;">📊 Marcador d'avaluació ponderada (infant)</h4>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <label for="summaryTrimestreSelector" style="font-size:12px; color:#e2e8f0;">Període:</label>
+                <select id="summaryTrimestreSelector" onchange="renderSummaryDashboard(); renderGrades();" style="width:auto; margin-bottom:0; font-size:12px; padding:3px 8px; color:#1b4332; font-weight:bold;">
+                  <option value="1r Trimestre">1r Trimestre</option>
+                  <option value="2n Trimestre">2n Trimestre</option>
+                  <option value="3r Trimestre">3r Trimestre</option>
+                  <option value="FINAL">🎓 Curs global (FINAL)</option>
+                </select>
+              </div>
+            </div>
+            <div id="summaryCardsGrid" class="summary-card-grid"></div>
+          </div>
+
+          <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
+            <h4 style="margin:0 0 8px 0;">📋 Control de lliuraments d'aquest alumne/a</h4>
+            <p style="font-size: 12px; color: #666; margin-top: 0; margin-bottom: 10px;">Fes clic per canviar l'estat individual d'aquesta tasca:</p>
+            <div id="tasksContainer" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 20px;"></div>
+          </div>
+
+          <div style="background: #eef6f2; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
+            <h4>📊 Registre i matriu de proves d'avaluació</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 90px; gap: 8px; align-items: end; margin-bottom: 15px; background: white; padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+              <div>
+                <label style="font-size:12px; font-weight:600;">Àrea:</label>
+                <select id="gradeArea" onchange="updateGradeCategoryOptions()"></select>
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:600;">Instrument:</label>
+                <select id="gradeCategory"></select>
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:600;">Trimestre:</label>
+                <select id="gradeTrimestre">
+                  <option value="1r Trimestre">1r Trimestre</option>
+                  <option value="2n Trimestre">2n Trimestre</option>
+                  <option value="3r Trimestre">3r Trimestre</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:600;">Nota (0 a 10):</label>
+                <input type="number" id="gradeValue" min="0" max="10" step="0.1" placeholder="p. ex. 7.5">
+              </div>
+              <div>
+                <button type="button" onclick="addGrade()" style="width:100%;">Afegir</button>
+              </div>
+            </div>
+
+            <div id="gradesHistory"></div>
+          </div>
+
+          <div style="background: #fafdfb; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
+            <h4>✍️ Nova observació pedagògica</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
+              <div>
+                <label style="font-size: 12px; font-weight: 600;">Àrea/Matèria:</label>
+                <select id="obsArea"></select>
+              </div>
+              <div>
+                <label style="font-size: 12px; font-weight: 600;">Trimestre:</label>
+                <select id="obsTrimestre">
+                  <option value="1r Trimestre">1r Trimestre</option>
+                  <option value="2n Trimestre">2n Trimestre</option>
+                  <option value="3r Trimestre">3r Trimestre</option>
+                </select>
+              </div>
+            </div>
+            <textarea id="newObsText" rows="3" placeholder="Escriu les observacions..."></textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+              <label style="font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="obsIsInternal"> 🔒 <em>Anotació interna (no incloure a l'informe)</em>
+              </label>
+              <button type="button" onclick="addObservation()">Desar observació</button>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin: 0;">Historial d'observacions registrades</h4>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label for="filterObsArea" style="font-size: 12px; font-weight: 600; white-space: nowrap;">Filtrar per àrea:</label>
+              <select id="filterObsArea" onchange="renderObservations()" style="margin-bottom: 0; padding: 4px 8px; font-size: 12px; width: auto;"></select>
+            </div>
+          </div>
+          <div id="obsHistory"></div>
+
+          <hr style="margin: 25px 0; border: 0; border-top: 1px solid var(--border);">
+
+          <h4>Generació automàtica d'informes</h4>
+          <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
+            Genera una proposta de redactat adaptada gramaticalment (excloent anotacions internes):
+          </p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" id="btnReportTrimestral" onclick="generateReport('trimestral')">📝 Informe trimestral</button>
+            <button type="button" id="btnReportAnual" onclick="generateReport('anual')" class="btn-green">🎓 Informe global de curs (juny)</button>
+          </div>
+
+          <div id="reportContainer" style="display:none;" class="report-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <strong id="reportTitle">Informe generat:</strong>
+              <div style="display:flex; gap:6px;">
+                <button type="button" onclick="copyReport()" style="font-size: 12px; padding: 4px 8px;">📋 Copiar text</button>
+                <button type="button" onclick="printReportPdf()" class="btn-green" style="font-size: 12px; padding: 4px 8px;">📄 Desar PDF</button>
+              </div>
+            </div>
+            <div id="reportText"></div>
+          </div>
+        </div>
+
+        <div id="noStudentSelected" style="text-align: center; color: #666; padding: 40px 20px;">
+          <h3>Cap alumne seleccionat</h3>
+          <p>Crea un grup, afegeix alumnes i selecciona'n un per gestionar el seu seguiment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 2: REUNIONS I ACORDS DEL CENTRE -->
+  <div id="sectionSchool" style="display:none;">
+    <div class="panel">
+      <h3>🏫 Registre de reunions, claustres i acords del centre</h3>
+      <p style="font-size: 13px; color: #555; margin-bottom: 15px;">
+        Anota aquí les decisions, acords pedagògics o informacions importants dels claustres, la direcció o les trobades de cicle.
+      </p>
+
+      <div style="background: #fafdfb; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h4 style="margin-top:0;">✍️ Nova acta / anotació de reunió</h4>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 8px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 600;">Títol / tema de la reunió:</label>
+            <input type="text" id="schoolMeetingTitle" placeholder="P. ex. Acords sobre la festa de final de curs...">
+          </div>
+          <div>
+            <label style="font-size: 12px; font-weight: 600;">Tipus de reunió:</label>
+            <select id="schoolMeetingType">
+              <option value="Claustre">🏛️ Claustre de mestres</option>
+              <option value="Cicle">🔄 Reunió de cicle</option>
+              <option value="Escola">🏫 Escola</option>
+              <option value="Comissió">👥 Comissions</option>
+              <option value="Aula">📚 Aula</option>
+              <option value="Tasques pendents">📌 Tasques pendents</option>
+              <option value="Altres">💬 Altres</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 12px; font-weight: 600;">Data:</label>
+            <input type="text" id="schoolMeetingDate" placeholder="dd/mm/aaaa">
+          </div>
+        </div>
+
+        <!-- BARRA D'EINES I EDITOR EDITABLE AMB RETOLADOR TARONJA TOGGLE PERFECTE -->
+        <label style="font-size: 12px; font-weight: 600;">Contingut / Punts tractats:</label>
+        <div class="editor-toolbar">
+          <button type="button" class="editor-btn" onclick="formatText('bold')" title="Negreta"><b>B</b></button>
+          <button type="button" class="editor-btn" onclick="formatText('italic')" title="Cursiva"><i>I</i></button>
+          <button type="button" class="editor-btn" onclick="formatText('underline')" title="Subratllat tradicional"><u>U</u></button>
+          <button type="button" class="editor-btn editor-btn-highlight" onclick="highlightText()" title="Activar/Desactivar subratllador taronja">🖍️ Subratllador</button>
+        </div>
+        <div id="schoolMeetingContent" class="rich-editor" contenteditable="true" placeholder="Escriu els punts tractats, acords o tasques pendents... Selecciona text i prem el retolador per subratllar o treure el subratllat!"></div>
+
+        <div style="text-align: right; margin-top: 10px;">
+          <button type="button" onclick="addSchoolMeeting()" class="btn-green">+ Desar anotació de reunió</button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+        <h4 style="margin: 0;">Historial d'acords i reunions registrades</h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="text" id="searchSchoolMeetings" oninput="renderSchoolMeetings()" placeholder="🔍 Cercar acords..." style="margin-bottom:0; font-size:12px; padding:5px 8px; width:180px;">
+          <select id="filterSchoolMeetingType" onchange="renderSchoolMeetings()" style="margin-bottom:0; font-size:12px; padding:5px 8px; width:auto;">
+            <option value="ALL">Tots els tipus</option>
+            <option value="Claustre">🏛️ Claustre</option>
+            <option value="Cicle">🔄 Cicle</option>
+            <option value="Escola">🏫 Escola</option>
+            <option value="Comissió">👥 Comissions</option>
+            <option value="Aula">📚 Aula</option>
+            <option value="Tasques pendents">📌 Tasques pendents</option>
+            <option value="Altres">💬 Altres</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="schoolMeetingsList"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button type="button" class="btn-footer" onclick="openPrivacyModal()">🔒 Avís de privacitat i bones pràctiques</button>
+      <a href="pdf" target="_blank" class="btn-footer">📊 Generador de PDF/CSV</a>
+      <a href="gemini" target="_blank" class="btn-footer">🤖 Generador de Prompt</a>
+      <button type="button" class="btn-footer" onclick="openFeedbackModal()">💬 Feedback</button>
+      <button type="button" class="btn-footer btn-orange" onclick="openCoffeeModal()">☕ Buy me a coffee</button>
+    </div>
+  </footer>
+</div>
+
+<!-- MODALS -->
+<div id="bulkGradeModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <h4 style="margin-top:0; margin-bottom:10px;">📝 Gestió de notes per prova de grup</h4>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+      <div>
+        <label style="font-size:12px; font-weight:600;">Àrea:</label>
+        <select id="bulkGradeArea" onchange="onBulkAreaChange()"></select>
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:600;">Instrument:</label>
+        <select id="bulkGradeCategory"></select>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
+      <div>
+        <label style="font-size:12px; font-weight:600;">Nom/Títol de la prova (opcional):</label>
+        <input type="text" id="bulkGradeTitle" placeholder="P. ex. Examen Tema 1, Fraccions...">
+      </div>
+      <div>
+        <label style="font-size:12px; font-weight:600;">Trimestre:</label>
+        <select id="bulkGradeTrimestre" onchange="renderBulkGradeStudents()">
+          <option value="1r Trimestre">1r Trimestre</option>
+          <option value="2n Trimestre">2n Trimestre</option>
+          <option value="3r Trimestre">3r Trimestre</option>
+        </select>
+      </div>
+    </div>
+
+    <label style="font-size:12px; font-weight:600; display:block; margin-top:5px;">Carregar o editar prova existent:</label>
+    <select id="bulkExistingTestsSelect" onchange="loadExistingTestIntoBulkModal()" style="margin-bottom:10px;">
+      <option value="NEW">✨ Nova prova (crear des de zero)</option>
+    </select>
+
+    <div class="modal-scroll" id="bulkGradeStudentList"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+      <span style="font-size:11px; color:#666;">Pots deixar les caselles en blanc si la prova està pendent.</span>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-secondary" onclick="closeBulkGradeModal()">Cancel·lar</button>
+        <button type="button" class="btn-green" onclick="saveBulkGrades()">Desar notes del grup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="weightsModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <h4 style="margin-top:0; margin-bottom:10px;">⚙️ Ponderacions per àrees</h4>
+    <p style="font-size:12px; color:#666; margin-top:0;">Defineix els percentatges dels diferents instruments d'avaluació per a cada matèria:</p>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:12px; font-weight:600;">Selecciona l'àrea:</label>
+      <select id="weightsAreaSelector" onchange="renderWeightsForm()"></select>
+    </div>
+
+    <div class="modal-scroll" id="weightsFormContainer"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+      <button type="button" onclick="addCategoryToWeights()" style="font-size:11px; padding:4px 8px;">+ Categoria</button>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-secondary" onclick="closeWeightsModal()">Cancel·lar</button>
+        <button type="button" class="btn-green" onclick="saveWeightsConfig()">Desar ponderació</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="addTaskModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <h4 style="margin-top:0; margin-bottom:10px;">Nova tasca de grup</h4>
+    
+    <label style="font-size:12px; font-weight:600;">Nom de la tasca:</label>
+    <input type="text" id="modalTaskName" placeholder="P. ex. Autorització, Dibuix d'Art...">
+
+    <label style="font-size:12px; font-weight:600;">Àrea corresponent:</label>
+    <select id="modalTaskArea"></select>
+
+    <label style="font-size:12px; font-weight:600;">Estat inicial per als alumnes seleccionats:</label>
+    <select id="modalTaskDefaultState" style="margin-bottom:10px;">
+      <option value="false">❌ Pendent</option>
+      <option value="true">✅ Feta</option>
+    </select>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+      <label style="font-size:12px; font-weight:600;">Assignar als alumnes:</label>
+      <div style="display:flex; gap:5px;">
+        <button type="button" onclick="selectAllModalStudents(true)" style="padding:2px 6px; font-size:10px;">Tots</button>
+        <button type="button" onclick="selectAllModalStudents(false)" style="padding:2px 6px; font-size:10px; background:#6c757d;">Cap</button>
+      </div>
+    </div>
+
+    <div class="modal-scroll" id="modalStudentList"></div>
+
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:5px;">
+      <button type="button" class="btn-secondary" onclick="closeAddTaskModal()">Cancel·lar</button>
+      <button type="button" class="btn-green" onclick="confirmAddTask()">Crear tasca</button>
+    </div>
+  </div>
+</div>
+
+<div id="apiHelpModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="width: 460px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h4 style="margin:0; color:var(--accent-green);">🔑 Com aconseguir la clau API de Gemini?</h4>
+      <button type="button" onclick="closeApiHelpModal()" style="background:none; border:none; color:#777; font-size:18px; cursor:pointer; padding:0;">✕</button>
+    </div>
+    
+    <p style="font-size:13px; color:#555; margin:0 0 10px 0;">Segueix aquests passos senzills per obtenir la teva clau gratuïta de Google:</p>
+
+    <ol class="api-instructions-list">
+      <li>Accedeix a <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary-orange); font-weight:bold;">Google AI Studio</a>.</li>
+      <li>Identifica't amb el teu usuari d'<strong>XTEC</strong>.</li>
+      <li>Al menú lateral, ves a <strong>Dashboard</strong>.</li>
+      <li>Entra a <strong>Claus API</strong> (o <em>API Keys</em>).</li>
+      <li>Genera una clau nova (<em>Create API Key</em>) i copia-la.</li>
+    </ol>
+
+    <div style="background:#eef6f2; border:1px solid var(--border); border-radius:6px; padding:10px; font-size:12px; color:#1b4332; margin-bottom:15px;">
+      💡 Un cop la tinguis copiada, enganxa-la a la casella superior i prem <strong>"Desar clau"</strong>. Quedarà desada al teu navegador.
+    </div>
+
+    <div style="text-align:right;">
+      <button type="button" class="btn-green" onclick="closeApiHelpModal()">D'acord</button>
+    </div>
+  </div>
+</div>
+
+<div id="privacyModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="width: 520px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h4 style="margin:0; color:var(--accent-green); font-size:16px;">🔒 Avís de privacitat i bones pràctiques</h4>
+      <button type="button" onclick="closePrivacyModal()" style="background:none; border:none; color:#777; font-size:18px; cursor:pointer; padding:0;">✕</button>
+    </div>
+    
+    <div style="font-size:13px; color:#2b2d42; line-height:1.6; overflow-y:auto; max-height:65vh; padding-right:5px;">
+      
+      <div style="background:#e8f5e9; border-left:4px solid var(--accent-green); padding:10px; border-radius:4px; margin-bottom:12px;">
+        <strong>1. Ús del compte educatiu XTEC:</strong><br>
+        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institutional <strong>XTEC</strong>. Els entorns educatius corporatius de Google disposen de garanties addicionals de protecció de dades i privacitat contractuals ajustades al Reglament General de Protecció de Dades (RGPD) per als centres docents.
+      </div>
+
+      <div style="background:#fafdfb; border:1px solid var(--border); padding:10px; border-radius:6px; margin-bottom:12px;">
+        <strong>2. Emmagatzematge local (100% privat):</strong><br>
+        Totes les notes, observacions, tasques i dades dels alumnes <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`). No es guarda res en cap servidor extern ni base de dades al núvol. Per això, és fonamental realitzar còpies de seguretat periòdicament des del botó <em>"💾 Exportar còpia"</em>.
+      </div>
+
+      <div style="background:#fff8f3; border-left:4px solid var(--primary-orange); padding:10px; border-radius:4px; margin-bottom:12px;">
+        <strong>3. Recomanació d'anonimització:</strong><br>
+        Per garantir una protecció total de la identitat de l'alumnat:
+        <ul style="margin:5px 0 0 0; padding-left:20px;">
+          <li>És preferible registrar els infants utilitzant <strong>només el nom de pila o el nom amb la inicial del primer cognom</strong> (p. ex. <em>"Marc P."</em> o <em>"Laia"</em>) en lloc del nom i dos cognoms complets.</li>
+          <li>En generar informes amb IA, la informació s'envia processada de forma anònima i les anotacions marcades com a 🔒 <em>internes</em> mai s'enviaran a l'API.</li>
+        </ul>
+      </div>
+
+      <div style="background:#eef6f2; border:1px solid var(--border); padding:10px; border-radius:6px; margin-bottom:12px;">
+        <strong>4. Llicència i comunitat:</strong><br>
+        Projecte de codi obert allotjat a GitHub sota llicència MIT.<br><br>
+        Aquest projecte ha estat pensat per un docent i creat amb l'ajuda de la IA amb la intenció de compartir-lo amb tota la comunitat educativa. Si vols col·laborar amb la iniciativa i ajudar a mantenir-la actualitzada, <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="color:var(--primary-orange); font-weight:bold;">convida'm a un cafè</a>.
+      </div>
+
+    </div>
+
+    <div style="text-align:right; margin-top:15px;">
+      <button type="button" class="btn-green" onclick="closePrivacyModal()">Entesos</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORMSPREE: FEEDBACK I SUGGERIMENTS -->
+<div id="feedbackModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="width: 480px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h4 style="margin:0; color:var(--accent-green);">💬 Feedback i suggeriments</h4>
+      <button type="button" onclick="closeFeedbackModal()" style="background:none; border:none; color:#777; font-size:18px; cursor:pointer; padding:0;">✕</button>
+    </div>
+
+    <p style="font-size:13px; color:#555; margin-top:0; margin-bottom:12px;">
+      Has trobat cap error o tens una idea per millorar el quadern? Envia el teu comentari directament:
+    </p>
+
+    <form id="feedbackForm" action="https://formspree.io/f/meaaqyln" method="POST" onsubmit="handleFeedbackSubmit(event)">
+      <label style="font-size:12px; font-weight:600;">El teu correu electrònic (opcional per poder-te respondre):</label>
+      <input type="email" name="email" placeholder="nom@xtec.cat" style="font-family: inherit; font-size: 14px;">
+
+      <label style="font-size:12px; font-weight:600;">On has trobat l'error o quina millora proposes?</label>
+      <textarea name="message" rows="5" required placeholder="Explica detalladament què ha passat o quina funcionalitat t'agradaria veure..." style="font-family: inherit; font-size: 14px;"></textarea>
+
+      <div id="feedbackStatus" style="font-size:12px; margin-bottom:10px; display:none;"></div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button type="button" class="btn-secondary" onclick="closeFeedbackModal()">Cancel·lar</button>
+        <button type="submit" class="btn-green">Enviar suggeriment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL BUY ME A COFFEE -->
+<div id="coffeeModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="width: 460px; background: linear-gradient(135deg, #ffffff 0%, #fff8f3 100%); text-align: center; border: 2px solid var(--primary-orange);">
+    <div style="display:flex; justify-content:flex-end;">
+      <button type="button" onclick="closeCoffeeModal()" style="background:none; border:none; color:#777; font-size:18px; cursor:pointer; padding:0;">✕</button>
+    </div>
+
+    <div style="font-size: 45px; margin-top: -10px; margin-bottom: 5px;">☕</div>
+    <h3 style="color: var(--primary-orange-dark); margin: 0 0 10px 0;">Col·labora amb el projecte</h3>
+
+    <div style="font-size: 13px; color: #4a5568; line-height: 1.6; text-align: justify; background: white; padding: 15px; border-radius: 8px; border: 1px solid #ffd8c2; margin-bottom: 15px;">
+      Aquest projecte ha estat pensat per un docent i creat amb l'ajuda de la IA amb la intenció de compartir-lo amb tota la comunitat educativa. Si vols col·laborar amb la iniciativa i ajudar a mantenir-la actualitzada, convida'm a un cafè.
+    </div>
+
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+        <button type="button" class="btn-orange" style="font-size: 15px; padding: 10px 20px; box-shadow: 0 3px 8px rgba(224, 109, 59, 0.3);">
+          ☕ Convida'm a un cafè a BuyMeACoffee
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  let db = { groups: [], schoolMeetings: [] };
+  let selectedGroupIndex = null;
+  let selectedStudentIndex = null;
+  let reportTimerInterval = null;
+  let matrixViewMode = 'summary';
+
+  const DEFAULT_CATEGORIES = [
+    { name: "Prova escrita", weight: 40 },
+    { name: "Expressió oral i exposicions", weight: 30 },
+    { name: "Treball diari, tasques i projectes", weight: 20 },
+    { name: "Actitud", weight: 10 }
+  ];
+
+  const AREA_COLORS = [
+    { bg: '#ffe3d1', text: '#9c3d10' },
+    { bg: '#d8f3dc', text: '#1b4332' },
+    { bg: '#cff4fc', text: '#055160' },
+    { bg: '#f3d2c1', text: '#5c220f' },
+    { bg: '#e2d4f0', text: '#4a154b' },
+    { bg: '#fff3cd', text: '#664d03' },
+    { bg: '#ffd6a5', text: '#7c3a00' }
+  ];
+
+  function getAreaColorObj(areaName) {
+    if (!areaName) return { bg: '#e9ecef', text: '#495057' };
+    
+    const nameLower = areaName.toLowerCase().trim();
+
+    if (nameLower.includes('català') || nameLower.includes('catala')) {
+      return { bg: '#fef9c3', text: '#854d0e' };
+    }
+    if (nameLower.includes('matemat') || nameLower.includes('mate') || nameLower.includes('math')) {
+      return { bg: '#fee2e2', text: '#991b1b' };
+    }
+    if (nameLower.includes('medi')) {
+      return { bg: '#dcfce7', text: '#166534' };
+    }
+    if (nameLower.includes('música') || nameLower.includes('musica') || nameLower.includes('art') || nameLower.includes('plàstica') || nameLower.includes('plastica')) {
+      return { bg: '#f3e8ff', text: '#6b21a8' };
+    }
+    if (nameLower.includes('tuto')) {
+      return { bg: '#e0f2fe', text: '#075985' };
+    }
+    if (nameLower.includes('castell') || nameLower.includes('spanish')) {
+      return { bg: '#ffedd5', text: '#9a3412' };
+    }
+    if (nameLower.includes('anglès') || nameLower.includes('angles') || nameLower.includes('english')) {
+      return { bg: '#dbeafe', text: '#1e40af' };
+    }
+    if (nameLower.includes('science')) {
+      return { bg: '#14532d', text: '#ffffff' };
+    }
+
+    if (selectedGroupIndex !== null && db.groups[selectedGroupIndex]) {
+      const areas = db.groups[selectedGroupIndex].areas || [];
+      const idx = areas.indexOf(areaName);
+      if (idx !== -1) return AREA_COLORS[idx % AREA_COLORS.length];
+    }
+    
+    return { bg: '#e9ecef', text: '#495057' };
+  }
+
+  function getAreaColorStyle(areaName) {
+    const color = getAreaColorObj(areaName);
+    return `background-color: ${color.bg}; color: ${color.text}; border: 1px solid ${color.text}33;`;
+  }
+
+  function openApiHelpModal() {
+    document.getElementById('apiHelpModal').style.display = 'flex';
+  }
+
+  function closeApiHelpModal() {
+    document.getElementById('apiHelpModal').style.display = 'none';
+  }
+
+  function openPrivacyModal() {
+    document.getElementById('privacyModal').style.display = 'flex';
+  }
+
+  function closePrivacyModal() {
+    document.getElementById('privacyModal').style.display = 'none';
+  }
+
+  function openFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'flex';
+    document.getElementById('feedbackStatus').style.display = 'none';
+  }
+
+  function closeFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'none';
+  }
+
+  function openCoffeeModal() {
+    document.getElementById('coffeeModal').style.display = 'flex';
+  }
+
+  function closeCoffeeModal() {
+    document.getElementById('coffeeModal').style.display = 'none';
+  }
+
+  function getDefaultTrimestre() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
+    if (month >= 9 && month <= 12) return '1r Trimestre';
+    if (month === 1 || month === 2 || (month === 3 && day <= 20)) return '2n Trimestre';
+    if ((month === 3 && day >= 21) || month === 4 || month === 5) return '3r Trimestre';
+    return 'FINAL';
+  }
+
+  function applyDefaultTrimestres() {
+    const def = getDefaultTrimestre();
+    const groupSel = document.getElementById('groupMatrixTrimestreSelector');
+    if (groupSel) groupSel.value = def;
+
+    const sumSel = document.getElementById('summaryTrimestreSelector');
+    if (sumSel) sumSel.value = def;
+
+    const gradeSel = document.getElementById('gradeTrimestre');
+    if (gradeSel) gradeSel.value = (def === 'FINAL' ? '3r Trimestre' : def);
+
+    const obsSel = document.getElementById('obsTrimestre');
+    if (obsSel) obsSel.value = (def === 'FINAL' ? '3r Trimestre' : def);
+
+    const bulkTriSel = document.getElementById('bulkGradeTrimestre');
+    if (bulkTriSel) bulkTriSel.value = (def === 'FINAL' ? '3r Trimestre' : def);
+  }
+
+  try {
+    const localData = localStorage.getItem('mestre_app_db');
+    if (localData) {
+      db = JSON.parse(localData);
+      if (!db.schoolMeetings) db.schoolMeetings = [];
+    }
+  } catch (e) {
+    console.error("Error carregant base de dades local:", e);
+  }
+
+  window.onload = function() {
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) document.getElementById('apiKey').value = savedKey;
+    document.getElementById('schoolMeetingDate').value = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    
+    applyDefaultTrimestres();
+    renderGroups();
+    renderSchoolMeetings();
+  };
+
+  function switchMainTab(tab) {
+    document.getElementById('tabGroupsBtn').classList.remove('active');
+    document.getElementById('tabSchoolBtn').classList.remove('active');
+    document.getElementById('sectionGroups').style.display = 'none';
+    document.getElementById('sectionSchool').style.display = 'none';
+
+    if (tab === 'groups') {
+      document.getElementById('tabGroupsBtn').classList.add('active');
+      document.getElementById('sectionGroups').style.display = 'block';
+    } else {
+      document.getElementById('tabSchoolBtn').classList.add('active');
+      document.getElementById('sectionSchool').style.display = 'block';
+      renderSchoolMeetings();
+    }
+  }
+
+  function saveApiKey() {
+    const key = document.getElementById('apiKey').value.trim();
+    if (!key) {
+      alert("Introdueix primer la clau API.");
+      return;
+    }
+
+    const confirmXtec = confirm(
+      "⚠️ RECORDATORI DE PRIVACITAT I SEGURETAT XTEC:\n\n" +
+      "Assegura't que aquesta clau API s'ha generat des de Google AI Studio havent iniciat sessió amb el teu compte institucional @xtec.cat.\n\n" +
+      "Els comptes corporatius XTEC disposen de les garanties de protecció de dades (RGPD) adients per a l'entorn educatiu.\n\n" +
+      "Vols desar aquesta clau API al teu navegador?"
+    );
+
+    if (confirmXtec) {
+      localStorage.setItem('gemini_api_key', key);
+      alert('Clau API desada correctament!');
+    }
+  }
+
+  function saveDb() {
+    localStorage.setItem('mestre_app_db', JSON.stringify(db));
+  }
+
+  function exportData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `copia_seguretat_mestre_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+  }
+
+  function exportGroupScoresCsv() {
+    if (selectedGroupIndex === null) {
+      alert("Selecciona primer un grup.");
+      return;
+    }
+    const group = db.groups[selectedGroupIndex];
+    if (!group.students || group.students.length === 0) {
+      alert("No hi ha alumnes en aquest grup per exportar.");
+      return;
+    }
+
+    const currentTrimestre = document.getElementById('groupMatrixTrimestreSelector').value;
+    let csvContent = `Num;Nom i Cognoms;` + group.areas.join(';') + `\n`;
+
+    group.students.forEach((student, idx) => {
+      let row = `${idx + 1};"${student.name.replace(/"/g, '""')}"`;
+      group.areas.forEach(area => {
+        const score = calculateWeightedScore(student, area, currentTrimestre);
+        row += `;${score !== null ? score : ''}`;
+      });
+      csvContent += row + `\n`;
+    });
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `notes_${group.name.replace(/\s+/g, '_')}_${currentTrimestre.replace(/\s+/g, '_')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function printReportPdf() {
+    const reportContent = document.getElementById('reportText').innerText;
+    const reportTitle = document.getElementById('reportTitle').innerText;
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[selectedStudentIndex];
+
+    if (!reportContent || reportContent.startsWith('⏱️')) {
+      alert("No hi ha cap informe complet per imprimir.");
+      return;
+    }
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="ca">
+      <head>
+        <meta charset="UTF-8">
+        <title>Informe - ${student.name}</title>
+        <style>
+          body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #2b2d42; line-height: 1.6; }
+          .header { border-bottom: 2px solid #2d6a4f; padding-bottom: 10px; margin-bottom: 20px; }
+          h1 { color: #2d6a4f; font-size: 20px; margin: 0; }
+          h2 { font-size: 14px; color: #555; margin: 5px 0 0 0; }
+          .content { font-size: 14px; white-space: pre-wrap; }
+          @media print {
+            body { padding: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${reportTitle}</h1>
+          <h2>Alumne/a: ${student.name} | Grup: ${group.name}</h2>
+        </div>
+        <div class="content">${reportContent}</div>
+        <script>
+          window.onload = function() { window.print(); };
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+
+  function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const imported = JSON.parse(evt.target.result);
+        if (imported && Array.isArray(imported.groups)) {
+          db = imported;
+          if (!db.schoolMeetings) db.schoolMeetings = [];
+          saveDb();
+          selectedGroupIndex = null;
+          selectedStudentIndex = null;
+          renderGroups();
+          renderSchoolMeetings();
+          document.getElementById('studentSection').style.display = 'none';
+          document.getElementById('groupOverviewSection').style.display = 'none';
+          document.getElementById('studentDetail').style.display = 'none';
+          document.getElementById('noStudentSelected').style.display = 'block';
+          alert("Dades carregades correctament!");
+        } else {
+          alert("El fitxer no té un format vàlid.");
+        }
+      } catch (err) {
+        alert("Error en llegir el fitxer: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function getQualificacioOficial(val) {
+    if (val === null || val === undefined || val === '') return { text: '-', class: '' };
+    const num = parseFloat(val);
+    if (isNaN(num)) return { text: '-', class: '' };
+    if (num < 5.0) return { text: 'NA', class: 'grade-na', fullText: 'No Assolit (NA)' };
+    if (num < 7.0) return { text: 'AS', class: 'grade-as', fullText: 'Assoliment Satisfactori (AS)' };
+    if (num < 9.0) return { text: 'AN', class: 'grade-an', fullText: 'Assoliment Notable (AN)' };
+    return { text: 'AE', class: 'grade-ae', fullText: 'Assoliment Excel·lent (AE)' };
+  }
+
+  function toggleGroupMatrix() {
+    const wrapper = document.getElementById('groupMatrixWrapper');
+    const btn = document.getElementById('toggleMatrixBtn');
+    if (wrapper.style.display === 'none') {
+      wrapper.style.display = 'block';
+      btn.innerText = '▲ Amagar';
+    } else {
+      wrapper.style.display = 'none';
+      btn.innerText = '▼ Mostrar';
+    }
+  }
+
+  function toggleGroupMatrixViewMode() {
+    matrixViewMode = (matrixViewMode === 'summary') ? 'detailed' : 'summary';
+    const btn = document.getElementById('toggleMatrixViewBtn');
+    btn.innerText = (matrixViewMode === 'summary') ? '🔍 Desglossar proves' : '📊 Resum àrees';
+    renderGroupMatrix();
+  }
+
+  function addGroup() {
+    const nameInput = document.getElementById('newGroupName');
+    const areasInput = document.getElementById('newGroupAreas');
+    const name = nameInput.value.trim();
+    const areasText = areasInput.value.trim();
+
+    if (!name) { 
+      alert('Escriu el nom del grup.'); 
+      return; 
+    }
+    const areas = areasText ? areasText.split(',').map(a => a.trim()).filter(a => a) : ['General'];
+
+    const areaWeights = {};
+    areas.forEach(a => {
+      areaWeights[a] = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+    });
+
+    db.groups.push({ 
+      name: name, 
+      areas: areas, 
+      areaWeights: areaWeights,
+      tasks: [], 
+      students: [] 
+    });
+    saveDb();
+    nameInput.value = ''; 
+    areasInput.value = '';
+    renderGroups();
+  }
+
+  function deleteGroup(index, e) {
+    e.stopPropagation();
+    if (confirm('Vols eliminar aquest grup i tots els seus alumnes?')) {
+      db.groups.splice(index, 1);
+      selectedGroupIndex = null; 
+      selectedStudentIndex = null;
+      saveDb(); 
+      renderGroups();
+      document.getElementById('studentSection').style.display = 'none';
+      document.getElementById('groupOverviewSection').style.display = 'none';
+      document.getElementById('studentDetail').style.display = 'none';
+      document.getElementById('noStudentSelected').style.display = 'block';
+    }
+  }
+
+  function renderGroups() {
+    const list = document.getElementById('groupList');
+    list.innerHTML = '';
+    if (!db.groups || db.groups.length === 0) {
+      list.innerHTML = '<p style="font-size:13px; color:#777;">No hi ha cap grup creat.</p>';
+      return;
+    }
+    db.groups.forEach((group, index) => {
+      const div = document.createElement('div');
+      div.className = 'group-item' + (selectedGroupIndex === index ? ' active' : '');
+      div.onclick = () => selectGroup(index);
+
+      const areasBadges = group.areas.map(a => {
+        const color = getAreaColorObj(a);
+        return `<span class="badge" style="background-color:${color.bg}; color:${color.text}; border:1px solid ${color.text}33;">${a}</span>`;
+      }).join('');
+
+      div.innerHTML = `
+        <div>
+          <strong>${group.name}</strong>
+          <div style="margin-top: 4px;">${areasBadges}</div>
+        </div>
+        <button type="button" class="btn-danger" onclick="deleteGroup(${index}, event)">✕</button>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function selectGroup(index) {
+    selectedGroupIndex = index;
+    selectedStudentIndex = null;
+    renderGroups();
+
+    const group = db.groups[index];
+    document.getElementById('selectedGroupTitle').innerText = group.name;
+    document.getElementById('studentSection').style.display = 'block';
+    document.getElementById('groupOverviewSection').style.display = 'block';
+    document.getElementById('studentDetail').style.display = 'none';
+    document.getElementById('noStudentSelected').style.display = 'block';
+
+    applyDefaultTrimestres();
+    renderGroupTasks();
+    renderStudents();
+    renderGroupMatrix();
+  }
+
+  function navigateStudent(direction) {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const students = db.groups[selectedGroupIndex].students;
+    if (!students || students.length === 0) return;
+
+    let newIndex = selectedStudentIndex + direction;
+    if (newIndex >= 0 && newIndex < students.length) {
+      selectStudent(newIndex);
+    }
+  }
+
+  function updateStudentNavButtons() {
+    const prevBtn = document.getElementById('prevStudentBtn');
+    const nextBtn = document.getElementById('nextStudentBtn');
+    if (!prevBtn || !nextBtn) return;
+
+    if (selectedGroupIndex === null || selectedStudentIndex === null) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    const totalStudents = db.groups[selectedGroupIndex].students.length;
+    prevBtn.disabled = (selectedStudentIndex <= 0);
+    nextBtn.disabled = (selectedStudentIndex >= totalStudents - 1);
+  }
+
+  function getAllGroupTests(group, currentTrimestre) {
+    const rawTests = [];
+
+    group.students.forEach(student => {
+      if (!student.grades) return;
+
+      const typeCounters = {};
+      const sortedGrades = [...student.grades].reverse();
+
+      sortedGrades.forEach(g => {
+        if (currentTrimestre === 'FINAL' || g.trimestre === currentTrimestre) {
+          const testTitle = g.testTitle || g.category || 'General';
+          const typeKey = `${g.area}|||${g.category}|||${testTitle}|||${g.trimestre}`;
+          
+          typeCounters[typeKey] = (typeCounters[typeKey] || 0) + 1;
+          const occurrenceIndex = typeCounters[typeKey];
+
+          const activityId = g.activityId || `${typeKey}|||#${occurrenceIndex}`;
+
+          let existingTest = rawTests.find(t => t.activityId === activityId);
+
+          if (!existingTest) {
+            const sameTypeTests = rawTests.filter(t => t.typeKey === typeKey);
+            const occurrenceNum = sameTypeTests.length + 1;
+            const displayTitle = occurrenceNum > 1 ? `${testTitle} #${occurrenceNum}` : testTitle;
+
+            existingTest = {
+              activityId: activityId,
+              typeKey: typeKey,
+              area: g.area,
+              category: g.category,
+              testTitle: testTitle,
+              displayTitle: displayTitle,
+              trimestre: g.trimestre,
+              occurrenceIndex: occurrenceNum,
+              studentIds: new Set()
+            };
+            rawTests.push(existingTest);
+          }
+          existingTest.studentIds.add(student.name);
+        }
+      });
+    });
+
+    const sortedTests = [];
+    group.areas.forEach(areaName => {
+      const areaTests = rawTests.filter(t => t.area === areaName);
+      sortedTests.push(...areaTests);
+    });
+
+    rawTests.forEach(t => {
+      if (!group.areas.includes(t.area) && !sortedTests.includes(t)) {
+        sortedTests.push(t);
+      }
+    });
+
+    return sortedTests;
+  }
+
+  function updateInlineGradeFromMatrixById(inputElem, sIdx, activityId, area, category, testTitle, trimestre, occurrenceIndex) {
+    if (selectedGroupIndex === null) return;
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[sIdx];
+    if (!student) return;
+
+    if (!student.grades) student.grades = [];
+
+    const valStr = inputElem.value.trim();
+    const valNum = valStr !== '' ? parseFloat(valStr) : null;
+
+    if (valNum !== null && (isNaN(valNum) || valNum < 0 || valNum > 10)) {
+      alert("Introdueix una nota vàlida entre 0 i 10.");
+      return;
+    }
+
+    const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    let existingGrade = student.grades.find(g => (g.activityId && g.activityId === activityId) || g.id === activityId);
+
+    if (!existingGrade) {
+      const matchingGrades = student.grades
+        .filter(g => g.area === area && g.category === category && (g.testTitle || g.category) === testTitle && g.trimestre === trimestre)
+        .reverse();
+
+      if (matchingGrades.length >= occurrenceIndex) {
+        existingGrade = matchingGrades[occurrenceIndex - 1];
+      }
+    }
+
+    if (existingGrade) {
+      existingGrade.val = valNum;
+      existingGrade.date = todayStr;
+      if (!existingGrade.activityId) existingGrade.activityId = activityId;
+    } else if (valNum !== null) {
+      student.grades.unshift({
+        id: Date.now() + Math.random(),
+        activityId: activityId,
+        date: todayStr,
+        area: area,
+        category: category,
+        testTitle: testTitle,
+        trimestre: trimestre,
+        val: valNum
+      });
+    }
+
+    saveDb();
+
+    if (selectedStudentIndex === sIdx) {
+      renderGrades();
+      renderSummaryDashboard();
+    }
+  }
+
+  function renderGroupMatrix() {
+    const container = document.getElementById('groupMatrixContainer');
+    if (!container || selectedGroupIndex === null) return;
+    container.innerHTML = '';
+
+    const group = db.groups[selectedGroupIndex];
+    if (!group.students || group.students.length === 0) {
+      container.innerHTML = '<span style="font-size:12px; color:#888;">Afegeix alumnes per veure el resum de notes.</span>';
+      return;
+    }
+
+    const currentTrimestre = document.getElementById('groupMatrixTrimestreSelector').value;
+
+    if (matrixViewMode === 'summary') {
+      let tableHtml = `<table class="group-matrix-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th style="text-align:left;">Nom i cognoms</th>`;
+
+      group.areas.forEach(area => {
+        const color = getAreaColorObj(area);
+        tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33;">${area}</th>`;
+      });
+
+      tableHtml += `</tr></thead><tbody>`;
+
+      const areaSums = {};
+      const areaCounts = {};
+      group.areas.forEach(a => { areaSums[a] = 0; areaCounts[a] = 0; });
+
+      group.students.forEach((student, sIdx) => {
+        const totalObs = student.observations ? student.observations.length : 0;
+        const totalGrades = (student.grades ? student.grades.length : 0) + 
+                            (student.tasksCompleted ? Object.values(student.tasksCompleted).filter(Boolean).length : 0);
+
+        const obsBadge = `<span class="badge-obs" title="${totalObs} observacions pedagògiques">📝 ${totalObs}</span>`;
+        const gradesBadge = `<span class="badge-grades" title="${totalGrades} proves i tasques assolides">📊 ${totalGrades}</span>`;
+
+        tableHtml += `<tr onclick="selectStudent(${sIdx})">
+          <td style="font-weight:bold; color:#1b4332;">${sIdx + 1}</td>
+          <td class="student-name-td" style="font-weight:600;">
+            <span style="display:inline-flex; align-items:center;">
+              ${obsBadge}${gradesBadge}<span>${student.name}</span>
+            </span>
+          </td>`;
+
+        group.areas.forEach(area => {
+          const score = calculateWeightedScore(student, area, currentTrimestre);
+          if (score !== null) {
+            const q = getQualificacioOficial(score);
+            areaSums[area] += parseFloat(score);
+            areaCounts[area]++;
+            tableHtml += `<td><b>${score}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>`;
+          } else {
+            tableHtml += `<td style="color:#aaa;">-</td>`;
+          }
+        });
+
+        tableHtml += `</tr>`;
+      });
+
+      tableHtml += `<tr class="avg-row">
+        <td colspan="2" style="text-align:right;">Mitjana del grup:</td>`;
+
+      group.areas.forEach(area => {
+        if (areaCounts[area] > 0) {
+          const avg = (areaSums[area] / areaCounts[area]).toFixed(1);
+          const q = getQualificacioOficial(avg);
+          tableHtml += `<td><b>${avg}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span></td>`;
+        } else {
+          tableHtml += `<td style="color:#aaa;">-</td>`;
+        }
+      });
+
+      tableHtml += `</tr></tbody></table>`;
+      container.innerHTML = tableHtml;
+
+    } else {
+      const tests = getAllGroupTests(group, currentTrimestre);
+
+      if (tests.length === 0) {
+        container.innerHTML = `<span style="font-size:12px; color:#888;">No hi ha cap prova registrada per al període "${currentTrimestre}". Fes clic a <strong>"📝 Notes per prova"</strong> per crear-ne una.</span>`;
+        return;
+      }
+
+      let tableHtml = `<table class="group-matrix-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th style="text-align:left;">Nom i cognoms</th>`;
+
+      tests.forEach(test => {
+        const color = getAreaColorObj(test.area);
+        tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33; font-size:11px; white-space:nowrap; padding:4px 6px;">
+          <div>${test.area}</div>
+          <div style="font-weight:bold; font-size:11px;">${test.displayTitle}</div>
+        </th>`;
+      });
+
+      tableHtml += `</tr></thead><tbody>`;
+
+      group.students.forEach((student, sIdx) => {
+        tableHtml += `<tr>
+          <td style="font-weight:bold; color:#1b4332;" onclick="selectStudent(${sIdx})">${sIdx + 1}</td>
+          <td class="student-name-td" style="font-weight:600; cursor:pointer;" onclick="selectStudent(${sIdx})">${student.name}</td>`;
+
+        tests.forEach(test => {
+          let gradeObj = (student.grades || []).find(g => 
+            (g.activityId && g.activityId === test.activityId) ||
+            (g.id && g.id === test.activityId)
+          );
+
+          if (!gradeObj && student.grades) {
+            const matchingGrades = student.grades
+              .filter(g => g.area === test.area && g.category === test.category && (g.testTitle || g.category) === test.testTitle && g.trimestre === test.trimestre)
+              .reverse();
+
+            if (matchingGrades.length >= test.occurrenceIndex) {
+              gradeObj = matchingGrades[test.occurrenceIndex - 1];
+            }
+          }
+
+          const val = (gradeObj && gradeObj.val !== null && gradeObj.val !== undefined) ? gradeObj.val : '';
+
+          const escArea = test.area.replace(/'/g, "\\'");
+          const escCat = test.category.replace(/'/g, "\\'");
+          const escTitle = test.testTitle.replace(/'/g, "\\'");
+          const escTri = test.trimestre.replace(/'/g, "\\'");
+          const actIdParam = `'${test.activityId.replace(/'/g, "\\'")}'`;
+
+          tableHtml += `<td style="padding:2px 4px;">
+            <input type="number" class="matrix-inline-input" value="${val}" min="0" max="10" step="0.1" placeholder="-" 
+              onchange="updateInlineGradeFromMatrixById(this, ${sIdx}, ${actIdParam}, '${escArea}', '${escCat}', '${escTitle}', '${escTri}', ${test.occurrenceIndex})">
+          </td>`;
+        });
+
+        tableHtml += `</tr>`;
+      });
+
+      tableHtml += `</tbody></table>`;
+      container.innerHTML = tableHtml;
+    }
+  }
+
+  function openBulkGradeModal() {
+    if (selectedGroupIndex === null) return;
+    const group = db.groups[selectedGroupIndex];
+    if (!group.students || group.students.length === 0) {
+      alert("Afegeix alumnes al grup abans d'introduir notes.");
+      return;
+    }
+
+    const areaSelect = document.getElementById('bulkGradeArea');
+    areaSelect.innerHTML = '';
+    group.areas.forEach(area => {
+      const opt = document.createElement('option');
+      opt.value = area;
+      opt.innerText = area;
+      areaSelect.appendChild(opt);
+    });
+
+    applyDefaultTrimestres();
+    onBulkAreaChange();
+    document.getElementById('bulkGradeModal').style.display = 'flex';
+  }
+
+  function closeBulkGradeModal() {
+    document.getElementById('bulkGradeModal').style.display = 'none';
+  }
+
+  function onBulkAreaChange() {
+    const area = document.getElementById('bulkGradeArea').value;
+    const group = db.groups[selectedGroupIndex];
+    const categorySelect = document.getElementById('bulkGradeCategory');
+    categorySelect.innerHTML = '';
+
+    const weights = (group.areaWeights && group.areaWeights[area]) ? group.areaWeights[area] : DEFAULT_CATEGORIES;
+    weights.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w.name;
+      opt.innerText = `${w.name} (${w.weight}%)`;
+      categorySelect.appendChild(opt);
+    });
+
+    updateBulkExistingTestsList();
+    renderBulkGradeStudents();
+  }
+
+  function updateBulkExistingTestsList() {
+    const area = document.getElementById('bulkGradeArea').value;
+    const trimestre = document.getElementById('bulkGradeTrimestre').value;
+    const group = db.groups[selectedGroupIndex];
+    const select = document.getElementById('bulkExistingTestsSelect');
+    select.innerHTML = '<option value="NEW">✨ Nova prova (crear des de zero)</option>';
+
+    const tests = getAllGroupTests(group, trimestre);
+    tests.filter(t => t.area === area).forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = `${t.activityId}|||${t.category}|||${t.testTitle}|||${t.occurrenceIndex}`;
+      opt.innerText = `✏️ ${t.displayTitle} (${t.category})`;
+      select.appendChild(opt);
+    });
+  }
+
+  function loadExistingTestIntoBulkModal() {
+    const key = document.getElementById('bulkExistingTestsSelect').value;
+    if (key === 'NEW') {
+      document.getElementById('bulkGradeTitle').value = '';
+      renderBulkGradeStudents();
+      return;
+    }
+
+    const [testId, category, testTitle, occurrenceIndex] = key.split('|||');
+    document.getElementById('bulkGradeCategory').value = category;
+    document.getElementById('bulkGradeTitle').value = testTitle;
+
+    renderBulkGradeStudents(category, testTitle, testId, parseInt(occurrenceIndex));
+  }
+
+  function renderBulkGradeStudents(filterCat = null, filterTitle = null, filterId = null, occurrenceIndex = 1) {
+    const container = document.getElementById('bulkGradeStudentList');
+    container.innerHTML = '';
+    const group = db.groups[selectedGroupIndex];
+
+    const currentArea = document.getElementById('bulkGradeArea').value;
+    const currentCat = filterCat || document.getElementById('bulkGradeCategory').value;
+    const currentTitle = filterTitle || document.getElementById('bulkGradeTitle').value.trim() || currentCat;
+    const currentTrimestre = document.getElementById('bulkGradeTrimestre').value;
+
+    group.students.forEach((student, idx) => {
+      let existingGrade = (student.grades || []).find(g => filterId && (g.activityId == filterId || g.id == filterId));
+
+      if (!existingGrade && student.grades) {
+        const matchingGrades = student.grades
+          .filter(g => g.area === currentArea && g.category === currentCat && (g.testTitle || g.category) === currentTitle && g.trimestre === currentTrimestre)
+          .reverse();
+
+        if (matchingGrades.length >= occurrenceIndex) {
+          existingGrade = matchingGrades[occurrenceIndex - 1];
+        }
+      }
+
+      const val = (existingGrade && existingGrade.val !== null && existingGrade.val !== undefined) ? existingGrade.val : '';
+
+      const div = document.createElement('div');
+      div.className = 'student-grade-row';
+      div.innerHTML = `
+        <span class="student-number">${idx + 1}</span>
+        <span style="flex:1; font-weight:600;">${student.name}</span>
+        <input type="number" class="bulk-student-input" data-student-idx="${idx}" min="0" max="10" step="0.1" placeholder="Nota..." value="${val}" style="width:100px; margin-bottom:0; text-align:center;">
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function saveBulkGrades() {
+    const area = document.getElementById('bulkGradeArea').value;
+    const category = document.getElementById('bulkGradeCategory').value;
+    const titleInput = document.getElementById('bulkGradeTitle').value.trim();
+    const testTitle = titleInput || category;
+    const trimestre = document.getElementById('bulkGradeTrimestre').value;
+
+    const selectedExisting = document.getElementById('bulkExistingTestsSelect').value;
+    let activityId = Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+    let targetOccurrenceIndex = null;
+
+    if (selectedExisting !== 'NEW') {
+      const parts = selectedExisting.split('|||');
+      activityId = parts[0];
+      targetOccurrenceIndex = parseInt(parts[3]);
+    }
+
+    const group = db.groups[selectedGroupIndex];
+    const inputs = document.querySelectorAll('.bulk-student-input');
+    const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    inputs.forEach(input => {
+      const sIdx = parseInt(input.getAttribute('data-student-idx'));
+      const student = group.students[sIdx];
+      if (!student) return;
+
+      if (!student.grades) student.grades = [];
+
+      const valStr = input.value.trim();
+      const valNum = valStr !== '' ? parseFloat(valStr) : null;
+
+      let existingGrade = student.grades.find(g => (g.activityId && g.activityId === activityId) || g.id === activityId);
+
+      if (!existingGrade && targetOccurrenceIndex) {
+        const matchingGrades = student.grades
+          .filter(g => g.area === area && g.category === category && (g.testTitle || g.category) === testTitle && g.trimestre === trimestre)
+          .reverse();
+
+        if (matchingGrades.length >= targetOccurrenceIndex) {
+          existingGrade = matchingGrades[targetOccurrenceIndex - 1];
+        }
+      }
+
+      if (existingGrade) {
+        existingGrade.val = valNum;
+        existingGrade.date = todayStr;
+        if (!existingGrade.activityId) existingGrade.activityId = activityId;
+      } else if (valNum !== null) {
+        student.grades.unshift({
+          id: Date.now() + Math.random(),
+          activityId: activityId,
+          date: todayStr,
+          area: area,
+          category: category,
+          testTitle: testTitle,
+          trimestre: trimestre,
+          val: valNum
+        });
+      }
+    });
+
+    saveDb();
+    closeBulkGradeModal();
+    renderGroupMatrix();
+    if (selectedStudentIndex !== null) {
+      renderGrades();
+      renderSummaryDashboard();
+    }
+  }
+
+  function openWeightsModal() {
+    if (selectedGroupIndex === null) return;
+    const group = db.groups[selectedGroupIndex];
+    if (!group.areaWeights) group.areaWeights = {};
+
+    const selector = document.getElementById('weightsAreaSelector');
+    selector.innerHTML = '';
+
+    group.areas.forEach(area => {
+      if (!group.areaWeights[area]) {
+        group.areaWeights[area] = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+      }
+      const opt = document.createElement('option');
+      opt.value = area;
+      opt.innerText = area;
+      selector.appendChild(opt);
+    });
+
+    renderWeightsForm();
+    document.getElementById('weightsModal').style.display = 'flex';
+  }
+
+  function closeWeightsModal() {
+    document.getElementById('weightsModal').style.display = 'none';
+  }
+
+  function renderWeightsForm() {
+    const area = document.getElementById('weightsAreaSelector').value;
+    const group = db.groups[selectedGroupIndex];
+    const categories = group.areaWeights[area] || DEFAULT_CATEGORIES;
+    const container = document.getElementById('weightsFormContainer');
+    container.innerHTML = '';
+
+    categories.forEach((cat) => {
+      const div = document.createElement('div');
+      div.style.cssText = "display:flex; gap:8px; align-items:center; margin-bottom:8px;";
+      div.innerHTML = `
+        <input type="text" class="weight-cat-name" value="${cat.name}" placeholder="Nom categoria" style="flex:2; margin-bottom:0;">
+        <input type="number" class="weight-cat-val" value="${cat.weight}" min="0" max="100" placeholder="%" style="flex:1; margin-bottom:0;">
+        <span style="font-size:12px; font-weight:bold;">%</span>
+        <button type="button" class="btn-danger" onclick="this.parentElement.remove()">✕</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function addCategoryToWeights() {
+    const container = document.getElementById('weightsFormContainer');
+    const div = document.createElement('div');
+    div.style.cssText = "display:flex; gap:8px; align-items:center; margin-bottom:8px;";
+    div.innerHTML = `
+      <input type="text" class="weight-cat-name" value="" placeholder="Nova categoria" style="flex:2; margin-bottom:0;">
+      <input type="number" class="weight-cat-val" value="0" min="0" max="100" placeholder="%" style="flex:1; margin-bottom:0;">
+      <span style="font-size:12px; font-weight:bold;">%</span>
+      <button type="button" class="btn-danger" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(div);
+  }
+
+  function saveWeightsConfig() {
+    const area = document.getElementById('weightsAreaSelector').value;
+    const names = Array.from(document.querySelectorAll('.weight-cat-name')).map(i => i.value.trim());
+    const vals = Array.from(document.querySelectorAll('.weight-cat-val')).map(i => parseFloat(i.value) || 0);
+
+    let total = 0;
+    const updated = [];
+
+    for (let i = 0; i < names.length; i++) {
+      if (names[i]) {
+        updated.push({ name: names[i], weight: vals[i] });
+        total += vals[i];
+      }
+    }
+
+    if (total !== 100) {
+      alert(`La suma dels percentatges ha de donar exactament 100%. Actualment suma ${total}%.`);
+      return;
+    }
+
+    const group = db.groups[selectedGroupIndex];
+    if (!group.areaWeights) group.areaWeights = {};
+    group.areaWeights[area] = updated;
+
+    saveDb();
+    closeWeightsModal();
+    renderGroupMatrix();
+    if (selectedStudentIndex !== null) {
+      updateGradeCategoryOptions();
+      renderGrades();
+      renderSummaryDashboard();
+    }
+  }
+
+  function openAddTaskModal() {
+    if (selectedGroupIndex === null) return;
+    const group = db.groups[selectedGroupIndex];
+    const selectArea = document.getElementById('modalTaskArea');
+    selectArea.innerHTML = '<option value="General">General</option>';
+
+    group.areas.forEach(area => {
+      const opt = document.createElement('option');
+      opt.value = area;
+      opt.innerText = area;
+      selectArea.appendChild(opt);
+    });
+
+    const modalList = document.getElementById('modalStudentList');
+    modalList.innerHTML = '';
+
+    if (!group.students || group.students.length === 0) {
+      modalList.innerHTML = '<span style="font-size:12px; color:#888;">Cal afegir alumnes al grup primer.</span>';
+    } else {
+      group.students.forEach((s, idx) => {
+        const articleBadge = (s.article && s.article !== 'Sense') ? `<span class="badge-article">${s.article}</span>` : '';
+        const div = document.createElement('div');
+        div.className = 'student-checkbox-item';
+        div.innerHTML = `
+          <input type="checkbox" class="task-student-check" value="${idx}" id="chk_s_${idx}" checked>
+          <label for="chk_s_${idx}" style="cursor:pointer; flex:1;">${s.name} ${articleBadge}</label>
+        `;
+        modalList.appendChild(div);
+      });
+    }
+
+    document.getElementById('modalTaskName').value = '';
+    document.getElementById('addTaskModal').style.display = 'flex';
+  }
+
+  function selectAllModalStudents(checked) {
+    const checks = document.querySelectorAll('.task-student-check');
+    checks.forEach(c => c.checked = checked);
+  }
+
+  function closeAddTaskModal() {
+    document.getElementById('addTaskModal').style.display = 'none';
+  }
+
+  function confirmAddTask() {
+    const name = document.getElementById('modalTaskName').value.trim();
+    const area = document.getElementById('modalTaskArea').value;
+    const isDoneByDefault = document.getElementById('modalTaskDefaultState').value === 'true';
+
+    if (!name) {
+      alert("Escriu el nom de la tasca.");
+      return;
+    }
+
+    const selectedStudentIndexes = Array.from(document.querySelectorAll('.task-student-check:checked'))
+      .map(c => parseInt(c.value));
+
+    if (selectedStudentIndexes.length === 0) {
+      alert("Selecciona almenys un alumne/a per assignar-li la tasca.");
+      return;
+    }
+
+    const todayStr = new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit' });
+    
+    const taskObj = {
+      id: Date.now(),
+      name: name,
+      area: area,
+      date: todayStr,
+      assignedStudents: selectedStudentIndexes
+    };
+
+    const group = db.groups[selectedGroupIndex];
+    if (!group.tasks) group.tasks = [];
+
+    group.tasks = group.tasks.map(t => typeof t === 'object' ? t : { id: t, name: t, area: 'General', date: '' });
+    group.tasks.push(taskObj);
+
+    selectedStudentIndexes.forEach(sIdx => {
+      const student = group.students[sIdx];
+      if (student) {
+        if (!student.tasksCompleted) student.tasksCompleted = {};
+        student.tasksCompleted[taskObj.id] = isDoneByDefault;
+      }
+    });
+
+    saveDb();
+    closeAddTaskModal();
+    renderGroupTasks();
+    renderGroupMatrix();
+    if (selectedStudentIndex !== null) renderTasks();
+  }
+
+  function deleteGroupTask(taskId, e) {
+    e.stopPropagation();
+    const group = db.groups[selectedGroupIndex];
+    const taskObj = group.tasks.find(t => (typeof t === 'object' ? t.id === taskId : t === taskId));
+    const taskName = typeof taskObj === 'object' ? taskObj.name : taskId;
+
+    if (confirm(`Vols eliminar la tasca "${taskName}" de tot el grup?`)) {
+      group.tasks = group.tasks.filter(t => (typeof t === 'object' ? t.id !== taskId : t !== taskId));
+      
+      group.students.forEach(student => {
+        if (student.tasksCompleted) delete student.tasksCompleted[taskId];
+      });
+
+      saveDb();
+      renderGroupTasks();
+      renderGroupMatrix();
+      if (selectedStudentIndex !== null) renderTasks();
+    }
+  }
+
+  function renderGroupTasks() {
+    const container = document.getElementById('groupTasksList');
+    container.innerHTML = '';
+    const group = db.groups[selectedGroupIndex];
+
+    if (!group.tasks) group.tasks = [];
+
+    if (group.tasks.length === 0) {
+      container.innerHTML = '<span style="font-size: 11px; color: #888;">Sense tasques creades.</span>';
+      return;
+    }
+
+    group.tasks.forEach(task => {
+      const taskId = typeof task === 'object' ? task.id : task;
+      const taskName = typeof task === 'object' ? task.name : task;
+      const taskArea = typeof task === 'object' && task.area ? task.area : 'General';
+      const taskDate = typeof task === 'object' && task.date ? task.date : '';
+
+      const areaStyle = getAreaColorStyle(taskArea);
+
+      const div = document.createElement('div');
+      div.className = 'group-task-item';
+      div.innerHTML = `
+        <span class="badge" style="${areaStyle}">${taskArea}</span>
+        <span>📌 ${taskName}</span>
+        ${taskDate ? `<span class="task-date">📅 ${taskDate}</span>` : ''}
+        <span style="color:red; cursor:pointer; font-weight:bold; margin-left:4px;" onclick="deleteGroupTask(${typeof taskId === 'number' ? taskId : `'${taskId}'`}, event)">✕</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function addStudent() {
+    if (selectedGroupIndex === null) return;
+    const nameInput = document.getElementById('newStudentName');
+    const articleInput = document.getElementById('newStudentArticle');
+    const name = nameInput.value.trim();
+    const article = articleInput.value;
+
+    if (!name) return;
+
+    db.groups[selectedGroupIndex].students.push({ 
+      name: name, 
+      article: article, 
+      tasksCompleted: {}, 
+      observations: [], 
+      grades: [] 
+    });
+
+    saveDb();
+    nameInput.value = '';
+    renderStudents();
+    renderGroupMatrix();
+  }
+
+  function importStudentsCsv(e) {
+    if (selectedGroupIndex === null) return;
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const text = evt.target.result;
+      const lines = text.split(/\r\n|\n/);
+      let count = 0;
+
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const parts = line.includes(';') ? line.split(';') : line.split(',');
+        const name = parts[0].replace(/^["']|["']$/g, '').trim();
+        
+        if (name && name.toLowerCase() !== 'nom' && name.toLowerCase() !== 'name') {
+          let article = 'En';
+          if (parts[1]) {
+            const rawArt = parts[1].replace(/^["']|["']$/g, '').trim().toLowerCase();
+            if (rawArt.includes('ell / l')) article = "Ell / L'";
+            else if (rawArt.includes('ella / l')) article = "Ella / L'";
+            else if (rawArt.includes('el')) article = 'El';
+            else if (rawArt.includes('la')) article = 'La';
+            else if (rawArt.includes("l'")) article = "L'";
+            else if (rawArt.includes('sense')) article = 'Sense';
+          }
+
+          db.groups[selectedGroupIndex].students.push({
+            name: name,
+            article: article,
+            tasksCompleted: {},
+            observations: [],
+            grades: []
+          });
+          count++;
+        }
+      });
+
+      saveDb();
+      renderStudents();
+      renderGroupMatrix();
+      alert(`S'han importat ${count} alumnes correctament!`);
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
+  function deleteStudent(index, e) {
+    e.stopPropagation();
+    if (confirm('Vols eliminar aquest alumne/a?')) {
+      db.groups[selectedGroupIndex].students.splice(index, 1);
+      selectedStudentIndex = null;
+      saveDb();
+      renderStudents();
+      renderGroupMatrix();
+      document.getElementById('studentDetail').style.display = 'none';
+      document.getElementById('noStudentSelected').style.display = 'block';
+    }
+  }
+
+  function renderStudents() {
+    const list = document.getElementById('studentList');
+    list.innerHTML = '';
+    const students = db.groups[selectedGroupIndex].students;
+
+    if (!students || students.length === 0) {
+      list.innerHTML = '<p style="font-size:13px; color:#777;">Afegeix alumnes a aquest grup.</p>';
+      return;
+    }
+
+    students.forEach((student, index) => {
+      const div = document.createElement('div');
+      div.className = 'student-item' + (selectedStudentIndex === index ? ' active' : '');
+      div.onclick = () => selectStudent(index);
+      
+      const articleBadge = (student.article && student.article !== 'Sense') ? `<span class="badge-article">${student.article}</span>` : '';
+
+      div.innerHTML = `
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="student-number">${index + 1}</span>
+          <span>${student.name}</span>
+          ${articleBadge}
+        </div>
+        <button type="button" class="btn-danger" onclick="deleteStudent(${index}, event)">✕</button>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function selectStudent(index) {
+    selectedStudentIndex = index;
+    renderStudents();
+
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[index];
+
+    if (!student.article) student.article = 'En';
+    document.getElementById('studentArticleSelector').value = student.article;
+
+    document.getElementById('currentStudentHeader').innerText = `${index + 1}. ${student.name} (${group.name})`;
+    document.getElementById('studentDetail').style.display = 'block';
+    document.getElementById('noStudentSelected').style.display = 'none';
+    document.getElementById('reportContainer').style.display = 'none';
+
+    updateStudentNavButtons();
+
+    const obsAreaSelect = document.getElementById('obsArea');
+    const gradeAreaSelect = document.getElementById('gradeArea');
+    const filterObsAreaSelect = document.getElementById('filterObsArea');
+    
+    obsAreaSelect.innerHTML = '';
+    gradeAreaSelect.innerHTML = '';
+    filterObsAreaSelect.innerHTML = '<option value="ALL">Totes les àrees</option>';
+
+    group.areas.forEach(area => {
+      const opt1 = document.createElement('option');
+      opt1.value = area; opt1.innerText = area;
+      obsAreaSelect.appendChild(opt1);
+
+      const opt2 = document.createElement('option');
+      opt2.value = area; opt2.innerText = area;
+      gradeAreaSelect.appendChild(opt2);
+
+      const opt3 = document.createElement('option');
+      opt3.value = area; opt3.innerText = area;
+      filterObsAreaSelect.appendChild(opt3);
+    });
+
+    updateGradeCategoryOptions();
+    renderTasks();
+    renderGrades();
+    renderObservations();
+    renderSummaryDashboard();
+  }
+
+  function updateGradeCategoryOptions() {
+    const area = document.getElementById('gradeArea').value;
+    const group = db.groups[selectedGroupIndex];
+    const categorySelect = document.getElementById('gradeCategory');
+    categorySelect.innerHTML = '';
+
+    const weights = (group.areaWeights && group.areaWeights[area]) ? group.areaWeights[area] : DEFAULT_CATEGORIES;
+
+    weights.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w.name;
+      opt.innerText = `${w.name} (${w.weight}%)`;
+      categorySelect.appendChild(opt);
+    });
+  }
+
+  function editStudentName() {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+    const newName = prompt("Modifica el nom de l'infant:", student.name);
+    
+    if (newName !== null && newName.trim() !== '') {
+      student.name = newName.trim();
+      saveDb();
+      renderStudents();
+      renderGroupMatrix();
+      document.getElementById('currentStudentHeader').innerText = `${selectedStudentIndex + 1}. ${student.name} (${db.groups[selectedGroupIndex].name})`;
+    }
+  }
+
+  function updateStudentArticle() {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+    student.article = document.getElementById('studentArticleSelector').value;
+    saveDb();
+    renderStudents();
+  }
+
+  function toggleTask(taskId) {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+    if (!student.tasksCompleted) student.tasksCompleted = {};
+
+    student.tasksCompleted[taskId] = !student.tasksCompleted[taskId];
+    saveDb();
+    renderTasks();
+    renderGroupMatrix();
+  }
+
+  function renderTasks() {
+    const container = document.getElementById('tasksContainer');
+    container.innerHTML = '';
+
+    const group = db.groups[selectedGroupIndex];
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+
+    if (!group.tasks) group.tasks = [];
+    if (!student.tasksCompleted) student.tasksCompleted = {};
+
+    const studentTasks = group.tasks.filter(task => {
+      const taskId = typeof task === 'object' ? task.id : task;
+      if (typeof task !== 'object' || !task.assignedStudents) return true;
+      return task.assignedStudents.includes(selectedStudentIndex) || student.tasksCompleted.hasOwnProperty(taskId);
+    });
+
+    if (studentTasks.length === 0) {
+      container.innerHTML = '<span style="font-size: 12px; color: #888;">Cap tasca assignada a aquest alumne/a.</span>';
+      return;
+    }
+
+    studentTasks.forEach(task => {
+      const taskId = typeof task === 'object' ? task.id : task;
+      const taskName = typeof task === 'object' ? task.name : task;
+      const taskArea = typeof task === 'object' && task.area ? task.area : 'General';
+      const taskDate = typeof task === 'object' && task.date ? task.date : '';
+
+      const isDone = !!student.tasksCompleted[taskId];
+      const areaStyle = getAreaColorStyle(taskArea);
+
+      const chip = document.createElement('div');
+      chip.className = `task-chip ${isDone ? 'delivered' : 'pending'}`;
+      chip.onclick = () => toggleTask(taskId);
+      chip.innerHTML = `
+        ${isDone ? '✅' : '❌'} 
+        <span class="badge" style="${areaStyle}">${taskArea}</span> 
+        ${taskName} 
+        ${taskDate ? `<span class="task-date">${taskDate}</span>` : ''}
+      `;
+      container.appendChild(chip);
+    });
+  }
+
+  function addGrade() {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const area = document.getElementById('gradeArea').value;
+    const category = document.getElementById('gradeCategory').value;
+    const trimestre = document.getElementById('gradeTrimestre').value;
+    const valInput = document.getElementById('gradeValue');
+    const val = parseFloat(valInput.value);
+
+    if (isNaN(val) || val < 0 || val > 10) {
+      alert("Introdueix una nota vàlida entre 0 i 10.");
+      return;
+    }
+
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+    if (!student.grades) student.grades = [];
+
+    const activityId = Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+
+    student.grades.unshift({
+      id: Date.now() + Math.random(),
+      activityId: activityId,
+      date: new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      area: area,
+      category: category,
+      testTitle: category,
+      trimestre: trimestre,
+      val: val
+    });
+
+    saveDb();
+    valInput.value = '';
+    renderGrades();
+    renderSummaryDashboard();
+    renderGroupMatrix();
+  }
+
+  function deleteGradeById(gradeId) {
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+    student.grades = student.grades.filter(g => g.id !== gradeId);
+    saveDb();
+    renderGrades();
+    renderSummaryDashboard();
+    renderGroupMatrix();
+  }
+
+  function calculateWeightedScore(student, areaName, trimestreName) {
+    if (!student.grades) return null;
+    const group = db.groups[selectedGroupIndex];
+    const weights = (group.areaWeights && group.areaWeights[areaName]) ? group.areaWeights[areaName] : DEFAULT_CATEGORIES;
+
+    const filteredGrades = student.grades.filter(g => 
+      g.area === areaName && 
+      (trimestreName === 'FINAL' || g.trimestre === trimestreName) &&
+      g.val !== null && g.val !== undefined && g.val !== ''
+    );
+    if (filteredGrades.length === 0) return null;
+
+    let totalWeightedScore = 0;
+    let totalWeightApplied = 0;
+
+    weights.forEach(w => {
+      const catGrades = filteredGrades.filter(g => g.category === w.name || (w.name === 'Prova escrita' && g.category === 'Proves escrites') || (!g.category && w.name === DEFAULT_CATEGORIES[0].name));
+      if (catGrades.length > 0) {
+        const catAvg = catGrades.reduce((acc, curr) => acc + parseFloat(curr.val), 0) / catGrades.length;
+        totalWeightedScore += catAvg * (w.weight / 100);
+        totalWeightApplied += (w.weight / 100);
+      }
+    });
+
+    if (totalWeightApplied === 0) return null;
+    return (totalWeightedScore / totalWeightApplied).toFixed(1);
+  }
+
+  function renderSummaryDashboard() {
+    const container = document.getElementById('summaryCardsGrid');
+    container.innerHTML = '';
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[selectedStudentIndex];
+    const currentTrimestre = document.getElementById('summaryTrimestreSelector').value;
+
+    group.areas.forEach(area => {
+      const score = calculateWeightedScore(student, area, currentTrimestre);
+      const q = score !== null ? getQualificacioOficial(score) : { text: '-', class: '' };
+
+      const div = document.createElement('div');
+      div.className = 'area-summary-box';
+      div.innerHTML = `
+        <div class="area-summary-title">${area}</div>
+        <div class="area-summary-score">${score !== null ? score : '-'}</div>
+        <div style="margin-top:4px;">
+          <span class="grade-badge ${q.class}" style="font-size:10px; padding:2px 6px;">${q.text}</span>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function renderGrades() {
+    const container = document.getElementById('gradesHistory');
+    container.innerHTML = '';
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[selectedStudentIndex];
+    const selectedTrimestre = document.getElementById('summaryTrimestreSelector').value;
+
+    if (!student.grades || student.grades.length === 0) {
+      container.innerHTML = '<span style="font-size:12px; color:#888;">Cap prova registrada per a aquest alumne/a.</span>';
+      return;
+    }
+
+    let html = '';
+
+    group.areas.forEach(area => {
+      const weights = (group.areaWeights && group.areaWeights[area]) ? group.areaWeights[area] : DEFAULT_CATEGORIES;
+      const areaGrades = student.grades.filter(g => g.area === area && (selectedTrimestre === 'FINAL' || g.trimestre === selectedTrimestre));
+
+      if (areaGrades.length > 0) {
+        const areaScore = calculateWeightedScore(student, area, selectedTrimestre);
+        const qScore = areaScore !== null ? getQualificacioOficial(areaScore) : { text: '-', class: '' };
+        
+        const areaColor = getAreaColorObj(area);
+
+        html += `
+          <div class="area-block-card" style="border-color: ${areaColor.text}44;">
+            <div style="padding: 10px 14px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-bottom: 1px solid ${areaColor.text}33; display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 14px;">📘 ${area} (${selectedTrimestre})</strong>
+              <span style="font-size: 12px; background: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 4px; font-weight:600; border: 1px solid ${areaColor.text}22;">
+                Mitjana resultant: <span style="font-size:14px; text-decoration:underline;">${areaScore !== null ? areaScore : '-'}</span> (${qScore.text})
+              </span>
+            </div>
+
+            <table class="student-grades-table">
+              <thead>
+                <tr style="background-color: ${areaColor.bg}; color: ${areaColor.text};">
+                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Instrument / Prova</th>
+                  <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Nota</th>
+                  <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Ponderació</th>
+                  <th style="width:100px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;">Data</th>
+                  <th style="width:40px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-color: ${areaColor.text}22;"></th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        areaGrades.forEach(g => {
+          const hasVal = (g.val !== null && g.val !== undefined && g.val !== '');
+          const q = hasVal ? getQualificacioOficial(g.val) : { text: 'Pendent', class: 'grade-na' };
+          const catObj = weights.find(w => w.name === g.category || (w.name === 'Prova escrita' && g.category === 'Proves escrites')) || { weight: '-' };
+          
+          html += `
+            <tr>
+              <td style="text-align:left; padding-left:12px; font-weight:600; color:#2b2d42;">
+                ${g.testTitle || g.category || 'General'} 
+                <span style="font-size:10px; color:#666; font-weight:normal;">[${g.category}] (${g.trimestre})</span>
+              </td>
+              <td>
+                ${hasVal ? `<b>${g.val}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span>` : `<span style="color:#856404; background:#fff3cd; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">Pendent</span>`}
+              </td>
+              <td style="color:${areaColor.text}; font-weight:bold;">${catObj.weight}%</td>
+              <td style="font-size:11px; color:#666;">📅 ${g.date || '-'}</td>
+              <td>
+                <span style="color:red; cursor:pointer; font-weight:bold;" title="Eliminar prova" onclick="deleteGradeById(${g.id})">✕</span>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table></div>`;
+      }
+    });
+
+    if (!html) {
+      container.innerHTML = `<span style="font-size:12px; color:#888;">Cap prova registrada per al període "${selectedTrimestre}".</span>`;
+    } else {
+      container.innerHTML = html;
+    }
+  }
+
+  function addObservation() {
+    if (selectedGroupIndex === null || selectedStudentIndex === null) return;
+    const area = document.getElementById('obsArea').value;
+    const trimestre = document.getElementById('obsTrimestre').value;
+    const textInput = document.getElementById('newObsText');
+    const isInternalCheck = document.getElementById('obsIsInternal');
+    const text = textInput.value.trim();
+
+    if (!text) return;
+
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+    if (!student.observations) student.observations = [];
+
+    student.observations.unshift({
+      id: Date.now(),
+      date: new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      area: area,
+      trimestre: trimestre,
+      text: text,
+      isInternal: isInternalCheck.checked
+    });
+
+    saveDb();
+    textInput.value = '';
+    isInternalCheck.checked = false;
+    renderObservations();
+    renderGroupMatrix();
+  }
+
+  function deleteObservation(obsIndex) {
+    if (confirm('Vols eliminar aquesta observació registrada?')) {
+      db.groups[selectedGroupIndex].students[selectedStudentIndex].observations.splice(obsIndex, 1);
+      saveDb();
+      renderObservations();
+      renderGroupMatrix();
+    }
+  }
+
+  function renderObservations() {
+    const container = document.getElementById('obsHistory');
+    container.innerHTML = '';
+    const student = db.groups[selectedGroupIndex].students[selectedStudentIndex];
+
+    if (!student.observations || student.observations.length === 0) {
+      container.innerHTML = '<p style="font-size:13px; color:#888;">No hi ha cap observació registrada.</p>';
+      return;
+    }
+
+    const filterArea = document.getElementById('filterObsArea').value;
+
+    const filteredObs = student.observations.filter(obs => {
+      if (filterArea === 'ALL' || !filterArea) return true;
+      return obs.area === filterArea;
+    });
+
+    if (filteredObs.length === 0) {
+      container.innerHTML = '<p style="font-size:13px; color:#888;">No hi ha cap observació registrada per a aquesta àrea.</p>';
+      return;
+    }
+
+    filteredObs.forEach((obs) => {
+      const originalIdx = student.observations.findIndex(o => o.id === obs.id);
+      
+      const div = document.createElement('div');
+      div.className = 'obs-card' + (obs.isInternal ? ' internal-note' : '');
+      const areaStyle = getAreaColorStyle(obs.area);
+      
+      const internalBadge = obs.isInternal ? '<span class="badge badge-internal">🔒 Interna</span>' : '';
+
+      div.innerHTML = `
+        <div class="obs-meta">
+          <div>
+            <span class="badge" style="${areaStyle}">${obs.area}</span>
+            <span class="badge">${obs.trimestre}</span>
+            ${internalBadge}
+            <span style="font-size:11px;">📅 ${obs.date}</span>
+          </div>
+          <button type="button" class="btn-danger" onclick="deleteObservation(${originalIdx})" title="Eliminar observació">🗑️</button>
+        </div>
+        <div>${obs.text}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  /* FUNCIONS PER L'EDITOR DE TEXT ENRIQUIT DE REUNIONS */
+  function formatText(command) {
+    document.execCommand(command, false, null);
+  }
+
+  function highlightText() {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+
+    let parent = selection.anchorNode;
+    if (parent.nodeType === 3) parent = parent.parentNode;
+
+    let markNode = null;
+    while (parent && parent.id !== 'schoolMeetingContent') {
+      if (parent.tagName === 'MARK' || parent.classList.contains('orange-highlight')) {
+        markNode = parent;
+        break;
+      }
+      parent = parent.parentNode;
+    }
+
+    if (markNode) {
+      const textNode = document.createTextNode(markNode.textContent);
+      markNode.parentNode.replaceChild(textNode, markNode);
+    } else {
+      const range = selection.getRangeAt(0);
+      const mark = document.createElement('mark');
+      mark.className = 'orange-highlight';
+      
+      try {
+        range.surroundContents(mark);
+      } catch (e) {
+        document.execCommand('hiliteColor', false, '#ffd8c2');
+      }
+    }
+  }
+
+  function addSchoolMeeting() {
+    const title = document.getElementById('schoolMeetingTitle').value.trim();
+    const type = document.getElementById('schoolMeetingType').value;
+    const date = document.getElementById('schoolMeetingDate').value.trim();
+    const editor = document.getElementById('schoolMeetingContent');
+    const content = editor.innerHTML.trim();
+
+    if (!title || !content || content === '<br>') {
+      alert("Escriu el títol i el contingut de la reunió.");
+      return;
+    }
+
+    if (!db.schoolMeetings) db.schoolMeetings = [];
+
+    db.schoolMeetings.unshift({
+      id: Date.now(),
+      title: title,
+      type: type,
+      date: date || new Date().toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      content: content
+    });
+
+    saveDb();
+    document.getElementById('schoolMeetingTitle').value = '';
+    editor.innerHTML = '';
+    renderSchoolMeetings();
+  }
+
+  function deleteSchoolMeeting(meetingId) {
+    if (confirm("Vols eliminar aquesta anotació de reunió?")) {
+      db.schoolMeetings = db.schoolMeetings.filter(m => m.id !== meetingId);
+      saveDb();
+      renderSchoolMeetings();
+    }
+  }
+
+  function renderSchoolMeetings() {
+    const container = document.getElementById('schoolMeetingsList');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!db.schoolMeetings || db.schoolMeetings.length === 0) {
+      container.innerHTML = '<p style="font-size:13px; color:#888;">No hi ha cap reunió o acord registrat.</p>';
+      return;
+    }
+
+    const filterType = document.getElementById('filterSchoolMeetingType').value;
+    const searchText = document.getElementById('searchSchoolMeetings').value.toLowerCase().trim();
+
+    const filtered = db.schoolMeetings.filter(m => {
+      let mType = m.type;
+      if (mType === 'Escola/Direcció') mType = 'Escola';
+
+      const matchType = (filterType === 'ALL' || mType === filterType);
+      const matchSearch = (!searchText || m.title.toLowerCase().includes(searchText) || m.content.toLowerCase().includes(searchText));
+      return matchType && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = "<p style=\"font-size:13px; color:#888;\">No s'ha trobat cap reunió amb aquests filtres.</p>";
+      return;
+    }
+
+    filtered.forEach(m => {
+      let typeBadge = '';
+      if (m.type === 'Claustre') typeBadge = '🏛️ Claustre';
+      else if (m.type === 'Cicle') typeBadge = '🔄 Cicle';
+      else if (m.type === 'Escola' || m.type === 'Escola/Direcció') typeBadge = '🏫 Escola';
+      else if (m.type === 'Comissió') typeBadge = '👥 Comissions';
+      else if (m.type === 'Aula') typeBadge = '📚 Aula';
+      else if (m.type === 'Tasques pendents') typeBadge = '📌 Tasques pendents';
+      else if (m.type === 'Altres') typeBadge = '💬 Altres';
+      else typeBadge = '💬 ' + m.type;
+
+      const div = document.createElement('div');
+      div.className = 'obs-card';
+      div.style.cssText = "border-left-color: var(--accent-green); background:#fcfdfe;";
+      div.innerHTML = `
+        <div class="obs-meta">
+          <div>
+            <span class="badge" style="background:#2d6a4f; color:white;">${typeBadge}</span>
+            <strong style="font-size:14px; color:#1b4332; margin-left:4px;">${m.title}</strong>
+          </div>
+          <div>
+            <span style="font-size:11px; margin-right:8px;">📅 ${m.date}</span>
+            <button type="button" class="btn-danger" onclick="deleteSchoolMeeting(${m.id})">🗑️</button>
+          </div>
+        </div>
+        <div style="font-size:13px; line-height:1.5; color:#2b2d42; margin-top:6px;">${m.content}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  /* GESTIÓ D'ENVIAMENT DE FEEDBACK AMB FORMSPREE */
+  async function handleFeedbackSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const statusDiv = document.getElementById('feedbackStatus');
+    statusDiv.style.display = 'block';
+    statusDiv.style.color = '#1b4332';
+    statusDiv.innerText = "⏳ Enviant suggeriment...";
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        statusDiv.style.color = '#0f5132';
+        statusDiv.innerText = "✅ Gràcies! El teu missatge s'ha enviat correctament.";
+        form.reset();
+        setTimeout(() => closeFeedbackModal(), 2000);
+      } else {
+        statusDiv.style.color = '#842029';
+        statusDiv.innerText = "❌ Hi ha hagut un error en enviar el missatge. Torna-ho a provar.";
+      }
+    } catch (error) {
+      statusDiv.style.color = '#842029';
+      statusDiv.innerText = "❌ Error de connexió. Comprova la teva xarxa.";
+    }
+  }
+
+  async function generateReport(type) {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    if (!apiKey) {
+      alert("Enganxa la teva clau API a la part superior i fes clic a 'Desar clau'. Si no en tens cap, prem el botó '❓' per veure com aconseguir-la.");
+      return;
+    }
+
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[selectedStudentIndex];
+
+    const hasObs = student.observations && student.observations.length > 0;
+    const hasGrades = student.grades && student.grades.length > 0;
+
+    if (!hasObs && !hasGrades) {
+      alert("Aquest alumne no té observacions ni notes registrades per redactar l'informe.");
+      return;
+    }
+
+    const reportTextDiv = document.getElementById('reportText');
+    const reportTitleDiv = document.getElementById('reportTitle');
+    const reportContainer = document.getElementById('reportContainer');
+    reportContainer.style.display = 'block';
+
+    if (reportTimerInterval) clearInterval(reportTimerInterval);
+
+    let secondsElapsed = 0;
+    const formatTime = (s) => {
+      const mins = Math.floor(s / 60).toString().padStart(2, '0');
+      const secs = (s % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    };
+
+    const updateTimerMessage = (extraText = "") => {
+      reportTextDiv.innerText = `⏱️ Generant informe... (${formatTime(secondsElapsed)}) ${extraText}`;
+    };
+
+    updateTimerMessage();
+    reportTimerInterval = setInterval(() => {
+      secondsElapsed++;
+      updateTimerMessage();
+    }, 1000);
+
+    const articleConfig = student.article || 'En';
+    let nameWithArticle = student.name;
+    let pronounInstruction = "";
+
+    if (articleConfig === 'En') {
+      nameWithArticle = `en ${student.name}`;
+      pronounInstruction = "Fes servir el pronom 'ell' o concordança masculina quan calgui.";
+    } else if (articleConfig === 'El') {
+      nameWithArticle = `el ${student.name}`;
+      pronounInstruction = "Fes servir el pronom 'ell' o concordança masculina quan calgui.";
+    } else if (articleConfig === 'La') {
+      nameWithArticle = `la ${student.name}`;
+      pronounInstruction = "Fes servir el pronom 'ella' o concordança femenina quan calgui.";
+    } else if (articleConfig === "Ell / L'") {
+      nameWithArticle = `l'${student.name}`;
+      pronounInstruction = "Prefixa l'article apostrofat (l') al nom i fes servir el pronom 'ell' o concordança masculina.";
+    } else if (articleConfig === "Ella / L'") {
+      nameWithArticle = `l'${student.name}`;
+      pronounInstruction = "Prefixa l'article apostrofat (l') al nom i fes servir el pronom 'ella' o concordança femenina.";
+    } else if (articleConfig === "L'") {
+      nameWithArticle = `l'${student.name}`;
+      pronounInstruction = "Prefixa l'article apostrofat (l') al nom de l'infant.";
+    }
+
+    const obsFormatted = (student.observations || [])
+      .filter(o => !o.isInternal)
+      .map(o => `- [${o.trimestre}] [Àrea: ${o.area}] (${o.date}): ${o.text}`)
+      .join('\n');
+
+    const summaryGradesFormatted = group.areas.map(area => {
+      const score1 = calculateWeightedScore(student, area, "1r Trimestre");
+      const score2 = calculateWeightedScore(student, area, "2n Trimestre");
+      const score3 = calculateWeightedScore(student, area, "3r Trimestre");
+      const scoreFinal = calculateWeightedScore(student, area, "FINAL");
+      return `- Àrea: ${area} -> 1r Trim: ${score1 || 'sense dades'}, 2n Trim: ${score2 || 'sense dades'}, 3r Trim: ${score3 || 'sense dades'} | FINAL: ${scoreFinal || 'sense dades'}`;
+    }).join('\n');
+
+    const instruccionsNormes = `ROL I REGLES DE REDACCIÓ LINGÜÍSTICA I COEDUCATIVA:\n` +
+      `- ACTUA COM UN MESTRE/A D'EDUCACIÓ PRIMÀRIA I REDACTA UN INFORME PEDAGÒGIC OPTIMITZAT.\n` +
+      `- ESCRIU DIRECTAMENT L'INFORME EN CATALÀ. NO ESCRIGUIS CAP LLISTA DE COMPROVACIÓ, CHECKLIST, PENSAMENT INTERN NI METADADES (p. ex. "Checked", "No greetings", etc.).\n` +
+      `- Utilitza una redacció fluïda, pedagògica i integradora en català.\n` +
+      `- Fes servir el nom de l'alumne/a com a referència principal: "${nameWithArticle}".\n` +
+      `- ${pronounInstruction}\n` +
+      `- NO FACIS SERVIR MAI INTRODUCCIONS, SALUTACIONS, NI ET DIRIGEIXIS A LA FAMÍLIA ("Benvolguda família...", etc.).\n` +
+      `- NO FACIS SERVIR MAI NOMS D'EXÀMENS, PROVES NI NOTES NUMÈRIQUES A L'INFORME.\n` +
+      `- Totes les àrees definides del grup (${group.areas.join(', ')}) HAN D'APARÈIXER A L'INFORME.\n` +
+      `- SI NO HI HA CAP DADA O OBSERVACIÓ REGISTRADA PER A UNA ÀREA CONCRETA, escriu literalment sota el nom d'aquesta àrea: "No hi ha dades per avaluar aquesta àrea".\n` +
+      `- Format del text: Posa el NOM DE L'ÀREA (en negreta) i, immediatament a continuació, la descripció pedagògica o la frase de no dades.\n`;
+
+    let promptText = "";
+
+    if (type === 'trimestral') {
+      reportTitleDiv.innerText = "📝 Informe de final de trimestre:";
+      promptText = `${instruccionsNormes}\n` +
+        `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
+        `Resum de qualificacions ponderades per àrea:\n${summaryGradesFormatted}\n\n` +
+        `Observacions registrades:\n${obsFormatted || 'Sense observacions textuals avaluables'}\n\n` +
+        `Estructura desitjada:\n` +
+        `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Actitud i treball a l'aula' i 'Aspectes a millorar'.`;
+
+    } else if (type === 'anual') {
+      reportTitleDiv.innerText = "🎓 Informe global de final de curs (juny):";
+      promptText = `${instruccionsNormes}\n` +
+        `Informe GLOBAL de final de curs (juny) per a ${nameWithArticle}, centrant-te en el seu PROGRÉS I EVOLUCIÓ al llarg de l'any.\n` +
+        `Grup: ${group.name}.\nÀrees obligatòries a avaluar: ${group.areas.join(', ')}.\n` +
+        `Resum de qualificacions ponderades per àrea al llarg dels 3 trimestres i nota final:\n${summaryGradesFormatted}\n\n` +
+        `Historial d'observacions:\n${obsFormatted || 'Sense observacions textuals avaluables'}\n\n` +
+        `Estructura desitjada:\n` +
+        `Inclou cadascuna de les àrees (${group.areas.join(', ')}). Després de les àrees, afegeix un apartat de 'Valoració global del curs' i 'Recomanacions per al curs vinent'.`;
+    }
+
+    const streamEndpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:streamGenerateContent?alt=sse&key=${apiKey}`;
+    const syncEndpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+
+    const requestPayload = {
+      contents: [{ parts: [{ text: promptText }] }],
+      generationConfig: {
+        maxOutputTokens: 8192,
+        temperature: 0.7
+      }
+    };
+
+    const maxRetries = 3;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(streamEndpointUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestPayload)
+        });
+
+        if (!response.ok) {
+          const errJson = await response.json().catch(() => ({}));
+          const msg = errJson.error ? errJson.error.message : response.statusText;
+          
+          if ((msg.includes('high demand') || response.status === 503) && attempt < maxRetries) {
+            updateTimerMessage(`\n⏳ Servidor molt demanat. Reintentant automàticament (${attempt}/${maxRetries})...`);
+            await new Promise(r => setTimeout(r, 2000));
+            continue;
+          }
+
+          clearInterval(reportTimerInterval);
+          if (msg.includes('high demand') || response.status === 503) {
+            reportTextDiv.innerText = "⚠️ L'API no funciona en aquests moments. Prova a generar l'informe utilitzant el Prompt.";
+          } else if (msg.includes('API key not valid')) {
+            reportTextDiv.innerText = "🔑 La clau API introduïda no és vàlida.";
+          } else if (msg.includes('quota')) {
+            reportTextDiv.innerText = "⚠️ Has excedit la quota gratuïta de la teva clau API per avui.";
+          } else {
+            reportTextDiv.innerText = "❌ Error: " + msg;
+          }
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let fullText = "";
+        let firstChunkReceived = false;
+        let finishReason = null;
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
+
+          for (let line of lines) {
+            if (line.startsWith("data: ")) {
+              const dataStr = line.replace("data: ", "").trim();
+              if (!dataStr) continue;
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.candidates && parsed.candidates[0]) {
+                  const candidate = parsed.candidates[0];
+                  if (candidate.finishReason) {
+                    finishReason = candidate.finishReason;
+                  }
+                  if (candidate.content && candidate.content.parts && candidate.content.parts[0].text) {
+                    if (!firstChunkReceived) {
+                      clearInterval(reportTimerInterval);
+                      reportTextDiv.innerText = "";
+                      firstChunkReceived = true;
+                    }
+                    fullText += candidate.content.parts[0].text;
+                    reportTextDiv.innerText = fullText;
+                  }
+                }
+              } catch (e) {}
+            }
+          }
+        }
+
+        clearInterval(reportTimerInterval);
+
+        // Fallback: si el streaming s'ha tallat buit o incomplet, fem petició directa d'un sol cop
+        if (!fullText || (finishReason && finishReason !== 'STOP')) {
+          updateTimerMessage("⏳ Recuperant informe complet...");
+          const syncResponse = await fetch(syncEndpointUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestPayload)
+          });
+
+          if (syncResponse.ok) {
+            const syncData = await syncResponse.json();
+            if (syncData.candidates && syncData.candidates[0] && syncData.candidates[0].content && syncData.candidates[0].content.parts[0].text) {
+              fullText = syncData.candidates[0].content.parts[0].text;
+              reportTextDiv.innerText = fullText;
+            }
+          }
+        }
+
+        if (!fullText) {
+          reportTextDiv.innerText = "❌ No s'ha pogut obtenir el redactat de l'informe complet. Torna-ho a provar.";
+        }
+        break;
+
+      } catch (e) {
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 2000));
+        } else {
+          clearInterval(reportTimerInterval);
+          reportTextDiv.innerText = "⚠️ Error de connexió en generar l'informe. Torna-ho a provar o utilitza el Generador de Prompt.";
+        }
+      }
+    }
+  }
+
+  function copyReport() {
+    const text = document.getElementById('reportText').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Informe copiat al porta-retalls!");
+    });
+  }
+</script>
+
+</body>
+</html>
