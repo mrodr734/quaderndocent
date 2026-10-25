@@ -720,7 +720,7 @@
 
   <div class="main-nav">
     <button type="button" id="tabGroupsBtn" class="nav-btn active" onclick="switchMainTab('groups')">📋 Seguiment de l'alumnat</button>
-    <button type="button" id="tabLogbookBtn" class="nav-btn" onclick="switchMainTab('logbook')">🧭 Quadern de bitàcola</button>
+    <button type="button" id="tabLogbookBtn" class="nav-btn" onclick="switchMainTab('logbook')">🧩 Quadern de bitàcola</button>
     <button type="button" id="tabSchoolBtn" class="nav-btn" onclick="switchMainTab('school')">🏫 Reunions i acords</button>
   </div>
 
@@ -2279,7 +2279,7 @@
       div.innerHTML = `
         <span class="badge" style="${getAreaColorStyle(taskArea)}">${taskArea}</span>
         <span>📌 ${taskName}</span>
-        ${taskDate ? `<span class="task-date">📅 ${taskDate}</span>` : ''}
+        ${taskDate ? `<span class="task-date">${taskDate}</span>` : ''}
         <span class="btn-delete-cross" onclick="deleteGroupTask(${typeof taskId === 'number' ? taskId : `'${taskId}'`}, event)" title="Eliminar tasca">✕</span>
       `;
       container.appendChild(div);
@@ -2961,7 +2961,9 @@
       `- NO FACIS SERVIR MAI INTRODUCCIONS, SALUTACIONS, NI ET DIRIGEIXIS A LA FAMÍLIA.\n` +
       `- NO FACIS SERVIR MAI NOMS D'EXÀMENS, PROVES NI NOTES NUMÈRIQUES A L'INFORME.\n` +
       `- Totes les àrees definides del grup (${group.areas.join(', ')}) HAN D'APARÈIXER A L'INFORME.\n` +
-      `- Format del text: Posa el NOM DE L'ÀREA entre asteriscos (p. ex. **Música**) i, immediatament a continuació, la descripció pedagògica.\n`;
+      `- SI NO HI HA DADES NI ANOTACIONS EN ALGUNA ÀREA, HAS DE MOSTRAR LITERALMENT: "No hi ha dades suficients d'aquesta àrea." SOTA AQUESTA ÀREA. NO T'INVENTIS INFORMAACIÓ.\n` +
+      `- INCLOU UN APARTAT FINAL TITULAT **PROPOSTES DE MILLORA** AMB RECOMENANIONS PEDAGÒGIQUES I OBJECTIUS PRÀCTICS PER A L'ALUMNE/A.\n` +
+      `- Format del text: Posa el NOM DE L'ÀREA entre asteriscos (p. ex. **Música**) i el títol **PROPOSTES DE MILLORA** entre asteriscos, seguits immediatament per la descripció corresponent.\n`;
 
     let promptText = "";
     if (type === 'trimestral') {
