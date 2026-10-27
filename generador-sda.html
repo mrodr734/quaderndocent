@@ -347,7 +347,7 @@
       }
     }
 
-    // Main Function to Call Gemini API with model Fallback
+    // Main Function to Call Gemini API with updated endpoint models
     async function generarSdA() {
       const apiKey = document.getElementById('apiKey').value.trim();
       if (!apiKey) {
@@ -400,8 +400,8 @@
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
-      // Models per provar en ordre de preferència
-      const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+      // Utilitzem els endpoints actualitzats per l'API v1beta de Gemini
+      const modelsToTry = ['gemini-2.5-flash', 'gemini-1.5-flash-latest'];
       let response = null;
       let lastError = null;
 
@@ -421,7 +421,7 @@
           });
 
           if (response.ok) {
-            break; // Si respon correctament, sortim del bucle
+            break;
           } else {
             const errorData = await response.json();
             lastError = `Error API (${response.status}): ${errorData.error?.message || response.statusText}`;
