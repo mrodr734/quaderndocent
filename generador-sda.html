@@ -62,7 +62,7 @@
         <!-- API Key Modal Trigger Button -->
         <button onclick="toggleModal('apiModal')" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition">
           <i class="fa-solid fa-key text-orange-500"></i>
-          <span class="hidden sm:inline">Configurar API Key</span>
+          <span class="hidden sm:inline">Configurar API Key XTEC</span>
         </button>
 
         <!-- Toggle Theme Button -->
@@ -90,9 +90,9 @@
 
           <!-- API Key Input Field -->
           <div class="mb-4">
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Clau d'API de Gemini (Gratuïta)</label>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Clau d'API de Gemini (Compte XTEC)</label>
             <div class="relative">
-              <input type="password" id="apiKey" placeholder="Enganxa la teva API Key AI Studio..." class="w-full text-xs p-2.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <input type="password" id="apiKey" placeholder="Enganxa la teva API Key de Google AI Studio..." class="w-full text-xs p-2.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
               <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">
                 <i class="fa-solid fa-eye" id="eyeIcon"></i>
               </button>
@@ -273,12 +273,12 @@
     </div>
   </main>
 
-  <!-- Modal: API Key Help & XTEC Instructions -->
+  <!-- Modal: API Key Help XTEC -->
   <div id="apiModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-700 shadow-xl space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
         <h3 class="font-bold text-slate-900 dark:text-white flex items-center text-sm">
-          <i class="fa-solid fa-key text-orange-500 mr-2"></i> Obtenir la clau API de Gemini
+          <i class="fa-solid fa-key text-orange-500 mr-2"></i> Obtenir la clau API de Gemini amb l'XTEC
         </h3>
         <button onclick="toggleModal('apiModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
           <i class="fa-solid fa-xmark text-base"></i>
@@ -286,20 +286,10 @@
       </div>
 
       <div class="text-xs space-y-3 text-slate-600 dark:text-slate-300">
-        <p>L'aplicació requereix una clau d'API gratuïta de Google Gemini per processar la informació de les Situacions d'Aprenentatge.</p>
-        
-        <div class="bg-emerald-50 dark:bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/50 space-y-2">
-          <h4 class="font-bold text-emerald-800 dark:text-emerald-300 flex items-center">
-            <i class="fa-solid fa-graduation-cap mr-1.5"></i> Nota per a usuaris amb correu @xtec.cat:
-          </h4>
-          <p class="leading-relaxed">
-            Molts dominis educatius corporatius tenen inhabilitat l'accés a eines de desenvolupament com Google AI Studio. <strong>Si us dona error amb el correu de la XTEC, accediu amb un compte de Gmail personal (@gmail.com).</strong>
-          </p>
-        </div>
+        <p>L'aplicació utilitza la clau d'API de Google Gemini per processar la informació de les Situacions d'Aprenentatge.</p>
 
         <ol class="list-decimal list-inside space-y-1.5 font-medium text-slate-700 dark:text-slate-200">
-          <li>Entra a <a href="https://aistudio.google.com/" target="_blank" class="text-orange-600 underline font-bold">Google AI Studio</a>.</li>
-          <li>Inicia sessió amb el teu compte personal de Gmail.</li>
+          <li>Entra a <a href="https://aistudio.google.com/" target="_blank" class="text-orange-600 underline font-bold">Google AI Studio</a> amb el teu compte de l'XTEC.</li>
           <li>Clica a <strong>"Create API key"</strong>.</li>
           <li>Copia la clau generada i engalta-la al camp superior de l'aplicació.</li>
         </ol>
@@ -347,7 +337,7 @@
       }
     }
 
-    // Main Function to Call Gemini API with updated endpoint models
+    // Main Function to Call Gemini API with endpoints compatibles amb dominis Workspace/XTEC
     async function generarSdA() {
       const apiKey = document.getElementById('apiKey').value.trim();
       if (!apiKey) {
@@ -400,24 +390,32 @@
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
-      // Utilitzem els endpoints actualitzats per l'API v1beta de Gemini
-      const modelsToTry = ['gemini-2.5-flash', 'gemini-1.5-flash-latest'];
+      // Endpoints estàndard sense alias temporals
+      const requestsToTry = [
+        { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, jsonMode: true },
+        { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, jsonMode: true },
+        { url: `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, jsonMode: false }
+      ];
+
       let response = null;
       let lastError = null;
 
-      for (const model of modelsToTry) {
+      for (const req of requestsToTry) {
         try {
-          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          const bodyPayload = {
+            contents: [
+              { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+            ]
+          };
+
+          if (req.jsonMode) {
+            bodyPayload.generationConfig = { responseMimeType: "application/json" };
+          }
+
+          response = await fetch(req.url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
-              ],
-              generationConfig: {
-                responseMimeType: "application/json"
-              }
-            })
+            body: JSON.stringify(bodyPayload)
           });
 
           if (response.ok) {
@@ -437,12 +435,17 @@
         }
 
         const data = await response.json();
-        const jsonText = data.candidates[0].content.parts[0].text;
-        const sdaData = JSON.parse(jsonText);
+        let jsonText = data.candidates[0].content.parts[0].text;
+        
+        // Per a la crida v1 estàndard, extreure JSON si ve envoltat de ```json ... ```
+        if (jsonText.includes("```")) {
+          jsonText = jsonText.replace(/```json/g, "").replace(/```/g, "").trim();
+        }
 
+        const sdaData = JSON.parse(jsonText);
         renderitzarSdA(sdaData);
       } catch (err) {
-        alert("Error en la generació:\n" + err.message + "\n\nNota: Si estàs fent servir un correu @xtec.cat, prova de generar una API Key des d'un compte de Gmail personal (@gmail.com).");
+        alert("Error en la generació:\n" + err.message);
         console.error(err);
         document.getElementById('emptyState').classList.remove('hidden');
       } finally {
