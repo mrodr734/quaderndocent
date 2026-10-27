@@ -111,6 +111,11 @@
           <!-- Form Details -->
           <form id="sdaForm" onsubmit="event.preventDefault(); generarSdA();" class="space-y-4">
             <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nom i Cognoms de l'Autor/a</label>
+              <input type="text" id="autor" required placeholder="ex: Maria Garcia i Pons" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            </div>
+
+            <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Títol o Temàtica de la SdA</label>
               <input type="text" id="titol" required placeholder="ex: Fem un hort escolar sostenible" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
             </div>
@@ -163,6 +168,21 @@
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Sabers Bàsics / Aspectes Clau a Treballar</label>
               <textarea id="sabers" rows="3" required placeholder="ex: Fotosíntesi, tipus de sòls, treball en equip, ús de taules de dades..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+            </div>
+
+            <!-- Instruments d'Avaluació -->
+            <div class="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700/80 space-y-3">
+              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 block uppercase tracking-wider">Instruments d'Avaluació</span>
+              
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Instruments del Docent (Sessions intermèdies)</label>
+                <input type="text" id="instDocent" placeholder="ex: Rúbrica, llista de cotxe, observació directa..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Instruments de l'Alumnat (Última sessió)</label>
+                <input type="text" id="instAlumnat" placeholder="ex: Diana d'autovaluació, coavaluació, qüestionari..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              </div>
             </div>
 
             <div>
@@ -230,8 +250,8 @@
                   <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
                 </div>
               </div>
-              <div class="text-right text-xs text-slate-400">
-                <span>Quadern Docent 🖋️</span>
+              <div class="text-right text-xs font-bold text-emerald-700 dark:text-emerald-600">
+                <span id="pdfAreaHeader"></span>
               </div>
             </div>
 
@@ -268,9 +288,8 @@
             </div>
 
             <!-- Document Footer -->
-            <div class="border-t border-slate-200 pt-3 text-[10px] text-slate-400 flex justify-between">
-              <span>Document generat per al Quadern Docent</span>
-              <span>Conforme al marc curricular LOMLOE</span>
+            <div class="border-t border-slate-200 pt-3 text-[11px] font-semibold text-slate-600 flex justify-between items-center">
+              <span>Autor/a: <span id="pdfAutor"></span></span>
             </div>
 
           </div>
@@ -374,7 +393,6 @@
         const data = await res.json();
         const models = data.models || [];
         
-        // Ordre de preferència segons disponibilitat de l'API Gemini
         const preferits = ['gemini-3.8-flash', 'gemini-3.0-flash', 'gemini-2.5-flash'];
         for (const p of preferits) {
           if (models.some(m => m.name.endsWith(p) && m.supportedGenerationMethods?.includes('generateContent'))) {
@@ -382,7 +400,6 @@
           }
         }
         
-        // Selecció alternativa per qualsevol model 'flash' disponible
         const qualsevolFlash = models.find(m => m.supportedGenerationMethods?.includes('generateContent') && m.name.includes('flash'));
         if (qualsevolFlash) {
           return qualsevolFlash.name.replace('models/', '');
@@ -402,15 +419,17 @@
         return;
       }
 
-      // Desar automàticament la clau
       localStorage.setItem('gemini_api_key', apiKey);
 
       // Collect inputs
+      const autor = document.getElementById('autor').value;
       const titol = document.getElementById('titol').value;
       const curs = document.getElementById('curs').value;
       const materia = document.getElementById('materia').value;
       const sessions = document.getElementById('sessions').value;
       const sabers = document.getElementById('sabers').value;
+      const instDocent = document.getElementById('instDocent').value || "full de seguiment docent";
+      const instAlumnat = document.getElementById('instAlumnat').value || "diana d'autovaluació i coavaluació";
       const producte = document.getElementById('producte').value;
       const dua = document.getElementById('dua').value;
 
@@ -422,6 +441,11 @@
       const systemPrompt = `Actua com un assessor pedagògic expert en el currículum LOMLOE a Catalunya. 
       Dissenya una Situació d'Aprenentatge realista, tècnica i estructurada. 
       EVITA clixés de la IA com "En un món en constant evolució" o introduccions generals. 
+
+      REGLA D'AVALUACIÓ PER SESSIONS:
+      - Per a totes les sessions INTERMÈDIES (de la sessió 1 a la penúltima), l'avaluació ha de ser a càrrec del docent (utilitzant: "${instDocent}"). Si no hi ha un instrument específic, indica "full de seguiment docent".
+      - ÚNICAMENT per a la ÚLTIMA SESSIÓ (sessió ${sessions}), integra obligatòriament els instruments d'avaluació de l'alumnat (utilitzant: "${instAlumnat}").
+
       Respon ÚNICAMENT en format JSON vàlid amb la següent estructura exacta:
       {
         "titol": "Títol adaptat de la SdA",
@@ -435,17 +459,20 @@
             "titol": "Títol de la sessió",
             "objectiu": "Objectiu d'aprenentatge concret",
             "desenvolupament": "Passos detallats de l'activitat",
-            "avaluacio": "Criteri o eina d'avaluació"
+            "avaluacio": "Criteri i instrument d'avaluació"
           }
         ]
       }`;
 
       const userPrompt = `Crea una SdA amb aquestes dades específiques:
+      - Autor/a: ${autor}
       - Títol: ${titol}
       - Curs: ${curs}
-      - Matèria: ${materia}
+      - Matèria/Àrea: ${materia}
       - Nombre de sessions: ${sessions}
       - Sabers bàsics/Aspectes a treballar: ${sabers}
+      - Instruments d'avaluació docent: ${instDocent}
+      - Instruments d'avaluació alumnat (per a l'última sessió): ${instAlumnat}
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
@@ -489,8 +516,13 @@
     }
 
     function renderitzarSdA(data) {
+      const materiaVal = document.getElementById('materia').value;
+      const autorVal = document.getElementById('autor').value;
+
       document.getElementById('pdfTitol').innerText = data.titol || document.getElementById('titol').value;
-      document.getElementById('pdfMateria').innerText = document.getElementById('materia').value;
+      document.getElementById('pdfMateria').innerText = materiaVal;
+      document.getElementById('pdfAreaHeader').innerText = materiaVal;
+      document.getElementById('pdfAutor').innerText = autorVal;
       document.getElementById('pdfCurs').innerText = document.getElementById('curs').value;
       document.getElementById('pdfSessions').innerText = data.sessions ? data.sessions.length : document.getElementById('sessions').value;
       document.getElementById('pdfJustificacio').innerText = data.justificacio || '';
