@@ -337,7 +337,7 @@
       }
     }
 
-    // Main Function to Call Gemini API with endpoints compatibles amb dominis Workspace/XTEC
+    // Main Function to Call Gemini API amb model gemini-2.5-flash i v1beta
     async function generarSdA() {
       const apiKey = document.getElementById('apiKey').value.trim();
       if (!apiKey) {
@@ -390,32 +390,24 @@
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
-      // Endpoints estàndard sense alias temporals
-      const requestsToTry = [
-        { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, jsonMode: true },
-        { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, jsonMode: true },
-        { url: `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, jsonMode: false }
-      ];
-
+      // Utilitzem els models compatibles amb v1beta per a Google AI Studio
+      const modelsToTry = ['gemini-2.5-flash', 'gemini-2.5-pro'];
       let response = null;
       let lastError = null;
 
-      for (const req of requestsToTry) {
+      for (const model of modelsToTry) {
         try {
-          const bodyPayload = {
-            contents: [
-              { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
-            ]
-          };
-
-          if (req.jsonMode) {
-            bodyPayload.generationConfig = { responseMimeType: "application/json" };
-          }
-
-          response = await fetch(req.url, {
+          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(bodyPayload)
+            body: JSON.stringify({
+              contents: [
+                { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+              ],
+              generationConfig: {
+                responseMimeType: "application/json"
+              }
+            })
           });
 
           if (response.ok) {
@@ -437,7 +429,6 @@
         const data = await response.json();
         let jsonText = data.candidates[0].content.parts[0].text;
         
-        // Per a la crida v1 estàndard, extreure JSON si ve envoltat de ```json ... ```
         if (jsonText.includes("```")) {
           jsonText = jsonText.replace(/```json/g, "").replace(/```/g, "").trim();
         }
