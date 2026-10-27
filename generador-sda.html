@@ -337,7 +337,7 @@
       }
     }
 
-    // Main Function to Call Gemini API amb model gemini-2.5-flash i v1beta
+    // Main Function to Call Gemini API
     async function generarSdA() {
       const apiKey = document.getElementById('apiKey').value.trim();
       if (!apiKey) {
@@ -390,8 +390,8 @@
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
-      // Utilitzem els models compatibles amb v1beta per a Google AI Studio
-      const modelsToTry = ['gemini-2.5-flash', 'gemini-2.5-pro'];
+      // Utilitzem models universals de producció compatibles amb v1beta
+      const modelsToTry = ['gemini-1.5-flash', 'gemini-2.0-flash'];
       let response = null;
       let lastError = null;
 
