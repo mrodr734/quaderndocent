@@ -116,8 +116,8 @@
           <!-- Form Details -->
           <form id="sdaForm" onsubmit="event.preventDefault(); generarSdA();" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nom i cognoms de l'autor/a</label>
-              <input type="text" id="autor" required placeholder="ex: Maria Garcia i Pons" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nom i cognom de l'autor/a</label>
+              <input type="text" id="autor" required placeholder="ex: Manel Rodríguez" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
             </div>
 
             <div>
@@ -181,7 +181,7 @@
               
               <div>
                 <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Instruments del docent</label>
-                <input type="text" id="instDocent" placeholder="ex: Rúbrica, llista de cotxe, observació directa..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="instDocent" placeholder="ex: Rúbrica, full de seguiment, observació directa..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
               </div>
 
               <div>
@@ -220,11 +220,33 @@
           <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-6">Omple el formulari amb el nombre de sessions i aspectes a treballar per obtenir la proposta didàctica maquetada.</p>
         </div>
 
-        <!-- Loading State -->
+        <!-- Loading State amb indicador continu (Spinner) -->
         <div id="loadingState" class="hidden bg-white dark:bg-slate-800 p-12 rounded-2xl border border-slate-200 dark:border-slate-700 text-center flex flex-col items-center justify-center min-h-[500px]">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mb-4"></div>
+          <div class="text-emerald-600 dark:text-emerald-400 text-5xl mb-4">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+          </div>
           <h3 class="font-bold text-slate-800 dark:text-white text-base mb-1">Dissenyant la seqüència didàctica...</h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs">Organitzant les sessions, activitats i criteris d'avaluació segons la LOMLOE.</p>
+        </div>
+
+        <!-- Error State amb botó de copiar prompt -->
+        <div id="errorState" class="hidden bg-white dark:bg-slate-800 p-8 rounded-2xl border border-red-200 dark:border-red-900/50 space-y-4">
+          <div class="flex items-start gap-3">
+            <div class="p-2.5 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 rounded-xl text-xl">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-sm" id="errorTitle">Demanda elevada al servidor</h3>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed" id="errorMsg"></p>
+            </div>
+          </div>
+          
+          <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-2">
+            <button onclick="copiarPromptDirecte()" class="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-copy"></i>
+              <span>Copiar prompt per a Gemini</span>
+            </button>
+          </div>
         </div>
 
         <!-- Result Container -->
@@ -348,6 +370,7 @@
 
   <script>
     let isEditing = false;
+    let ultimPromptGenerat = "";
 
     // Carregar API Key guardada en iniciar
     document.addEventListener('DOMContentLoaded', () => {
@@ -428,6 +451,16 @@
       }
     }
 
+    // Funció per copiar el prompt generat directament al porta-retalls
+    function copiarPromptDirecte() {
+      if (!ultimPromptGenerat) return;
+      navigator.clipboard.writeText(ultimPromptGenerat).then(() => {
+        alert("Prompt copiat al porta-retalls! Ara el pots enganxar directament a Gemini.");
+      }).catch(err => {
+        console.error("No s'ha pogut copiar el text: ", err);
+      });
+    }
+
     // Funció que troba automàticament un model d'API actiu i compatible
     async function trobarModelActiu(apiKey) {
       try {
@@ -464,8 +497,9 @@
 
       localStorage.setItem('gemini_api_key', apiKey);
 
-      // Reset estat d'edició
+      // Reset estat d'edició i d'error
       if (isEditing) toggleEdicio();
+      document.getElementById('errorState').classList.add('hidden');
 
       // Collect inputs
       const autor = document.getElementById('autor').value;
@@ -522,6 +556,8 @@
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
+      ultimPromptGenerat = systemPrompt + "\n\n" + userPrompt;
+
       try {
         const modelActiu = await trobarModelActiu(apiKey);
         
@@ -530,7 +566,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [
-              { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+              { role: 'user', parts: [{ text: ultimPromptGenerat }] }
             ],
             generationConfig: {
               responseMimeType: "application/json"
@@ -540,7 +576,13 @@
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(`Error API (${response.status}): ${errorData.error?.message || response.statusText}`);
+          const status = response.status;
+          
+          // Captura d'errors de tarifa / pic de peticions / quota
+          if (status === 429 || errorData.error?.message?.includes("quota") || errorData.error?.message?.includes("RESOURCE_EXHAUSTED")) {
+            throw new Error("STRIKE_LIMIT_EXCEEDED");
+          }
+          throw new Error(`Error API (${status}): ${errorData.error?.message || response.statusText}`);
         }
 
         const data = await response.json();
@@ -553,8 +595,18 @@
         const sdaData = JSON.parse(jsonText);
         renderitzarSdA(sdaData);
       } catch (err) {
-        alert("Error en la generació:\n" + err.message);
         console.error(err);
+        
+        const errorState = document.getElementById('errorState');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        if (err.message === "STRIKE_LIMIT_EXCEEDED" || err.message.includes("429")) {
+          errorMsg.innerText = "Ara mateix hi ha moltes demandes al servidor. Intenta-ho més tard o copia el Prompt per enganxar-lo directament a Gemini.";
+        } else {
+          errorMsg.innerText = "S'ha produït un error en la petició: " + err.message + ". Pots copiar el prompt i utilitzar-lo directament.";
+        }
+        
+        errorState.classList.remove('hidden');
         document.getElementById('emptyState').classList.remove('hidden');
       } finally {
         document.getElementById('loadingState').classList.add('hidden');
