@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadern Docent - Generador de SdA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js for exporting PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-brand-600 text-white rounded-xl shadow-md">
+                    <i class="fa-solid fa-book-bookmark text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-900 dark:text-white">Quadern Docent</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Generador de Situacions d'Aprenentatge (LOMLOE)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- Botó d'instruccions XTEC / API -->
+                <button id="btn-open-modal" class="text-xs sm:text-sm px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition font-medium flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-500"></i>
+                    <span class="hidden sm:inline">Clau d'API</span>
+                </button>
+
+                <!-- Toggle Mode Fosc/Clar -->
+                <button id="theme-toggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contingut Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Formulari (Esquerra) -->
+        <section class="lg:col-span-5 space-y-6 no-print">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                        <i class="fa-solid fa-sliders text-brand-600"></i> Paràmetres de la SdA
+                    </h2>
+                    <span class="text-xs bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-2.5 py-1 rounded-full font-semibold">LOMLOE</span>
+                </div>
+
+                <form id="sda-form" class="space-y-4">
+                    <!-- Títol -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Títol o Temàtica inicial *</label>
+                        <input type="text" id="titol" required placeholder="Ex: Protegim la biodiversitat del nostre entorn" class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+
+                    <!-- Curs i Matèria -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Etapa / Curs *</label>
+                            <select id="curs" required class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Educació Infantil">Educació Infantil</option>
+                                <option value="1r Cicle Primària (1r-2n)">1r Cicle Primària (1r-2n)</option>
+                                <option value="2n Cicle Primària (3r-4t)">2n Cicle Primària (3r-4t)</option>
+                                <option value="3r Cicle Primària (5è-6è)" selected>3r Cicle Primària (5è-6è)</option>
+                                <option value="1r Cicle ESO (1r-2n)">1r Cicle ESO (1r-2n)</option>
+                                <option value="2n Cicle ESO (3r-4t)">2n Cicle ESO (3r-4t)</option>
+                                <option value="Batxillerat">Batxillerat</option>
+                                <option value="Formació Professional">Formació Professional</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Matèria / Àrea *</label>
+                            <input type="text" id="materia" required placeholder="Ex: Coneixement del Medi / Ciències Socials" class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Nombre de sessions -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">Nombre de Sessions</label>
+                            <span id="sessions-val" class="text-xs font-bold text-brand-600 dark:text-brand-400">6 sessions</span>
+                        </div>
+                        <input type="range" id="sessions" min="2" max="15" value="6" class="w-full accent-brand-600">
+                    </div>
+
+                    <!-- Aspectes i Sabers Bàsics -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Aspectes Clau / Sabers Bàsics *</label>
+                        <textarea id="sabers" rows="3" required placeholder="Ex: Ecosistemes locals, impacte de l'acció humana, reciclatge i recollida selectiva." class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none resize-none"></textarea>
+                    </div>
+
+                    <!-- Producte Final -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Producte Final Esperat</label>
+                        <input type="text" id="producte" placeholder="Ex: Infografia explicativa i campanya de conscienciació a l'escola." class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+
+                    <!-- Metodologia / Atenció a la diversitat -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Metodologia & Atenció a la Diversitat (Opcional)</label>
+                        <input type="text" id="diversitat" placeholder="Ex: Treball cooperatiu, DUA, suport amb imatges i lectura fàcil." class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+
+                    <!-- Botó de Generació -->
+                    <button type="submit" id="btn-generate" class="w-full py-3.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Dissenyar SdA amb IA
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Previsualització / Resultats (Dreta) -->
+        <section class="lg:col-span-7">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 min-h-[550px] flex flex-col justify-between">
+                
+                <!-- Capçalera d'Accions de Previsualització -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-700 mb-6 no-print">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines text-slate-400"></i> Document de la SdA
+                    </h2>
+                    
+                    <div class="flex items-center gap-2">
+                        <button id="btn-pdf" disabled class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> Descarregar PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estat Inicial / Placeholder -->
+                <div id="placeholder-state" class="flex-1 flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl my-4">
+                    <div class="p-4 bg-slate-100 dark:bg-slate-700 text-slate-400 rounded-full mb-3">
+                        <i class="fa-solid fa-pen-ruler text-3xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-700 dark:text-slate-300 text-base">Cap Situació d'Aprenentatge generada</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mt-1">Omple el formulari de l'esquerra i fes clic a "Dissenyar SdA" per obtenir la planificació pedagògica completa.</p>
+                </div>
+
+                <!-- Estat de Càrrega (Loading) -->
+                <div id="loading-state" class="hidden flex-1 flex flex-col items-center justify-center p-8 my-4">
+                    <div class="inline-block w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="font-semibold text-slate-700 dark:text-slate-200 text-sm">Dissenyant la Situació d'Aprenentatge...</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">S'estan estructurant les sessions i la coherència pedagògica LOMLOE.</p>
+                </div>
+
+                <!-- Àrea Maquetada de la SdA (Aquesta és la part que s'imprimeix o exporta a PDF) -->
+                <div id="sda-preview-container" class="hidden flex-1 overflow-auto">
+                    <div id="pdf-content" class="bg-white text-slate-900 p-8 rounded-xl shadow-inner border border-slate-100 space-y-6 text-sm">
+                        
+                        <!-- Capçalera Didàctica del Document -->
+                        <div class="border-b-2 border-slate-800 pb-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Programació Didàctica</span>
+                                    <h1 id="doc-titol" class="text-2xl font-bold text-slate-900 mt-1 leading-tight">Títol de la SdA</h1>
+                                </div>
+                                <div class="text-right text-xs text-slate-600">
+                                    <p class="font-bold text-slate-800" id="doc-materia">Matèria</p>
+                                    <p id="doc-curs">Curs / Nivell</p>
+                                    <p id="doc-sessions" class="mt-1 font-semibold text-brand-700">6 Sessions</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resum Executiu i Producte Final -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <div>
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700 mb-1">Sabers i Aspectes Clau</h4>
+                                <p id="doc-sabers" class="text-xs text-slate-600 leading-relaxed"></p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700 mb-1">Producte Final & Metodologia</h4>
+                                <p id="doc-producte" class="text-xs text-slate-600 leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <!-- Justificació i Repte Inicial -->
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-sm uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-bullseye text-brand-600"></i> Context i Contextualització
+                            </h3>
+                            <p id="doc-justificacio" class="text-xs text-slate-700 leading-relaxed italic border-l-2 border-brand-500 pl-3 py-1"></p>
+                        </div>
+
+                        <!-- Taula de Sessions -->
+                        <div class="space-y-3">
+                            <h3 class="font-bold text-sm uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-brand-600"></i> Seqüència Didàctica Detallada
+                            </h3>
+                            
+                            <div id="doc-sessions-container" class="space-y-4">
+                                <!-- Les sessions s'injectaran dinàmicament aquí -->
+                            </div>
+                        </div>
+
+                        <!-- Avaluació i DUA -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-200">
+                            <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-200/60">
+                                <h4 class="font-bold text-xs uppercase text-amber-900 mb-1">Criteris i Eines d'Avaluació</h4>
+                                <p id="doc-avaluacio" class="text-xs text-slate-700 leading-relaxed"></p>
+                            </div>
+                            <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-200/60">
+                                <h4 class="font-bold text-xs uppercase text-blue-900 mb-1">Atenció a la Diversitat (DUA)</h4>
+                                <p id="doc-dua" class="text-xs text-slate-700 leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <!-- Peu de pàgina del document -->
+                        <div class="pt-6 text-center text-[10px] text-slate-400 border-t border-slate-100 flex justify-between">
+                            <span>Document de treball docent - LOMLOE</span>
+                            <span>Generat el <span id="doc-data"></span></span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal d'instruccions i configuració de la Clau d'API -->
+    <div id="api-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden no-print">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden m-4">
+            
+            <div class="p-5 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-500"></i> Configuració de l'API de Google Gemini
+                </h3>
+                <button id="btn-close-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                    Perquè el generador funcioni des del teu propi navegador sense costos, necessites una <strong>Clau d'API de Google AI Studio</strong>. Pots aconseguir-la de franc amb qualsevol compte de correu personal o corporatiu d'educació (inclòs <strong>@xtec.cat</strong> o el domini del teu centre).
+                </p>
+
+                <!-- Passos -->
+                <div class="space-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200">Passos per aconseguir-la (1 minut):</h4>
+                    <ol class="list-decimal list-inside space-y-2 text-slate-600 dark:text-slate-400">
+                        <li>Obre el portal de Google AI Studio: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-brand-600 dark:text-brand-400 underline font-semibold">aistudio.google.com/app/apikey</a>.</li>
+                        <li>Inicia sessió amb el teu correu d'<strong>XTEC / Google Workspace</strong>.</li>
+                        <li>Fes clic al botó blau <strong>"Create API key"</strong>.</li>
+                        <li>Copía la combinació de lletres i números que se't generarà.</li>
+                        <li>Enganxa la clau al camp de sota i fes clic a guardar.</li>
+                    </ol>
+                </div>
+
+                <!-- Input API Key -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">La teva Clau d'API de Gemini</label>
+                    <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full text-sm p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">La teva clau es guarda directament al teu propi navegador (LocalStorage) i no s'envia a cap servidor extern.</p>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-700/50 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-2">
+                <button id="btn-save-key" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-sm transition">
+                    Guardar Clau
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Funcionament Principal -->
+    <script>
+        // Managing Dark / Light Mode
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+
+        // Range Input for sessions
+        const sessionsInput = document.getElementById('sessions');
+        const sessionsVal = document.getElementById('sessions-val');
+        sessionsInput.addEventListener('input', (e) => {
+            sessionsVal.textContent = `${e.target.value} sessions`;
+        });
+
+        // Modal API Key Handling
+        const modal = document.getElementById('api-modal');
+        const btnOpenModal = document.getElementById('btn-open-modal');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const btnSaveKey = document.getElementById('btn-save-key');
+        const apiKeyInput = document.getElementById('api-key-input');
+
+        btnOpenModal.addEventListener('click', () => {
+            apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
+            modal.classList.remove('hidden');
+        });
+
+        btnCloseModal.addEventListener('click', () => modal.classList.add('hidden'));
+
+        btnSaveKey.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                alert('Clau d\'API guardada correctament.');
+                modal.classList.add('hidden');
+            } else {
+                alert('S\'il us plau, introdueix una clau d\'API vàlida.');
+            }
+        });
+
+        // SdA Generation with Gemini API
+        const sdaForm = document.getElementById('sda-form');
+        const placeholderState = document.getElementById('placeholder-state');
+        const loadingState = document.getElementById('loading-state');
+        const sdaPreviewContainer = document.getElementById('sda-preview-container');
+        const btnPdf = document.getElementById('btn-pdf');
+
+        sdaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            let apiKey = localStorage.getItem('gemini_api_key');
+            if (!apiKey) {
+                modal.classList.remove('hidden');
+                alert('Per favor, configura la teva clau d\'API de Google Gemini abans de generar.');
+                return;
+            }
+
+            const titol = document.getElementById('titol').value;
+            const curs = document.getElementById('curs').value;
+            const materia = document.getElementById('materia').value;
+            const numSessions = document.getElementById('sessions').value;
+            const sabers = document.getElementById('sabers').value;
+            const producte = document.getElementById('producte').value || "Presentació i dossier didàctic";
+            const diversitat = document.getElementById('diversitat').value || "Mesures DUA generals";
+
+            // Mostrar estat de càrrega
+            placeholderState.classList.add('hidden');
+            sdaPreviewContainer.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+
+            const systemPrompt = `
+Actua com un assessor i dissenyador pedagògic expert en el marc normatiu educatiu LOMLOE a Catalunya.
+Dissenya una Situació d'Aprenentatge (SdA) pràctica, realista, professional i aplicable a l'aula.
+EVITA frases genèriques de la IA o introduccions de farciment com "En un món en constant evolució" o "És fonamental recordar". Utilitza un llenguatge tècnic-docent rigorós, directe i net.
+
+RETORNA NOMÉS UN OBJECTE JSON VÀLID amb l'estructura exacte següent:
+{
+  "justificacio": "Contextualització i justificació didàctica en 2 o 3 frases.",
+  "sessions": [
+    {
+      "numero": 1,
+      "titol": "Títol de la sessió",
+      "objectiu": "Objectiu pedagògic",
+      "desenvolupament": "Descripció pas a pas de l'activitat de la sessió",
+      "avaluacio": "Tècnica o eina d'avaluació puntual d'aquesta sessió"
+    }
+  ],
+  "avaluacio_general": "Resum dels criteris d'avaluació globals i eines (rubriques, diari d'aprenentatge, etc.)",
+  "dua": "Mesures específiques DUA d'atenció a la diversitat"
+}
+`;
+
+            const userPrompt = `
+Genera una SdA amb els següents paràmetres:
+- Títol: ${titol}
+- Etapa/Curs: ${curs}
+- Matèria: ${materia}
+- Nombre de Sessions: ${numSessions}
+- Sabers bàsics/Aspectes clau: ${sabers}
+- Producte final esperat: ${producte}
+- Metodologies / Diversitat: ${diversitat}
+`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userPrompt }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        generationConfig: {
+                            responseMimeType: "application/json"
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error en la petició: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const jsonText = data.candidates[0].content.parts[0].text;
+                const sdaData = JSON.parse(jsonText);
+
+                // Emplenar la plantilla amb les dades
+                document.getElementById('doc-titol').textContent = titol;
+                document.getElementById('doc-materia').textContent = materia;
+                document.getElementById('doc-curs').textContent = curs;
+                document.getElementById('doc-sessions').textContent = `${numSessions} Sessions`;
+                document.getElementById('doc-sabers').textContent = sabers;
+                document.getElementById('doc-producte').textContent = producte;
+                document.getElementById('doc-justificacio').textContent = sdaData.justificacio;
+                document.getElementById('doc-avaluacio').textContent = sdaData.avaluacio_general;
+                document.getElementById('doc-dua').textContent = sdaData.dua;
+                document.getElementById('doc-data').textContent = new Date().toLocaleDateString('ca-ES');
+
+                // Renderitzar les sessions
+                const sessionsContainer = document.getElementById('doc-sessions-container');
+                sessionsContainer.innerHTML = '';
+
+                sdaData.sessions.forEach(sessio => {
+                    const sessioCard = document.createElement('div');
+                    sessioCard.className = 'border border-slate-200 rounded-lg p-3 bg-white space-y-1.5';
+                    sessioCard.innerHTML = `
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-1.5">
+                            <span class="font-bold text-xs text-brand-700 uppercase">Sessió ${sessio.numero}: ${sessio.titol}</span>
+                            <span class="text-[11px] text-slate-500 italic"><i class="fa-solid fa-check text-emerald-600 mr-1"></i>${sessio.avaluacio}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-800">Objectiu: ${sessio.objectiu}</p>
+                        <p class="text-xs text-slate-600 leading-relaxed">${sessio.desenvolupament}</p>
+                    `;
+                    sessionsContainer.appendChild(sessioCard);
+                });
+
+                // Canviar estats de la interfície
+                loadingState.classList.add('hidden');
+                sdaPreviewContainer.classList.remove('hidden');
+                btnPdf.disabled = false;
+
+            } catch (err) {
+                console.error(err);
+                loadingState.classList.add('hidden');
+                placeholderState.classList.remove('hidden');
+                alert('Error en generar la SdA. Comprova que la teva clau d\'API sigui correcta i torna-ho a provar.');
+            }
+        });
+
+        // Generació de PDF amb html2pdf.js
+        btnPdf.addEventListener('click', () => {
+            const element = document.getElementById('pdf-content');
+            const titol = document.getElementById('titol').value || 'Situacio_Aprenentatge';
+            
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     `SdA_${titol.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        });
+    </script>
+</body>
+</html>
