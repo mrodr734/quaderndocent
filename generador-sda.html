@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Situacions d'Aprenentatge - Quadern Docent</title>
+  
+  <!-- Favicon SVG 🖋️ -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖋️</text></svg>">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -50,7 +54,7 @@
         </div>
         <div>
           <h1 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">Quadern Docent</h1>
-          <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Dissenyador de SdA LOMLOE</p>
+          <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Dissenyador de SdA LOMLOE 🖋️</p>
         </div>
       </div>
 
@@ -106,14 +110,33 @@
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nivell / Curs</label>
                 <select id="curs" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                  <option value="1r d'ESO">1r d'ESO</option>
-                  <option value="2n d me d'ESO">2n d'ESO</option>
-                  <option value="3r d'ESO">3r d'ESO</option>
-                  <option value="4t d'ESO">4t d'ESO</option>
-                  <option value="1r de Batxillerat">1r de Batxillerat</option>
-                  <option value="2n de Batxillerat">2n de Batxillerat</option>
-                  <option value="5è de Primària">5è de Primària</option>
-                  <option value="6è de Primària">6è de Primària</option>
+                  <!-- Educació Infantil -->
+                  <optgroup label="Educació Infantil">
+                    <option value="I3">I3</option>
+                    <option value="I4">I4</option>
+                    <option value="I5">I5</option>
+                  </optgroup>
+                  <!-- Educació Primària -->
+                  <optgroup label="Educació Primària">
+                    <option value="1r de Primària">1r de Primària</option>
+                    <option value="2n de Primària">2n de Primària</option>
+                    <option value="3r de Primària">3r de Primària</option>
+                    <option value="4t de Primària">4t de Primària</option>
+                    <option value="5è de Primària">5è de Primària</option>
+                    <option value="6è de Primària">6è de Primària</option>
+                  </optgroup>
+                  <!-- Educació Secundària Obligatòria -->
+                  <optgroup label="ESO">
+                    <option value="1r d'ESO">1r d'ESO</option>
+                    <option value="2n d'ESO">2n d'ESO</option>
+                    <option value="3r d'ESO">3r d'ESO</option>
+                    <option value="4t d'ESO">4t d'ESO</option>
+                  </optgroup>
+                  <!-- Batxillerat -->
+                  <optgroup label="Batxillerat">
+                    <option value="1r de Batxillerat">1r de Batxillerat</option>
+                    <option value="2n de Batxillerat">2n de Batxillerat</option>
+                  </optgroup>
                 </select>
               </div>
 
@@ -199,7 +222,7 @@
                 </div>
               </div>
               <div class="text-right text-xs text-slate-400">
-                <span>Quadern Docent</span>
+                <span>Quadern Docent 🖋️</span>
               </div>
             </div>
 
@@ -324,7 +347,7 @@
       }
     }
 
-    // Main Function to Call Gemini API
+    // Main Function to Call Gemini API with model Fallback
     async function generarSdA() {
       const apiKey = document.getElementById('apiKey').value.trim();
       if (!apiKey) {
@@ -377,24 +400,40 @@
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
-      try {
-        // Fetch to Gemini v1beta REST API using gemini-1.5-flash
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
-            ],
-            generationConfig: {
-              responseMimeType: "application/json"
-            }
-          })
-        });
+      // Models per provar en ordre de preferència
+      const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+      let response = null;
+      let lastError = null;
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`Error API (${response.status}): ${errorData.error?.message || response.statusText}`);
+      for (const model of modelsToTry) {
+        try {
+          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+              ],
+              generationConfig: {
+                responseMimeType: "application/json"
+              }
+            })
+          });
+
+          if (response.ok) {
+            break; // Si respon correctament, sortim del bucle
+          } else {
+            const errorData = await response.json();
+            lastError = `Error API (${response.status}): ${errorData.error?.message || response.statusText}`;
+          }
+        } catch (err) {
+          lastError = err.message;
+        }
+      }
+
+      try {
+        if (!response || !response.ok) {
+          throw new Error(lastError || "No s'ha pogut connectar amb l'API de Gemini.");
         }
 
         const data = await response.json();
