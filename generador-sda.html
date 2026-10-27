@@ -46,6 +46,11 @@
       outline-offset: 2px;
       background-color: rgba(236, 253, 245, 0.5);
     }
+    /* Controls de salt de pàgina per al PDF */
+    .pdf-no-break {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full transition-colors duration-200">
@@ -161,7 +166,7 @@
 
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Matèria / àrea</label>
-                <input type="text" id="materia" required placeholder="ex: Ciències Naturals" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="materia" required placeholder="ex: Medi" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
               </div>
             </div>
 
@@ -220,7 +225,7 @@
           <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-6">Omple el formulari amb el nombre de sessions i aspectes a treballar per obtenir la proposta didàctica maquetada.</p>
         </div>
 
-        <!-- Loading State amb indicador continu (Spinner) -->
+        <!-- Loading State -->
         <div id="loadingState" class="hidden bg-white dark:bg-slate-800 p-12 rounded-2xl border border-slate-200 dark:border-slate-700 text-center flex flex-col items-center justify-center min-h-[500px]">
           <div class="text-emerald-600 dark:text-emerald-400 text-5xl mb-4">
             <i class="fa-solid fa-circle-notch fa-spin"></i>
@@ -229,7 +234,7 @@
           <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs">Organitzant les sessions, activitats i criteris d'avaluació segons la LOMLOE.</p>
         </div>
 
-        <!-- Error State amb botó de copiar prompt -->
+        <!-- Error State -->
         <div id="errorState" class="hidden bg-white dark:bg-slate-800 p-8 rounded-2xl border border-red-200 dark:border-red-900/50 space-y-4">
           <div class="flex items-start gap-3">
             <div class="p-2.5 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 rounded-xl text-xl">
@@ -273,11 +278,11 @@
             </div>
           </div>
 
-          <!-- Printable PDF/DOC Document Container -->
-          <div id="pdfContent" class="bg-white text-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+          <!-- Printable PDF/DOC Document Container (Sense voreta ni ombra externa per evitar tallats) -->
+          <div id="pdfContent" class="bg-white text-slate-900 p-6 sm:p-8 space-y-6">
             
             <!-- Document Header -->
-            <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start">
+            <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start pdf-no-break">
               <div>
                 <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
                 <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 mt-1">Títol de la SdA</h2>
@@ -293,7 +298,7 @@
             </div>
 
             <!-- Context Block -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
               <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
                 <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
                 <p id="pdfJustificacio" class="text-slate-700 leading-relaxed"></p>
@@ -305,27 +310,27 @@
             </div>
 
             <!-- Curriculum Alignment -->
-            <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs">
+            <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs pdf-no-break">
               <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
               <p id="pdfSabers" class="text-slate-700 leading-relaxed"></p>
             </div>
 
             <!-- DUA -->
-            <div class="bg-amber-50/60 p-3.5 rounded-lg border border-amber-200/80 text-xs">
+            <div class="bg-amber-50/60 p-3.5 rounded-lg border border-amber-200/80 text-xs pdf-no-break">
               <h4 class="font-bold text-amber-800 mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
               <p id="pdfDua" class="text-amber-900 leading-relaxed"></p>
             </div>
 
             <!-- Sessions Sequence -->
             <div>
-              <h3 class="font-bold text-sm text-slate-900 border-b border-slate-200 pb-2 mb-4 uppercase tracking-wider">Seqüència didàctica per sessions</h3>
+              <h3 class="font-bold text-sm text-slate-900 border-b border-slate-200 pb-2 mb-4 uppercase tracking-wider pdf-no-break">Seqüència didàctica per sessions</h3>
               <div id="pdfSessionsContainer" class="space-y-4">
                 <!-- Session cards inserted dynamically -->
               </div>
             </div>
 
             <!-- Document Footer -->
-            <div class="border-t border-slate-200 pt-3 text-[11px] font-semibold text-slate-600 flex justify-between items-center">
+            <div class="border-t border-slate-200 pt-3 text-[11px] font-semibold text-slate-600 flex justify-between items-center pdf-no-break">
               <span><span id="pdfAutor"></span></span>
             </div>
 
@@ -578,7 +583,6 @@
           const errorData = await response.json();
           const status = response.status;
           
-          // Captura d'errors de tarifa / pic de peticions / quota
           if (status === 429 || errorData.error?.message?.includes("quota") || errorData.error?.message?.includes("RESOURCE_EXHAUSTED")) {
             throw new Error("STRIKE_LIMIT_EXCEEDED");
           }
@@ -634,7 +638,7 @@
       if (data.sessions && Array.isArray(data.sessions)) {
         data.sessions.forEach(sessio => {
           const sessionCard = document.createElement('div');
-          sessionCard.className = 'border border-slate-200 rounded-lg p-3.5 bg-slate-50 text-xs space-y-1.5';
+          sessionCard.className = 'border border-slate-200 rounded-lg p-3.5 bg-slate-50 text-xs space-y-1.5 pdf-no-break';
           sessionCard.innerHTML = `
             <div class="flex justify-between items-center border-b border-slate-200 pb-1.5">
               <span class="font-bold text-emerald-700">Sessió ${sessio.numero}: ${sessio.titol}</span>
@@ -650,9 +654,9 @@
       document.getElementById('resultatSection').classList.remove('hidden');
     }
 
-    // Exportació en format PDF
+    // Exportació en format PDF ajustat sense talls
     function descarregarPDF() {
-      if (isEditing) toggleEdicio(); // Assegura desactivar l'edició abans d'exportar
+      if (isEditing) toggleEdicio();
       const element = document.getElementById('pdfContent');
       const titolText = document.getElementById('pdfTitol').innerText || 'SdA';
       
@@ -661,7 +665,8 @@
         filename:     `SdA_${titolText.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       html2pdf().set(opt).from(element).save();
