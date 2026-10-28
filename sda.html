@@ -55,14 +55,6 @@
       page-break-before: always !important;
       break-before: always !important;
     }
-    /* Estructura A4 / Pàgina 1 per al peu fixat */
-    .page-1-container {
-      min-h-[9.5in];
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full transition-colors duration-200">
@@ -82,13 +74,13 @@
 
       <div class="flex items-center space-x-3">
         <!-- API Key Modal Trigger Button -->
-        <button onclick="toggleModal('apiModal')" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition">
+        <button type="button" onclick="toggleModal('apiModal')" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition">
           <i class="fa-solid fa-key text-orange-500"></i>
           <span class="hidden sm:inline">Configurar clau d'API XTEC</span>
         </button>
 
         <!-- Toggle Theme Button -->
-        <button id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition">
+        <button type="button" id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition">
           <i class="fa-solid fa-moon dark:hidden"></i>
           <i class="fa-solid fa-sun hidden dark:inline"></i>
         </button>
@@ -112,7 +104,10 @@
 
           <!-- API Key Input Field + Botó Desa -->
           <div class="mb-4">
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Clau d'API de Gemini (compte XTEC)</label>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Clau d'API de Gemini (compte XTEC)</label>
+              <button type="button" onclick="toggleModal('apiModal')" class="text-[11px] text-orange-600 dark:text-orange-400 underline font-medium">Com aconseguir-la?</button>
+            </div>
             <div class="flex gap-2">
               <div class="relative flex-1">
                 <input type="password" id="apiKey" placeholder="Enganxa la teva clau d'API de Google AI Studio..." class="w-full text-xs p-2.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
@@ -295,68 +290,66 @@
             </div>
           </div>
 
-          <!-- Printable PDF/DOC Document Container -->
-          <div id="pdfContent" class="bg-white text-slate-900 p-6 sm:p-8 space-y-6">
+          <!-- Printable PDF/DOC Document Container (Compatible amb mode fosc) -->
+          <div id="pdfContent" class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-6 sm:p-8 space-y-6 rounded-2xl border border-slate-200 dark:border-slate-700">
             
             <!-- Context Page (Pàgina 1) -->
-            <div class="page-1-container">
-              <div class="space-y-5">
-                <!-- Document Header -->
-                <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start pdf-no-break">
-                  <div>
-                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
-                    <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 mt-1">Títol de la SdA</h2>
-                    <div class="flex items-center space-x-4 text-xs text-slate-600 mt-2">
-                      <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
-                      <span><strong>Nivell:</strong> <span id="pdfCurs"></span></span>
-                      <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
-                    </div>
-                  </div>
-                  <div class="text-right text-xs font-bold text-emerald-700">
-                    <span id="pdfAreaHeader"></span>
+            <div class="space-y-5">
+              <!-- Document Header -->
+              <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start pdf-no-break">
+                <div>
+                  <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
+                  <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 dark:text-white mt-1">Títol de la SdA</h2>
+                  <div class="flex items-center space-x-4 text-xs text-slate-600 dark:text-slate-300 mt-2">
+                    <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
+                    <span><strong>Nivell:</strong> <span id="pdfCurs"></span></span>
+                    <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
                   </div>
                 </div>
-
-                <!-- Context Block -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
-                  <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
-                    <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
-                    <p id="pdfJustificacio" class="text-slate-700 leading-relaxed"></p>
-                  </div>
-                  <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
-                    <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Producte final esperat</h4>
-                    <p id="pdfProducte" class="text-slate-700 leading-relaxed font-semibold"></p>
-                  </div>
-                </div>
-
-                <!-- Curriculum Alignment -->
-                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs pdf-no-break">
-                  <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
-                  <p id="pdfSabers" class="text-slate-700 leading-relaxed"></p>
-                </div>
-
-                <!-- Material / Recursos -->
-                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs pdf-no-break">
-                  <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
-                  <p id="pdfMaterials" class="text-slate-700 leading-relaxed"></p>
-                </div>
-
-                <!-- DUA -->
-                <div class="bg-amber-50/60 p-3.5 rounded-lg border border-amber-200/80 text-xs pdf-no-break">
-                  <h4 class="font-bold text-amber-800 mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
-                  <p id="pdfDua" class="text-amber-900 leading-relaxed"></p>
+                <div class="text-right text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                  <span id="pdfAreaHeader"></span>
                 </div>
               </div>
 
+              <!-- Context Block -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
+                  <p id="pdfJustificacio" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Producte final esperat</h4>
+                  <p id="pdfProducte" class="text-slate-700 dark:text-slate-300 leading-relaxed font-semibold"></p>
+                </div>
+              </div>
+
+              <!-- Curriculum Alignment -->
+              <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
+                <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
+                <p id="pdfSabers" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+              </div>
+
+              <!-- Material / Recursos -->
+              <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
+                <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
+                <p id="pdfMaterials" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+              </div>
+
+              <!-- DUA -->
+              <div class="bg-amber-50/60 dark:bg-amber-950/30 p-3.5 rounded-lg border border-amber-200/80 dark:border-amber-900/40 text-xs pdf-no-break">
+                <h4 class="font-bold text-amber-800 dark:text-amber-400 mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
+                <p id="pdfDua" class="text-amber-900 dark:text-amber-300 leading-relaxed"></p>
+              </div>
+
               <!-- Document Footer (Només al peu de la Pàgina 1) -->
-              <div class="border-t border-slate-200 pt-3 text-[11px] font-semibold text-slate-600 mt-8 pdf-no-break">
+              <div class="border-t border-slate-200 dark:border-slate-700 pt-3 text-[11px] font-semibold text-slate-600 dark:text-slate-400 mt-8 pdf-no-break">
                 <span>Autor/a: <span id="pdfAutor"></span></span>
               </div>
             </div>
 
             <!-- Sessions Sequence Page (Pàgina 2 en endavant) -->
             <div class="pdf-page-break-before pt-2">
-              <h3 class="font-bold text-sm text-slate-900 border-b border-slate-200 pb-2 mb-4 uppercase tracking-wider pdf-no-break">Seqüència didàctica per sessions</h3>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 uppercase tracking-wider pdf-no-break">Seqüència didàctica per sessions</h3>
               <div id="pdfSessionsContainer" class="space-y-4">
                 <!-- Session cards inserted dynamically -->
               </div>
@@ -378,7 +371,7 @@
         <h3 class="font-bold text-slate-900 dark:text-white flex items-center text-sm">
           <i class="fa-solid fa-key text-orange-500 mr-2"></i> Obtenir la clau API de Gemini amb l'XTEC
         </h3>
-        <button onclick="toggleModal('apiModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+        <button type="button" onclick="toggleModal('apiModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
           <i class="fa-solid fa-xmark text-base"></i>
         </button>
       </div>
@@ -386,15 +379,15 @@
       <div class="text-xs space-y-3 text-slate-600 dark:text-slate-300">
         <p>L'aplicació utilitza la clau d'API de Google Gemini per processar la informació de les Situacions d'Aprenentatge.</p>
 
-        <ol class="list-decimal list-inside space-y-1.5 font-medium text-slate-700 dark:text-slate-200">
-          <li>Entra a <a href="https://aistudio.google.com/" target="_blank" class="text-orange-600 underline font-bold">Google AI Studio</a> amb el teu compte de l'XTEC.</li>
-          <li>Clica a <strong>"Create API key"</strong>.</li>
-          <li>Copia la clau generada, engalta-la al camp superior de l'aplicació i prem <strong>Desar</strong>.</li>
+        <ol class="list-decimal list-inside space-y-2 font-medium text-slate-700 dark:text-slate-200">
+          <li>Entra a <a href="https://aistudio.google.com/" target="_blank" class="text-orange-600 dark:text-orange-400 underline font-bold">Google AI Studio</a> amb el teu compte de l'XTEC.</li>
+          <li>A la barra lateral o al botó principal, clica a <strong>"Create API key"</strong>.</li>
+          <li>Copia la clau generada, engalta-la al camp superior d'aquesta aplicació i prem <strong>Desar</strong>.</li>
         </ol>
       </div>
 
       <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-end">
-        <button onclick="toggleModal('apiModal')" class="py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">
+        <button type="button" onclick="toggleModal('apiModal')" class="py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">
           Entesos
         </button>
       </div>
@@ -443,7 +436,10 @@
     }
 
     function toggleModal(id) {
-      document.getElementById(id).classList.toggle('hidden');
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.toggle('hidden');
+      }
     }
 
     function toggleApiKeyVisibility() {
@@ -664,7 +660,7 @@
       document.getElementById('pdfJustificacio').innerText = data.justificacio || '';
       document.getElementById('pdfProducte').innerText = data.producte || document.getElementById('producte').value;
       document.getElementById('pdfSabers').innerText = data.sabers || document.getElementById('sabers').value;
-      document.getElementById('pdfMaterials').innerText = data.materials || document.getElementById('materialsUsuari').value || 'No s'especifiquen materials complexos.';
+      document.getElementById('pdfMaterials').innerText = data.materials || document.getElementById('materialsUsuari').value || 'No s\'especifiquen materials complexos.';
       document.getElementById('pdfDua').innerText = data.dua || document.getElementById('dua').value;
 
       const sessionsContainer = document.getElementById('pdfSessionsContainer');
@@ -673,14 +669,14 @@
       if (data.sessions && Array.isArray(data.sessions)) {
         data.sessions.forEach(sessio => {
           const sessionCard = document.createElement('div');
-          sessionCard.className = 'border border-slate-200 rounded-lg p-3.5 bg-slate-50 text-xs space-y-1.5 pdf-no-break';
+          sessionCard.className = 'border border-slate-200 dark:border-slate-700 rounded-lg p-3.5 bg-slate-50 dark:bg-slate-900/50 text-xs space-y-1.5 pdf-no-break';
           sessionCard.innerHTML = `
-            <div class="flex justify-between items-center border-b border-slate-200 pb-1.5">
-              <span class="font-bold text-emerald-700">Sessió ${sessio.numero}: ${sessio.titol}</span>
-              <span class="text-[10px] text-slate-500 font-medium">Objectiu: ${sessio.objectiu}</span>
+            <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-1.5">
+              <span class="font-bold text-emerald-700 dark:text-emerald-400">Sessió ${sessio.numero}: ${sessio.titol}</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Objectiu: ${sessio.objectiu}</span>
             </div>
-            <p class="text-slate-700 leading-relaxed pt-1"><strong>Desenvolupament:</strong> ${sessio.desenvolupament}</p>
-            <p class="text-slate-600 text-[11px]"><strong>Avaluació:</strong> ${sessio.avaluacio}</p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed pt-1"><strong>Desenvolupament:</strong> ${sessio.desenvolupament}</p>
+            <p class="text-slate-600 dark:text-slate-400 text-[11px]"><strong>Avaluació:</strong> ${sessio.avaluacio}</p>
           `;
           sessionsContainer.appendChild(sessionCard);
         });
