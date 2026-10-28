@@ -8,18 +8,18 @@
   <!-- FAVICON AMB EMOJI DE LLAPIS -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
 
-  <!-- GOOGLE FONTS: PLUS JAKARTA SANS -->
+  <!-- FONT PLUS JAKARTA SANS PER A UN ASPECTE MODERNE I AMABLE -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* PALETA CÀLIDA I ORGÀNICA (LIGHT MODE) */
+      /* PALETA CÀLIDA I ORGÀNICA DE BAIXA FATIGA VISUAL */
       --bg-green: #f8faf9;
       --card-bg: #ffffff;
       --primary-orange: #d97745;
-      --primary-orange-dark: #b85b2b;
+      --primary-orange-dark: #be5f30;
       --accent-green: #1f4d36;
       --accent-green-dark: #143525;
       --text: #212529;
@@ -28,93 +28,81 @@
       --input-bg: #f1f5f3;
       --table-header-bg: #1f4d36;
       --table-header-text: #ffffff;
-      --hover-bg: #fbf3ee;
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
-      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
-      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      --hover-bg: #fcf1eb;
+      --radius-card: 16px;
+      --radius-input: 8px;
+      --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
 
     body.dark-mode {
-      /* PALETA DE COMPOSICIÓ FOSCA (DARK MODE - CARBÓ/PISSARRA) */
-      --bg-green: #121614;
-      --card-bg: #1a211e;
+      --bg-green: #141a17;
+      --card-bg: #1c2420;
       --primary-orange: #e07a5f;
       --primary-orange-dark: #f08252;
-      --accent-green: #2e684a;
+      --accent-green: #2e6a4f;
       --accent-green-dark: #1f4d36;
-      --text: #e2e8f0;
+      --text: #f1f5f9;
       --text-muted: #94a3b8;
-      --border: #2a3530;
-      --input-bg: #151b18;
-      --table-header-bg: #223f31;
+      --border: #2a3630;
+      --input-bg: #171f1b;
+      --table-header-bg: #224333;
       --table-header-text: #ffffff;
-      --hover-bg: #2b231d;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
-      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    * {
-      box-sizing: border-box;
+      --hover-bg: #2d2420;
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       background-color: var(--bg-green);
       color: var(--text);
       margin: 0;
-      padding: 28px 20px;
-      line-height: 1.6;
+      padding: 30px 20px;
       transition: background-color 0.3s, color 0.3s;
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 1240px;
+      max-width: 1220px;
       margin: 0 auto;
     }
 
-    /* CAPÇALERA MODERNITZADA */
     header {
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
-      color: white;
-      padding: 24px 28px;
-      border-radius: var(--radius-lg);
+      background: var(--card-bg);
+      color: var(--accent-green);
+      padding: 24px 30px;
+      border-radius: var(--radius-card);
       margin-bottom: 20px;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border);
       position: relative;
     }
 
     header h1 {
-      margin: 0 0 12px 0;
+      margin: 0 0 16px 0;
       font-size: 26px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .theme-toggle-btn {
       position: absolute;
-      top: 22px;
-      right: 24px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: white;
+      top: 24px;
+      right: 30px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
       padding: 8px 16px;
       border-radius: 30px;
       font-size: 13px;
       cursor: pointer;
       font-weight: 600;
-      transition: var(--transition);
+      transition: all 0.2s;
     }
 
     .theme-toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
+      background: var(--border);
     }
 
     .top-controls {
@@ -122,23 +110,21 @@
       gap: 15px;
       align-items: center;
       flex-wrap: wrap;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      background: var(--input-bg);
       padding: 12px 18px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      border: 1px solid var(--border);
     }
 
-    /* NAVEGACIÓ PRINCIPAL SEGMENTADA (SEGMENTED CONTROL) */
     .main-nav {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 20px;
       background: var(--card-bg);
       padding: 6px;
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-card);
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-soft);
     }
 
     .nav-btn {
@@ -148,36 +134,34 @@
       background-color: transparent;
       color: var(--text-muted);
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
       text-align: center;
-      transition: var(--transition);
+      transition: all 0.2s ease;
     }
 
     .nav-btn:hover {
-      color: var(--text);
-      background-color: var(--input-bg);
+      color: var(--accent-green);
     }
 
     .nav-btn.active {
       background-color: var(--accent-green);
       color: white;
-      box-shadow: 0 2px 8px rgba(31, 77, 54, 0.25);
+      box-shadow: 0 2px 8px rgba(31, 77, 54, 0.2);
     }
 
-    /* LAYOUT & PANELLS */
     .layout {
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr);
+      grid-template-columns: 340px minmax(0, 1fr);
       gap: 24px;
     }
 
     .panel {
       background: var(--card-bg);
-      padding: 24px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      padding: 28px;
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-soft);
       border: 1px solid var(--border);
       min-width: 0;
     }
@@ -189,39 +173,36 @@
       letter-spacing: -0.3px;
     }
 
-    /* FORMULARIS I ENTRADES DE TEXT */
     input[type="text"], input[type="password"], input[type="number"], input[type="email"], select, textarea {
       font-family: inherit;
       width: 100%;
       padding: 10px 14px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-input);
       font-size: 14px;
       box-sizing: border-box;
       margin-bottom: 10px;
       background-color: var(--input-bg);
       color: var(--text);
-      transition: var(--transition);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary-orange);
       box-shadow: 0 0 0 3px rgba(217, 119, 69, 0.15);
-      background-color: var(--card-bg);
     }
 
-    /* BOTONS I MICRO-INTERACCIONS */
     button {
       background-color: var(--primary-orange);
       color: white;
       border: none;
       padding: 10px 18px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-input);
       cursor: pointer;
       font-weight: 600;
       font-size: 14px;
-      transition: var(--transition);
+      transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -231,7 +212,6 @@
     button:hover {
       background-color: var(--primary-orange-dark);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(217, 119, 69, 0.25);
     }
 
     button.btn-green {
@@ -240,19 +220,10 @@
 
     button.btn-green:hover {
       background-color: var(--accent-green-dark);
-      box-shadow: 0 4px 12px rgba(31, 77, 54, 0.25);
-    }
-
-    button.btn-orange {
-      background-color: var(--primary-orange);
-    }
-
-    button.btn-orange:hover {
-      background-color: var(--primary-orange-dark);
     }
 
     button.btn-secondary {
-      background-color: #6c757d;
+      background-color: var(--text-muted);
     }
 
     button.btn-secondary:hover {
@@ -264,54 +235,42 @@
       padding: 6px 10px;
       font-size: 12px;
       border-radius: 6px;
-      touch-action: manipulation;
-    }
-
-    button.btn-danger:hover {
-      background-color: #c52a36;
-      box-shadow: 0 2px 8px rgba(230, 57, 70, 0.25);
     }
 
     .btn-help {
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: var(--input-bg);
+      color: var(--accent-green);
+      border: 1px solid var(--border);
       padding: 8px 12px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-input);
       font-size: 14px;
       font-weight: bold;
       cursor: pointer;
-      transition: var(--transition);
     }
 
-    .btn-help:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    /* ELEMENT D'ELEMENTS DE GRUP I ALUMNE */
     .group-item, .student-item {
       padding: 12px 14px;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       border: 1px solid var(--border);
       margin-bottom: 8px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--card-bg);
-      transition: var(--transition);
+      background: var(--input-bg);
+      transition: all 0.2s ease;
     }
 
     .group-item:hover, .student-item:hover {
+      background-color: var(--hover-bg);
       border-color: var(--primary-orange);
-      transform: translateX(2px);
     }
 
     .group-item.active, .student-item.active {
       background-color: var(--hover-bg);
       border-color: var(--primary-orange);
-      font-weight: 600;
-      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(217, 119, 69, 0.1);
     }
 
     .student-number {
@@ -320,12 +279,12 @@
       justify-content: center;
       width: 24px;
       height: 24px;
-      background-color: var(--input-bg);
+      background-color: var(--border);
       color: var(--accent-green);
       border-radius: 50%;
       font-size: 12px;
       font-weight: 700;
-      margin-right: 10px;
+      margin-right: 8px;
     }
 
     .student-item.active .student-number {
@@ -333,9 +292,11 @@
       color: white;
     }
 
-    /* BADGES I CÀPSULES (PILLS) */
+    /* BADGES MODELATS EN FORMA DE CÀPSULA SOFT */
     .badge {
       display: inline-block;
+      background: #e6f4ea;
+      color: #1f4d36;
       padding: 3px 10px;
       border-radius: 20px;
       font-size: 11px;
@@ -348,13 +309,13 @@
       align-items: center;
       justify-content: center;
       padding: 3px 8px;
-      background: var(--input-bg);
-      color: var(--text-muted);
+      background: #f1f5f9;
+      color: #475569;
       font-size: 11px;
-      border-radius: 12px;
+      border-radius: 20px;
       font-weight: 600;
-      border: 1px solid var(--border);
-      margin-right: 6px;
+      border: 1px solid #cbd5e1;
+      margin-right: 4px;
     }
 
     .badge-grades {
@@ -362,58 +323,49 @@
       align-items: center;
       justify-content: center;
       padding: 3px 8px;
-      background: rgba(31, 77, 54, 0.08);
-      color: var(--accent-green);
+      background: #e6f4ea;
+      color: #1f4d36;
       font-size: 11px;
-      border-radius: 12px;
+      border-radius: 20px;
       font-weight: 600;
-      border: 1px solid rgba(31, 77, 54, 0.15);
+      border: 1px solid #a3cfbb;
       margin-right: 8px;
     }
 
     .badge-article {
-      background: var(--input-bg);
+      background: #f1f5f9;
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: 11px;
       padding: 2px 8px;
       border-radius: 12px;
     }
 
-    .badge-internal {
-      background: var(--input-bg);
-      color: var(--text-muted);
-      border: 1px dashed var(--border);
-    }
-
-    /* GRAUS D'AVALUACIÓ EN PASTEL SUAU */
     .grade-badge {
       font-weight: 700;
       padding: 3px 8px;
-      border-radius: 12px;
+      border-radius: 6px;
       font-size: 11px;
     }
 
-    .grade-na { background: #fee2e2; color: #991b1b; }
+    .grade-na { background: #fde8e8; color: #9b1c1c; }
     .grade-as { background: #fef3c7; color: #92400e; }
     .grade-an { background: #dcfce7; color: #166534; }
     .grade-ae { background: #e0f2fe; color: #075985; }
 
-    /* CARD D'OBSERVACIONS */
     .obs-card {
-      background: var(--card-bg);
+      background: var(--input-bg);
       border-left: 4px solid var(--primary-orange);
       padding: 16px;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       margin-bottom: 12px;
-      border-top: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      border-left-width: 4px;
     }
 
     .obs-card.internal-note {
+      background: var(--card-bg);
       border-left-color: var(--text-muted);
-      opacity: 0.85;
+      opacity: 0.95;
     }
 
     .obs-meta {
@@ -427,110 +379,70 @@
 
     .report-box {
       background: var(--card-bg);
-      border: 2px solid var(--primary-orange);
-      padding: 22px;
-      border-radius: var(--radius-lg);
+      border: 1px solid var(--primary-orange);
+      padding: 24px;
+      border-radius: var(--radius-card);
       margin-top: 20px;
+      box-shadow: var(--shadow-soft);
       white-space: pre-wrap;
       font-size: 14px;
       line-height: 1.7;
-      box-shadow: var(--shadow-md);
     }
 
-    /* AVISOS I TARGETES D'INFORMACIÓ */
     .privacy-notice, .storage-warning, .usage-disclaimer {
-      padding: 12px 16px;
+      background-color: var(--card-bg);
+      padding: 12px 18px;
       font-size: 13px;
       color: var(--text);
-      margin-bottom: 12px;
-      border-radius: var(--radius-md);
-      background-color: var(--card-bg);
+      margin-bottom: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-soft);
     }
 
     .privacy-notice { border-left: 4px solid var(--accent-green); }
     .storage-warning { border-left: 4px solid #f59e0b; }
     .usage-disclaimer { border-left: 4px solid var(--primary-orange); }
 
-    /* CHIPS DE TASQUES */
     .task-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 6px 14px;
-      border-radius: 30px;
-      font-size: 13px;
+      border-radius: 20px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid var(--border);
-      background: var(--card-bg);
+      background: var(--input-bg);
       color: var(--text);
-      user-select: none;
-      transition: var(--transition);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .task-chip:hover {
-      transform: translateY(-1px);
+      transition: all 0.2s;
     }
 
     .task-chip.delivered {
       background: #dcfce7;
       color: #166534;
-      border-color: #bbf7d0;
+      border-color: #86efac;
     }
 
     .task-chip.pending {
       background: #fee2e2;
       color: #991b1b;
-      border-color: #fecaca;
-    }
-
-    .task-date {
-      font-size: 10px;
-      opacity: 0.8;
-      background: rgba(0,0,0,0.05);
-      padding: 2px 6px;
-      border-radius: 10px;
+      border-color: #fca5a5;
     }
 
     .group-task-item {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--card-bg);
+      background: var(--input-bg);
       border: 1px solid var(--border);
       padding: 6px 12px;
-      border-radius: var(--radius-sm);
+      border-radius: 10px;
       font-size: 12px;
       cursor: pointer;
-      transition: var(--transition);
     }
 
-    .group-task-item:hover {
-      background: var(--hover-bg);
-      border-color: var(--primary-orange);
-    }
-
-    .btn-delete-cross {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #e63946;
-      font-weight: bold;
-      font-size: 14px;
-      padding: 4px 8px;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: var(--transition);
-    }
-
-    .btn-delete-cross:hover {
-      background-color: rgba(230, 57, 70, 0.1);
-    }
-
-    /* DASHBOARD I MATRIU DE GRUP */
     .summary-card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -539,18 +451,19 @@
     }
 
     .area-summary-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
       padding: 12px;
       text-align: center;
-      box-shadow: var(--shadow-sm);
+      color: white;
     }
 
     .area-summary-title {
       font-size: 12px;
-      font-weight: 700;
-      color: var(--accent-green);
+      font-weight: 600;
+      color: #e2e8f0;
       margin-bottom: 4px;
       white-space: nowrap;
       overflow: hidden;
@@ -560,87 +473,58 @@
     .area-summary-score {
       font-size: 22px;
       font-weight: 800;
-      color: var(--text);
+      color: white;
     }
 
     #groupMatrixWrapper {
       margin-top: 12px;
       overflow-x: auto;
-      width: 100%;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       border: 1px solid var(--border);
     }
 
     .group-matrix-table, .student-grades-table {
-      width: max-content;
-      min-width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+      width: 100%;
+      border-collapse: collapse;
       font-size: 13px;
       background: var(--card-bg);
-      color: var(--text);
     }
 
     .group-matrix-table th, .group-matrix-table td,
     .student-grades-table th, .student-grades-table td {
-      border-bottom: 1px solid var(--border);
-      border-right: 1px solid var(--border);
-      padding: 10px 12px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
       text-align: center;
-      white-space: nowrap;
     }
 
-    .group-matrix-table th, .group-matrix-table td.student-name-td {
-      text-align: left;
-    }
-
-    .group-matrix-table th, .student-grades-table th {
+    .group-matrix-table th {
       background-color: var(--table-header-bg);
       color: var(--table-header-text);
       font-weight: 600;
     }
 
-    .group-matrix-table tr:hover {
-      background-color: var(--hover-bg);
-      cursor: pointer;
-    }
-
-    .group-matrix-table .avg-row, .student-grades-table .avg-row {
-      background-color: var(--input-bg);
-      font-weight: 700;
-    }
-
     .matrix-inline-input {
-      width: 55px !important;
-      padding: 4px 6px !important;
+      width: 50px !important;
+      padding: 4px !important;
       font-size: 12px !important;
       text-align: center !important;
       margin-bottom: 0 !important;
-      background: var(--card-bg) !important;
-      color: var(--text) !important;
-      border: 1px solid var(--border) !important;
       border-radius: 6px !important;
-    }
-
-    .matrix-inline-input:focus {
-      border-color: var(--primary-orange) !important;
-      box-shadow: 0 0 0 2px rgba(217, 119, 69, 0.2) !important;
     }
 
     .area-block-card {
       margin-bottom: 20px;
       background: var(--card-bg);
-      border-radius: var(--radius-md);
+      border-radius: 14px;
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-soft);
       overflow: hidden;
     }
 
-    /* MODALS I POPUPS */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(15, 23, 42, 0.5);
       backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
@@ -651,74 +535,16 @@
     .modal-content {
       background: var(--card-bg);
       color: var(--text);
-      padding: 24px;
-      border-radius: var(--radius-lg);
-      width: 500px;
+      padding: 28px;
+      border-radius: var(--radius-card);
+      width: 480px;
       max-height: 85vh;
       display: flex;
       flex-direction: column;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--border);
     }
 
-    .modal-scroll {
-      overflow-y: auto;
-      max-height: 280px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px;
-      background: var(--input-bg);
-      margin-bottom: 12px;
-    }
-
-    .student-checkbox-item, .student-grade-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--border);
-    }
-
-    .student-checkbox-item:last-child, .student-grade-row:last-child {
-      border-bottom: none;
-    }
-
-    .api-instructions-list {
-      margin: 10px 0;
-      padding-left: 20px;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .nav-arrow-btn {
-      background: var(--accent-green);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .nav-arrow-btn:hover {
-      background: var(--accent-green-dark);
-      transform: scale(1.05);
-    }
-
-    .nav-arrow-btn:disabled {
-      background: var(--border);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* EDITOR ENRIQUIT (BITÀCOLA I REUNIONS) */
     .editor-toolbar {
       display: flex;
       gap: 6px;
@@ -726,7 +552,7 @@
       padding: 8px;
       border: 1px solid var(--border);
       border-bottom: none;
-      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border-radius: var(--radius-input) var(--radius-input) 0 0;
     }
 
     .editor-btn {
@@ -735,90 +561,48 @@
       border: 1px solid var(--border);
       padding: 4px 10px;
       font-size: 12px;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .editor-btn:hover {
-      background: var(--border);
-    }
-
-    .editor-btn-highlight {
-      background: #fde8e0;
-      color: var(--primary-orange-dark);
-      border-color: #f1b08c;
-    }
-
-    .editor-btn-highlight:hover {
-      background: #fbd2c2;
     }
 
     .rich-editor {
-      min-height: 110px;
+      min-height: 120px;
       max-height: 250px;
       overflow-y: auto;
       border: 1px solid var(--border);
-      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      border-radius: 0 0 var(--radius-input) var(--radius-input);
       padding: 12px;
       font-size: 14px;
       background-color: var(--input-bg);
-      color: var(--text);
       outline: none;
-      transition: var(--transition);
     }
 
-    .rich-editor:focus {
-      border-color: var(--primary-orange);
-      box-shadow: 0 0 0 3px rgba(217, 119, 69, 0.15);
-      background-color: var(--card-bg);
-    }
-
-    mark.orange-highlight {
-      background-color: #fde8e0;
-      color: var(--text);
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    /* PEU DE PÀGINA */
     footer {
-      margin-top: 36px;
+      margin-top: 40px;
       padding-top: 20px;
       border-top: 1px solid var(--border);
       text-align: center;
     }
 
     .btn-footer {
-      background: var(--accent-green);
-      color: white;
+      background: var(--card-bg);
+      color: var(--accent-green);
+      border: 1px solid var(--border);
       font-size: 12px;
       font-weight: 600;
-      padding: 8px 16px;
+      padding: 8px 18px;
       border-radius: 30px;
-      border: none;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.2s;
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-block;
+      box-shadow: var(--shadow-soft);
     }
 
     .btn-footer:hover {
-      background: var(--accent-green-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(31, 77, 54, 0.2);
-    }
-
-    .btn-footer-coffee {
-      background: var(--primary-orange);
-    }
-
-    .btn-footer-coffee:hover {
-      background: var(--primary-orange-dark);
+      background: var(--accent-green);
+      color: white;
     }
   </style>
 </head>
@@ -830,8 +614,8 @@
     <h1>✏️ Quadern docent</h1>
     <div class="top-controls">
       <div style="flex: 2; display:flex; gap:8px; align-items:center;">
-        <label for="apiKey" style="white-space:nowrap;"><strong>Clau API:</strong></label>
-        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC.">
+        <label for="apiKey" style="white-space:nowrap; font-weight: 600;">Clau API:</label>
+        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC." style="margin-bottom:0;">
         <button type="button" onclick="saveApiKey()">Desar clau</button>
         <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?">❓</button>
       </div>
@@ -850,15 +634,15 @@
   </div>
 
   <div class="privacy-notice">
-    🔒 <strong>Privacitat protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes.
+    🔒 <strong>Privacitat protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes[cite: 1].
   </div>
 
   <div class="storage-warning">
-    ⚠️ <strong>Atenció sobre les dades:</strong> Totes les dades s'emmagatzemen al teu navegador. Eliminar l'historial o la memòria pot fer que perdis la informació desada. Recorda exportar una còpia de seguretat periòdicament per no perdre cap dada.
+    ⚠️ <strong>Atenció sobre les dades:</strong> Totes les dades s'emmagatzemen al teu navegador. Eliminar l'historial o la memòria pot fer que perdis la informació desada[cite: 1]. Recorda exportar una còpia de seguretat periòdicament per no perdre cap dada[cite: 1].
   </div>
 
   <div class="usage-disclaimer">
-    ℹ️ Aquest full de seguiment s'ha dissenyat per facilitar la tasca docent. Utilitza'l sota la teva responsabilitat i fes-ne un bon ús.
+    ℹ️ Aquest full de seguiment s'ha dissenyat per facilitar la tasca docent. Utilitza'l sota la teva responsabilitat i fes-ne un bon ús[cite: 1].
   </div>
 
   <!-- SECCIÓ 1: SEGUIMENT DE L'ALUMNAT -->
@@ -883,15 +667,15 @@
             <button type="button" onclick="openWeightsModal()" style="font-size:11px; padding:4px 8px; background-color:#4a5568;" title="Configurar percentatges de les àrees">⚙️ Ponderacions</button>
           </div>
 
-          <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-md); margin-bottom: 15px;">
+          <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 12px; border-radius: 12px; margin-bottom: 15px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <strong style="font-size: 13px; color: var(--accent-green);">📋 Tasques de grup</strong>
-              <button type="button" onclick="openAddTaskModal()" style="font-size: 11px; padding: 3px 8px;" class="btn-green">+ Nova tasca</button>
+              <button type="button" onclick="openAddTaskModal()" style="font-size: 11px; padding: 4px 8px;" class="btn-green">+ Nova tasca</button>
             </div>
             <div id="groupTasksList" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
           </div>
           
-          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; background: var(--input-bg); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; background: var(--input-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
             <input type="text" id="newStudentName" placeholder="Nom i cognoms..." style="margin-bottom: 0;">
             <div style="display: flex; gap: 8px; align-items: center;">
               <select id="newStudentArticle" style="margin-bottom: 0; flex: 1.2;">
@@ -919,23 +703,23 @@
       <!-- PANEL DRETA: DETALL I MATRIU DEL GRUP -->
       <div class="panel">
         
-        <div id="groupOverviewSection" style="display:none; margin-bottom:20px; background:var(--input-bg); border:1px solid var(--border); padding:18px; border-radius:var(--radius-lg);">
+        <div id="groupOverviewSection" style="display:none; margin-bottom:20px; background:var(--input-bg); border:1px solid var(--border); padding:18px; border-radius:14px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <h3 style="margin:0; font-size:16px;">📊 Resum del grup</h3>
-              <button type="button" onclick="openBulkGradeModal()" class="btn-green" style="font-size:11px; padding:4px 10px;">📝 Notes per prova</button>
-              <button type="button" id="toggleMatrixViewBtn" onclick="toggleGroupMatrixViewMode()" style="font-size:11px; padding:4px 10px; background:#4a5568;">🔍 Desglossar proves</button>
-              <button type="button" id="toggleMatrixBtn" onclick="toggleGroupMatrix()" style="font-size:11px; padding:4px 10px; background:#6c757d;">▲ Amagar</button>
+              <button type="button" onclick="openBulkGradeModal()" class="btn-green" style="font-size:11px; padding:4px 8px;">📝 Notes per prova</button>
+              <button type="button" id="toggleMatrixViewBtn" onclick="toggleGroupMatrixViewMode()" style="font-size:11px; padding:4px 8px; background:#4a5568;">🔍 Desglossar proves</button>
+              <button type="button" id="toggleMatrixBtn" onclick="toggleGroupMatrix()" style="font-size:11px; padding:4px 8px; background:#6c757d;">▲ Amagar</button>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
               <label for="groupMatrixTrimestreSelector" style="font-size:12px; font-weight:bold;">Període:</label>
-              <select id="groupMatrixTrimestreSelector" onchange="renderGroupMatrix()" style="width:auto; margin-bottom:0; font-size:12px; padding:4px 10px; font-weight:bold;">
+              <select id="groupMatrixTrimestreSelector" onchange="renderGroupMatrix()" style="width:auto; margin-bottom:0; font-size:12px; padding:4px 8px; font-weight:bold;">
                 <option value="1r Trimestre">1r Trimestre</option>
                 <option value="2n Trimestre">2n Trimestre</option>
                 <option value="3r Trimestre">3r Trimestre</option>
                 <option value="FINAL">🎓 Curs global (FINAL)</option>
               </select>
-              <button type="button" onclick="exportGroupScoresCsv()" class="btn-green" style="font-size:11px; padding:5px 10px;" title="Exportar resum de notes en CSV">📊 Exportar CSV</button>
+              <button type="button" onclick="exportGroupScoresCsv()" class="btn-green" style="font-size:11px; padding:4px 8px;" title="Exportar resum de notes en CSV">📊 Exportar CSV</button>
             </div>
           </div>
           <div id="groupMatrixWrapper">
@@ -965,12 +749,13 @@
             </div>
           </div>
 
-          <div style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 18px; border-radius: var(--radius-lg); margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+          <!-- PANEL AMB GRADIENT POLIT DE FONS BOSC -->
+          <div style="background: linear-gradient(135deg, #1f4d36, #143525); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--shadow-soft);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-              <h4 style="margin:0; color:white;">📊 Marcador d'avaluació ponderada (infant)</h4>
+              <h4 style="margin:0; color:white; font-size:16px;">📊 Marcador d'avaluació ponderada (infant)</h4>
               <div style="display:flex; align-items:center; gap:6px;">
                 <label for="summaryTrimestreSelector" style="font-size:12px; color:#e2e8f0;">Període:</label>
-                <select id="summaryTrimestreSelector" onchange="renderSummaryDashboard(); renderGrades();" style="width:auto; margin-bottom:0; font-size:12px; padding:4px 8px; color:var(--accent-green); font-weight:bold;">
+                <select id="summaryTrimestreSelector" onchange="renderSummaryDashboard(); renderGrades();" style="width:auto; margin-bottom:0; font-size:12px; padding:4px 8px; color:#1f4d36; font-weight:bold; border-radius:6px;">
                   <option value="1r Trimestre">1r Trimestre</option>
                   <option value="2n Trimestre">2n Trimestre</option>
                   <option value="3r Trimestre">3r Trimestre</option>
@@ -981,15 +766,15 @@
             <div id="summaryCardsGrid" class="summary-card-grid"></div>
           </div>
 
-          <div style="background: var(--card-bg); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+          <div style="background: var(--card-bg); padding: 18px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: var(--shadow-soft);">
             <h4 style="margin:0 0 8px 0;">📋 Control de lliuraments d'aquest alumne/a</h4>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 10px;">Fes clic per canviar l'estat individual d'aquesta tasca:</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 12px;">Fes clic per canviar l'estat individual d'aquesta tasca:</p>
             <div id="tasksContainer" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 20px;"></div>
           </div>
 
-          <div style="background: var(--input-bg); padding: 18px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 20px;">
+          <div style="background: var(--input-bg); padding: 18px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 20px;">
             <h4>📊 Registre i matriu de proves d'avaluació</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 90px; gap: 8px; align-items: end; margin-bottom: 15px; background: var(--card-bg); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 90px; gap: 8px; align-items: end; margin-bottom: 15px; background: var(--card-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
               <div>
                 <label style="font-size:12px; font-weight:600;">Àrea:</label>
                 <select id="gradeArea" onchange="updateGradeCategoryOptions()"></select>
@@ -1018,7 +803,7 @@
             <div id="gradesHistory"></div>
           </div>
 
-          <div style="background: var(--input-bg); padding: 18px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 20px;">
+          <div style="background: var(--input-bg); padding: 18px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 20px;">
             <h4>✍️ Nova observació pedagògica</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
               <div>
@@ -1057,7 +842,7 @@
 
           <h4>Generació automàtica d'informes</h4>
           <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
-            Genera una proposta de redactat adaptada gramaticalment (excloent anotacions internes):
+            Genera una proposta de redactat adaptada gramaticalment (excloent anotacions internes)[cite: 1]:
           </p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button type="button" id="btnReportTrimestral" onclick="generateReport('trimestral')">📝 Informe trimestral</button>
@@ -1077,6 +862,7 @@
         </div>
 
         <div id="noStudentSelected" style="text-align: center; color: var(--text-muted); padding: 50px 20px;">
+          <div style="font-size: 40px; margin-bottom: 10px;">🎒</div>
           <h3>Cap alumne seleccionat</h3>
           <p>Crea un grup, afegeix alumnes i selecciona'n un per gestionar el seu seguiment.</p>
         </div>
@@ -1092,7 +878,7 @@
         Anota aquí les programacions diàries, el desenvolupament de les sessions i les observacions de grup per a cada àrea.
       </p>
 
-      <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 18px; border-radius: var(--radius-lg); margin-bottom: 20px;">
+      <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 18px; border-radius: 14px; margin-bottom: 20px;">
         <h4 style="margin-top:0;">✍️ Nova entrada de bitàcola</h4>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 8px;">
           <div>
@@ -1111,7 +897,7 @@
 
         <div style="margin-bottom: 8px;">
           <label style="font-size: 12px; font-weight: 600;">Títol / Concepte de la sessió:</label>
-          <input type="text" id="logbookTitle" placeholder="P. ex. Sessió 3: Fraccions equivalents o Dibuix amb ombres...">
+          <input type="text" id="logbookTitle" placeholder="P. ex. Sessió 3: Fraccions equivalents...">
         </div>
 
         <label style="font-size: 12px; font-weight: 600;">Desenvolupament i acords de la sessió:</label>
@@ -1119,9 +905,9 @@
           <button type="button" class="editor-btn" onclick="formatText('bold')" title="Negreta"><b>B</b></button>
           <button type="button" class="editor-btn" onclick="formatText('italic')" title="Cursiva"><i>I</i></button>
           <button type="button" class="editor-btn" onclick="formatText('underline')" title="Subratllat tradicional"><u>U</u></button>
-          <button type="button" class="editor-btn editor-btn-highlight" onclick="highlightTextInLogbook()" title="Subratllador taronja">🖍️ Subratllador</button>
+          <button type="button" class="editor-btn" onclick="highlightTextInLogbook()" style="background:#ffe8dc; color:#d97745;" title="Subratllador taronja">🖍️ Subratllador</button>
         </div>
-        <div id="logbookContent" class="rich-editor" contenteditable="true" placeholder="Escriu les activitats realitzades, dinamismes, tasques pendents de la classe o incidències generals..."></div>
+        <div id="logbookContent" class="rich-editor" contenteditable="true" placeholder="Escriu les activitats realitzades, dinamismes, tasques pendents..."></div>
 
         <div style="text-align: right; margin-top: 12px;">
           <button type="button" onclick="addLogbookEntry()" class="btn-green">+ Desar sessió a la bitàcola</button>
@@ -1149,7 +935,7 @@
         Anota aquí les decisions, acords pedagògics o informacions importants dels claustres, la direcció o les trobades de cicle.
       </p>
 
-      <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 18px; border-radius: var(--radius-lg); margin-bottom: 20px;">
+      <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 18px; border-radius: 14px; margin-bottom: 20px;">
         <h4 style="margin-top:0;">✍️ Nova acta / anotació de reunió</h4>
         <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 8px;">
           <div>
@@ -1179,7 +965,7 @@
           <button type="button" class="editor-btn" onclick="formatText('bold')" title="Negreta"><b>B</b></button>
           <button type="button" class="editor-btn" onclick="formatText('italic')" title="Cursiva"><i>I</i></button>
           <button type="button" class="editor-btn" onclick="formatText('underline')" title="Subratllat tradicional"><u>U</u></button>
-          <button type="button" class="editor-btn editor-btn-highlight" onclick="highlightText()" title="Subratllador taronja">🖍️ Subratllador</button>
+          <button type="button" class="editor-btn" onclick="highlightText()" style="background:#ffe8dc; color:#d97745;" title="Subratllador taronja">🖍️ Subratllador</button>
         </div>
         <div id="schoolMeetingContent" class="rich-editor" contenteditable="true" placeholder="Escriu els punts tractats, acords o tasques pendents..."></div>
 
@@ -1210,11 +996,11 @@
   </div>
 
   <footer>
-    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
       <button type="button" class="btn-footer" onclick="openPrivacyModal()">🔒 Avís de privacitat i bones pràctiques</button>
       <a href="pdf" target="_blank" class="btn-footer">📊 Generador de PDF/CSV</a>
       <a href="gemini" target="_blank" class="btn-footer">🤖 Generador de Prompt</a>
-      <a href="sda" target="_blank" class="btn-footer" style="background-color: var(--accent-green);">🖋️Generador SdA</a>
+      <a href="sda" target="_blank" class="btn-footer" style="background-color: var(--accent-green); color: white;">🖋️Generador SdA</a>
       <button type="button" class="btn-footer" onclick="openFeedbackModal()">💬 Feedback</button>
     </div>
   </footer>
@@ -1223,9 +1009,9 @@
 <!-- MODALS -->
 <div id="bulkGradeModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <h4 style="margin-top:0; margin-bottom:10px;">📝 Gestió de notes per prova de grup</h4>
+    <h4 style="margin-top:0; margin-bottom:12px;">📝 Gestió de notes per prova de grup</h4>
     
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
       <div>
         <label style="font-size:12px; font-weight:600;">Àrea:</label>
         <select id="bulkGradeArea" onchange="onBulkAreaChange()"></select>
@@ -1236,7 +1022,7 @@
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
       <div>
         <label style="font-size:12px; font-weight:600;">Nom/Títol de la prova (opcional):</label>
         <input type="text" id="bulkGradeTitle" placeholder="P. ex. Examen Tema 1, Fraccions...">
@@ -1252,14 +1038,14 @@
     </div>
 
     <label style="font-size:12px; font-weight:600; display:block; margin-top:5px;">Carregar o editar prova existent:</label>
-    <select id="bulkExistingTestsSelect" onchange="loadExistingTestIntoBulkModal()" style="margin-bottom:10px;">
+    <select id="bulkExistingTestsSelect" onchange="loadExistingTestIntoBulkModal()" style="margin-bottom:12px;">
       <option value="NEW">✨ Nova prova (crear des de zero)</option>
     </select>
 
-    <div class="modal-scroll" id="bulkGradeStudentList"></div>
+    <div class="modal-scroll" id="bulkGradeStudentList" style="overflow-y:auto; max-height:250px; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:12px;"></div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
-      <span style="font-size:11px; color:var(--text-muted);">Pots deixar les caselles en blanc si la prova està pendent.</span>
+      <span style="font-size:11px; color:var(--text-muted);">Pots deixar les caselles en blanc si està pendent.</span>
       <div style="display:flex; gap:8px;">
         <button type="button" class="btn-secondary" onclick="closeBulkGradeModal()">Cancel·lar</button>
         <button type="button" class="btn-green" onclick="saveBulkGrades()">Desar notes del grup</button>
@@ -1270,20 +1056,20 @@
 
 <div id="viewGroupTaskModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <h4 style="margin:0;" id="viewGroupTaskTitle">📌 Estat de la tasca</h4>
       <button type="button" onclick="closeViewGroupTaskModal()" style="background:none; border:none; color:var(--text); font-size:18px; cursor:pointer; padding:0;">✕</button>
     </div>
     
-    <div style="display:flex; justify-content:flex-start; align-items:center; gap:10px; margin-bottom:10px; font-size:12px;">
+    <div style="display:flex; justify-content:flex-start; align-items:center; gap:10px; margin-bottom:12px; font-size:12px;">
       <span id="viewGroupTaskSubtext" style="color:var(--text-muted);"></span>
-      <div style="display:flex; gap:5px;">
-        <button type="button" onclick="setAllTaskStatusForGroup(true)" style="padding:2px 8px; font-size:11px;" class="btn-green">Tots lliurat</button>
-        <button type="button" onclick="setAllTaskStatusForGroup(false)" style="padding:2px 8px; font-size:11px; background:#6c757d;">Tots pendent</button>
+      <div style="display:flex; gap:6px;">
+        <button type="button" onclick="setAllTaskStatusForGroup(true)" style="padding:4px 8px; font-size:11px;" class="btn-green">Tots lliurat</button>
+        <button type="button" onclick="setAllTaskStatusForGroup(false)" style="padding:4px 8px; font-size:11px; background:var(--text-muted);">Tots pendent</button>
       </div>
     </div>
 
-    <div class="modal-scroll" id="viewGroupTaskStudentList"></div>
+    <div class="modal-scroll" id="viewGroupTaskStudentList" style="overflow-y:auto; max-height:250px; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:12px;"></div>
 
     <div style="display:flex; justify-content:flex-start; gap:8px; margin-top:5px;">
       <button type="button" class="btn-green" onclick="closeViewGroupTaskModal()">D'acord</button>
@@ -1293,18 +1079,18 @@
 
 <div id="weightsModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <h4 style="margin-top:0; margin-bottom:10px;">⚙️ Ponderacions per àrees</h4>
+    <h4 style="margin-top:0; margin-bottom:12px;">⚙️ Ponderacions per àrees</h4>
     <p style="font-size:12px; color:var(--text-muted); margin-top:0;">Defineix els percentatges dels diferents instruments d'avaluació per a cada matèria:</p>
 
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom:12px;">
       <label style="font-size:12px; font-weight:600;">Selecciona l'àrea:</label>
       <select id="weightsAreaSelector" onchange="renderWeightsForm()"></select>
     </div>
 
-    <div class="modal-scroll" id="weightsFormContainer"></div>
+    <div class="modal-scroll" id="weightsFormContainer" style="overflow-y:auto; max-height:220px; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:12px;"></div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
-      <button type="button" onclick="addCategoryToWeights()" style="font-size:11px; padding:4px 8px;">+ Categoria</button>
+      <button type="button" onclick="addCategoryToWeights()" style="font-size:11px; padding:6px 10px;">+ Categoria</button>
       <div style="display:flex; gap:8px;">
         <button type="button" class="btn-secondary" onclick="closeWeightsModal()">Cancel·lar</button>
         <button type="button" class="btn-green" onclick="saveWeightsConfig()">Desar ponderació</button>
@@ -1315,7 +1101,7 @@
 
 <div id="addTaskModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <h4 style="margin-top:0; margin-bottom:10px;">Nova tasca de grup</h4>
+    <h4 style="margin-top:0; margin-bottom:12px;">Nova tasca de grup</h4>
     
     <label style="font-size:12px; font-weight:600;">Nom de la tasca:</label>
     <input type="text" id="modalTaskName" placeholder="P. ex. Autorització, Dibuix d'Art...">
@@ -1324,20 +1110,20 @@
     <select id="modalTaskArea"></select>
 
     <label style="font-size:12px; font-weight:600;">Estat inicial per als alumnes seleccionats:</label>
-    <select id="modalTaskDefaultState" style="margin-bottom:10px;">
+    <select id="modalTaskDefaultState" style="margin-bottom:12px;">
       <option value="false">❌ Pendent</option>
       <option value="true">✅ Feta</option>
     </select>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
       <label style="font-size:12px; font-weight:600;">Assignar als alumnes:</label>
-      <div style="display:flex; gap:5px;">
-        <button type="button" onclick="selectAllModalStudents(true)" style="padding:2px 6px; font-size:10px;">Tots</button>
-        <button type="button" onclick="selectAllModalStudents(false)" style="padding:2px 6px; font-size:10px; background:#6c757d;">Cap</button>
+      <div style="display:flex; gap:6px;">
+        <button type="button" onclick="selectAllModalStudents(true)" style="padding:2px 8px; font-size:11px;">Tots</button>
+        <button type="button" onclick="selectAllModalStudents(false)" style="padding:2px 8px; font-size:11px; background:var(--text-muted);">Cap</button>
       </div>
     </div>
 
-    <div class="modal-scroll" id="modalStudentList"></div>
+    <div class="modal-scroll" id="modalStudentList" style="overflow-y:auto; max-height:200px; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:12px;"></div>
 
     <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:5px;">
       <button type="button" class="btn-secondary" onclick="closeAddTaskModal()">Cancel·lar</button>
@@ -1348,14 +1134,14 @@
 
 <div id="apiHelpModal" class="modal-overlay" style="display:none;">
   <div class="modal-content" style="width: 460px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <h4 style="margin:0; color:var(--accent-green);">🔑 Com aconseguir la clau API de Gemini?</h4>
       <button type="button" onclick="closeApiHelpModal()" style="background:none; border:none; color:var(--text); font-size:18px; cursor:pointer; padding:0;">✕</button>
     </div>
     
-    <p style="font-size:13px; color:var(--text-muted); margin:0 0 10px 0;">Segueix aquests passos senzills per obtenir la teva clau gratuïta de Google:</p>
+    <p style="font-size:13px; color:var(--text-muted); margin:0 0 12px 0;">Segueix aquests passos senzills per obtenir la teva clau de Google:</p>
 
-    <ol class="api-instructions-list">
+    <ol style="margin: 0 0 15px 0; padding-left: 20px; font-size: 13px; line-height: 1.6;">
       <li>Accedeix a <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary-orange); font-weight:bold;">Google AI Studio</a>.</li>
       <li>Identifica't amb el teu usuari d'<strong>XTEC</strong>.</li>
       <li>Al menú lateral, ves a <strong>Dashboard</strong>.</li>
@@ -1363,12 +1149,12 @@
       <li>Genera una clau nova (<em>Create API Key</em>) i copia-la.</li>
     </ol>
 
-    <div style="background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px; font-size:12px; color:var(--text); margin-bottom:12px;">
-      💡 Un cop la tinguis copiada, enganxa-la a la casella superior i prem <strong>"Desar clau"</strong>. Quedarà desada al teu navegador.
+    <div style="background:var(--input-bg); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:12px; margin-bottom:12px;">
+      💡 Un cop la tinguis copiada, enganxa-la a la casella superior i prem <strong>"Desar clau"</strong>.
     </div>
 
-    <div style="background:var(--input-bg); border-left:4px solid var(--primary-orange); border-radius:var(--radius-sm); padding:10px; font-size:12px; color:var(--text); margin-bottom:15px;">
-      ⚠️ <strong>Atenció:</strong> Si esgotes el límit de l'API, ves al <a href="gemini" target="_blank" style="color:var(--primary-orange-dark); font-weight:bold; text-decoration:underline;">Generador de Prompt</a>.
+    <div style="background:var(--input-bg); border-left:4px solid var(--primary-orange); border-radius:4px; padding:12px; font-size:12px; margin-bottom:15px;">
+      ⚠️ <strong>Atenció:</strong> Si esgotes el límit de l'API, utilitza el <a href="gemini" target="_blank" style="color:var(--primary-orange-dark); font-weight:bold;">Generador de Prompt</a>.
     </div>
 
     <div style="text-align:right;">
@@ -1379,38 +1165,26 @@
 
 <div id="privacyModal" class="modal-overlay" style="display:none;">
   <div class="modal-content" style="width: 520px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
       <h4 style="margin:0; color:var(--accent-green); font-size:16px;">🔒 Avís de privacitat i bones pràctiques</h4>
       <button type="button" onclick="closePrivacyModal()" style="background:none; border:none; color:var(--text); font-size:18px; cursor:pointer; padding:0;">✕</button>
     </div>
     
-    <div style="font-size:13px; color:var(--text); line-height:1.6; overflow-y:auto; max-height:65vh; padding-right:5px;">
-      
-      <div style="background:var(--input-bg); border-left:4px solid var(--accent-green); padding:12px; border-radius:var(--radius-sm); margin-bottom:12px;">
+    <div style="font-size:13px; color:var(--text); line-height:1.6; overflow-y:auto; max-height:60vh; padding-right:5px;">
+      <div style="background:var(--input-bg); border-left:4px solid var(--accent-green); padding:12px; border-radius:6px; margin-bottom:12px;">
         <strong>1. Ús del compte educatiu XTEC:</strong><br>
-        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institutional <strong>XTEC</strong>. Els entorns educatius corporatius de Google disposen de garanties addicionals de protecció de dades i privacitat contractuals ajustades al RGPD per als centres docents.
+        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institutional <strong>XTEC</strong>[cite: 1].
       </div>
 
-      <div style="background:var(--input-bg); border:1px solid var(--border); padding:12px; border-radius:var(--radius-sm); margin-bottom:12px;">
+      <div style="background:var(--input-bg); border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:12px;">
         <strong>2. Emmagatzematge local (100% privat):</strong><br>
-        Totes les notes, observacions, tasques i dades dels alumnes <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`). No es guarda res en cap servidor extern ni base de dades al núvol. Per això, és fonamental realitzar còpies de seguretat periòdicament des del botó <em>"💾 Exportar còpia"</em>.
+        Totes les notes, observacions i tasques <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`)[cite: 1].
       </div>
 
-      <div style="background:var(--input-bg); border-left:4px solid var(--primary-orange); padding:12px; border-radius:var(--radius-sm); margin-bottom:12px;">
+      <div style="background:var(--input-bg); border-left:4px solid var(--primary-orange); padding:12px; border-radius:6px; margin-bottom:12px;">
         <strong>3. Recomanació d'anonimització:</strong><br>
-        Per garantir una protecció total de la identitat de l'alumnat:
-        <ul style="margin:5px 0 0 0; padding-left:20px;">
-          <li>És preferible registrar els infants utilitzant <strong>només el nom de pila o la inicial del primer cognom</strong> en lloc del nom complet.</li>
-          <li>En generar informes amb IA, les anotacions marcades com a 🔒 <em>internes</em> mai s'enviaran a l'API.</li>
-        </ul>
+        És preferible registrar els infants utilitzant <strong>només el nom de pila o la inicial del primer cognom</strong>[cite: 1].
       </div>
-
-      <div style="background:var(--input-bg); border:1px solid var(--border); padding:12px; border-radius:var(--radius-sm); margin-bottom:12px;">
-        <strong>4. Llicència i comunitat:</strong><br>
-        Projecte de codi obert allotjat a GitHub sota llicència MIT.<br><br>
-        Aquest projecte ha estat pensat per un docent i creat amb l'ajuda de la IA amb la intenció de compartir-lo amb tota la comunitat educativa. Si vols col·laborar amb la iniciativa, <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="color:var(--primary-orange); font-weight:bold;">convida'm a un cafè</a>.
-      </div>
-
     </div>
 
     <div style="text-align:right; margin-top:15px;">
@@ -1427,15 +1201,15 @@
     </div>
 
     <p style="font-size:13px; color:var(--text-muted); margin-top:0; margin-bottom:12px;">
-      Has trobat cap error o tens una idea per millorar el quadern? Envia el teu comentari directament:
+      Has trobat cap error o tens una idea per millorar el quadern? Envia el teu comentari directament[cite: 1]:
     </p>
 
     <form id="feedbackForm" action="https://formspree.io/f/meaaqyln" method="POST" onsubmit="handleFeedbackSubmit(event)">
-      <label style="font-size:12px; font-weight:600;">El teu correu electrònic (opcional per poder-te respondre):</label>
+      <label style="font-size:12px; font-weight:600;">El teu correu electrònic (opcional):</label>
       <input type="email" name="email" placeholder="nom@xtec.cat">
 
       <label style="font-size:12px; font-weight:600;">On has trobat l'error o quina millora proposes?</label>
-      <textarea name="message" rows="5" required placeholder="Explica detalladament què ha passat o quina funcionalitat t'agradaria veure..."></textarea>
+      <textarea name="message" rows="5" required placeholder="Explica detalladament què ha passat..."></textarea>
 
       <div id="feedbackStatus" style="font-size:12px; margin-bottom:10px; display:none;"></div>
 
@@ -1464,12 +1238,13 @@
   ];
 
   const AREA_COLORS = [
-    { bg: '#fde8e0', text: '#9c3d10' },
-    { bg: '#dcfce7', text: '#166534' },
-    { bg: '#e0f2fe', text: '#075985' },
-    { bg: '#f3e8ff', text: '#6b21a8' },
-    { bg: '#fef3c7', text: '#92400e' },
-    { bg: '#ffedd5', text: '#9a3412' }
+    { bg: '#ffe3d1', text: '#9c3d10' },
+    { bg: '#d8f3dc', text: '#1b4332' },
+    { bg: '#cff4fc', text: '#055160' },
+    { bg: '#f3d2c1', text: '#5c220f' },
+    { bg: '#e2d4f0', text: '#4a154b' },
+    { bg: '#fff3cd', text: '#664d03' },
+    { bg: '#ffd6a5', text: '#7c3a00' }
   ];
 
   function toggleDarkMode() {
@@ -1961,7 +1736,7 @@
 
       tests.forEach(test => {
         const color = getAreaColorObj(test.area);
-        tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33; font-size:11px; white-space:nowrap; padding:6px 8px;">
+        tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33; font-size:11px; white-space:nowrap; padding:6px;">
           <div>${test.area}</div>
           <div style="font-weight:bold; font-size:11px;">${test.displayTitle}</div>
         </th>`;
@@ -1983,7 +1758,7 @@
           const val = (gradeObj && gradeObj.val !== null && gradeObj.val !== undefined) ? gradeObj.val : '';
           const actIdParam = `'${test.activityId.replace(/'/g, "\\'")}'`;
 
-          tableHtml += `<td style="padding:4px 6px;">
+          tableHtml += `<td style="padding:2px 4px;">
             <input type="number" class="matrix-inline-input" value="${val}" min="0" max="10" step="0.1" placeholder="-" 
               onchange="updateInlineGradeFromMatrixById(this, ${sIdx}, ${actIdParam}, '${test.area.replace(/'/g, "\\'")}', '${test.category.replace(/'/g, "\\'")}', '${test.testTitle.replace(/'/g, "\\'")}', '${test.trimestre.replace(/'/g, "\\'")}', ${test.occurrenceIndex})">
           </td>`;
@@ -2057,7 +1832,7 @@
       div.className = 'student-grade-row';
       div.style.cssText = "display:flex; justify-content:flex-start; align-items:center; gap:12px; padding:8px 4px; text-align:left;";
       div.innerHTML = `
-        <button type="button" onclick="toggleTaskForStudentFromGroupModal(${sIdx}, ${typeof activeViewingTaskId === 'number' ? activeViewingTaskId : `'${activeViewingTaskId}'`})" class="${isDone ? 'btn-green' : 'btn-orange'}" style="font-size:12px; padding:4px 10px; width:110px; text-align:center;">
+        <button type="button" onclick="toggleTaskForStudentFromGroupModal(${sIdx}, ${typeof activeViewingTaskId === 'number' ? activeViewingTaskId : `'${activeViewingTaskId}'`})" class="${isDone ? 'btn-green' : ''}" style="font-size:12px; padding:4px 10px; width:110px; text-align:center;">
           ${isDone ? '✅ Lliurat' : '❌ Pendent'}
         </button>
         <div style="display:flex; align-items:center; gap:8px;">
@@ -2155,10 +1930,11 @@
 
       const div = document.createElement('div');
       div.className = 'student-grade-row';
+      div.style.cssText = "display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px dashed var(--border);";
       div.innerHTML = `
         <span class="student-number">${idx + 1}</span>
         <span style="flex:1; font-weight:600;">${student.name}</span>
-        <input type="number" class="bulk-student-input" data-student-idx="${idx}" min="0" max="10" step="0.1" placeholder="Nota..." value="${val}" style="width:100px; margin-bottom:0; text-align:center;">
+        <input type="number" class="bulk-student-input" data-student-idx="${idx}" min="0" max="10" step="0.1" placeholder="Nota..." value="${val}" style="width:90px; margin-bottom:0; text-align:center;">
       `;
       container.appendChild(div);
     });
@@ -2297,9 +2073,10 @@
         const articleBadge = (s.article && s.article !== 'Sense') ? `<span class="badge-article">${s.article}</span>` : '';
         const div = document.createElement('div');
         div.className = 'student-checkbox-item';
+        div.style.cssText = "display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px dashed var(--border);";
         div.innerHTML = `
           <input type="checkbox" class="task-student-check" value="${idx}" id="chk_s_${idx}" checked>
-          <label for="chk_s_${idx}" style="cursor:pointer; flex:1;">${s.name}${articleBadge}</label>
+          <label for="chk_s_${idx}" style="cursor:pointer; flex:1;">${s.name} ${articleBadge}</label>
         `;
         modalList.appendChild(div);
       });
@@ -2376,8 +2153,9 @@
       div.onclick = () => openViewGroupTaskModal(taskId);
       div.innerHTML = `
         <span class="badge" style="${getAreaColorStyle(taskArea)}">${taskArea}</span>
-        <span>📌 ${taskName}</span>${taskDate ? `<span class="task-date">${taskDate}</span>` : ''}
-        <span class="btn-delete-cross" onclick="deleteGroupTask(${typeof taskId === 'number' ? taskId : `'${taskId}'`}, event)" title="Eliminar tasca">✕</span>
+        <span>📌 ${taskName}</span>
+        ${taskDate ? `<span style="font-size:10px; opacity:0.8;">${taskDate}</span>` : ''}
+        <span class="btn-danger" style="padding:2px 6px; font-size:10px;" onclick="deleteGroupTask(${typeof taskId === 'number' ? taskId : `'${taskId}'`}, event)">✕</span>
       `;
       container.appendChild(div);
     });
@@ -2456,7 +2234,8 @@
       div.innerHTML = `
         <div style="display:flex; align-items:center; gap:6px;">
           <span class="student-number">${index + 1}</span>
-          <span>${student.name}</span>${articleBadge}
+          <span>${student.name}</span>
+          ${articleBadge}
         </div>
         <button type="button" class="btn-danger" onclick="deleteStudent(${index}, event)">✕</button>
       `;
@@ -2473,7 +2252,7 @@
 
     if (!student.article) student.article = 'En';
     document.getElementById('studentArticleSelector').value = student.article;
-    document.getElementById('currentStudentHeader').innerText = `${index + 1}.${student.name} (${group.name})`;
+    document.getElementById('currentStudentHeader').innerText = `${index + 1}. ${student.name} (${group.name})`;
     document.getElementById('studentDetail').style.display = 'block';
     document.getElementById('noStudentSelected').style.display = 'none';
     document.getElementById('reportContainer').style.display = 'none';
@@ -2561,7 +2340,7 @@
       const chip = document.createElement('div');
       chip.className = `task-chip ${isDone ? 'delivered' : 'pending'}`;
       chip.onclick = () => toggleTask(taskId);
-      chip.innerHTML = `${isDone ? '✅' : '❌'} <span class="badge" style="${getAreaColorStyle(taskArea)}">${taskArea}</span> ${taskName}${taskDate ? `<span class="task-date">${taskDate}</span>` : ''}`;
+      chip.innerHTML = `${isDone ? '✅' : '❌'} <span class="badge" style="${getAreaColorStyle(taskArea)}">${taskArea}</span> ${taskName} ${taskDate ? `<span style="font-size:10px; opacity:0.8;">${taskDate}</span>` : ''}`;
       container.appendChild(chip);
     });
   }
@@ -2657,22 +2436,22 @@
         const areaColor = getAreaColorObj(area);
 
         html += `
-          <div class="area-block-card" style="border-color: ${areaColor.text}44;">
-            <div style="padding: 10px 14px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-bottom: 1px solid${areaColor.text}33; display: flex; justify-content: space-between; align-items: center;">
+          <div class="area-block-card" style="border-color: ${areaColor.text}33;">
+            <div style="padding: 12px 16px; background-color: ${areaColor.bg}; color: ${areaColor.text}; border-bottom: 1px solid ${areaColor.text}22; display: flex; justify-content: space-between; align-items: center;">
               <strong style="font-size: 14px;">📘 ${area} (${selectedTrimestre})</strong>
-              <span style="font-size: 12px; background: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 4px; font-weight:600; border: 1px solid ${areaColor.text}22;">
-                Mitjana resultant: <span style="font-size:14px; text-decoration:underline;">${areaScore !== null ? areaScore : '-'}</span> (${qScore.text})
+              <span style="font-size: 12px; background: rgba(255,255,255,0.7); padding: 3px 10px; border-radius: 6px; font-weight:600;">
+                Mitjana: <u>${areaScore !== null ? areaScore : '-'}</u> (${qScore.text})
               </span>
             </div>
 
             <table class="student-grades-table">
               <thead>
-                <tr style="background-color: ${areaColor.bg}; color:${areaColor.text};">
-                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color:${areaColor.text};">Instrument / Prova</th>
-                  <th style="width:90px; background-color: ${areaColor.bg}; color:${areaColor.text};">Nota</th>
-                  <th style="width:90px; background-color: ${areaColor.bg}; color:${areaColor.text};">Ponderació</th>
-                  <th style="width:100px; background-color: ${areaColor.bg}; color:${areaColor.text};">Data</th>
-                  <th style="width:40px; background-color: ${areaColor.bg}; color:${areaColor.text};"></th>
+                <tr style="background-color: ${areaColor.bg}; color: ${areaColor.text};">
+                  <th style="text-align:left; padding-left:12px; background-color: ${areaColor.bg}; color: ${areaColor.text};">Instrument / Prova</th>
+                  <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text};">Nota</th>
+                  <th style="width:90px; background-color: ${areaColor.bg}; color: ${areaColor.text};">Ponderació</th>
+                  <th style="width:100px; background-color: ${areaColor.bg}; color: ${areaColor.text};">Data</th>
+                  <th style="width:40px; background-color: ${areaColor.bg}; color: ${areaColor.text};"></th>
                 </tr>
               </thead>
               <tbody>
@@ -2692,7 +2471,7 @@
               <td>${hasVal ? `<b>${g.val}</b> <span class="grade-badge ${q.class}" style="font-size:9px; padding:1px 4px;">${q.text}</span>` : `<span style="color:#856404; background:#fff3cd; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">Pendent</span>`}</td>
               <td style="color:${areaColor.text}; font-weight:bold;">${catObj.weight}%</td>
               <td style="font-size:11px; opacity:0.8;">📅 ${g.date || '-'}</td>
-              <td><span class="btn-delete-cross" title="Eliminar prova" onclick="deleteGradeById(${g.id}, event)">✕</span></td>
+              <td><span class="btn-danger" style="padding:2px 6px;" title="Eliminar prova" onclick="deleteGradeById(${g.id}, event)">✕</span></td>
             </tr>
           `;
         });
@@ -2748,13 +2527,14 @@
       const originalIdx = student.observations.findIndex(o => o.id === obs.id);
       const div = document.createElement('div');
       div.className = 'obs-card' + (obs.isInternal ? ' internal-note' : '');
-      const internalBadge = obs.isInternal ? '<span class="badge badge-internal">🔒 Interna</span>' : '';
+      const internalBadge = obs.isInternal ? '<span class="badge" style="background:#e2e8f0; color:#475569;">🔒 Interna</span>' : '';
 
       div.innerHTML = `
         <div class="obs-meta">
           <div>
             <span class="badge" style="${getAreaColorStyle(obs.area)}">${obs.area}</span>
-            <span class="badge">${obs.trimestre}</span>${internalBadge}
+            <span class="badge">${obs.trimestre}</span>
+            ${internalBadge}
             <span style="font-size:11px;">📅 ${obs.date}</span>
           </div>
           <button type="button" class="btn-danger" onclick="deleteObservation(${originalIdx}, event)" title="Eliminar observació">🗑️</button>
@@ -2804,9 +2584,7 @@
     });
   }
 
-  function highlightTextInLogbook() {
-    highlightText();
-  }
+  function highlightTextInLogbook() { highlightText(); }
 
   function addLogbookEntry() {
     const groupIdx = document.getElementById('logbookGroupSelect').value;
@@ -2876,7 +2654,7 @@
       const areaStyle = getAreaColorStyle(item.area);
       const div = document.createElement('div');
       div.className = 'obs-card';
-      div.style.cssText = "border-left-color: var(--primary-orange); background: var(--card-bg);";
+      div.style.cssText = "border-left-color: var(--primary-orange); background: var(--input-bg);";
       div.innerHTML = `
         <div class="obs-meta">
           <div>
@@ -2915,8 +2693,8 @@
     } else {
       const range = selection.getRangeAt(0);
       const mark = document.createElement('mark');
-      mark.className = 'orange-highlight';
-      try { range.surroundContents(mark); } catch (e) { document.execCommand('hiliteColor', false, '#fde8e0'); }
+      mark.style.cssText = "background-color: #ffe8dc; color: #212529; padding: 1px 4px; border-radius: 3px; font-weight: 600;";
+      try { range.surroundContents(mark); } catch (e) { document.execCommand('hiliteColor', false, '#ffe8dc'); }
     }
   }
 
@@ -2969,11 +2747,11 @@
 
       const div = document.createElement('div');
       div.className = 'obs-card';
-      div.style.cssText = "border-left-color: var(--accent-green); background: var(--card-bg);";
+      div.style.cssText = "border-left-color: var(--accent-green); background: var(--input-bg);";
       div.innerHTML = `
         <div class="obs-meta">
           <div>
-            <span class="badge" style="background:var(--accent-green); color:white;">${typeBadge}</span>
+            <span class="badge" style="background:#1f4d36; color:white;">${typeBadge}</span>
             <strong style="font-size:14px; margin-left:4px; color:var(--text);">${m.title}</strong>
           </div>
           <div>
@@ -2996,10 +2774,10 @@
     try {
       const response = await fetch(form.action, { method: form.method, body: new FormData(form), headers: { 'Accept': 'application/json' } });
       if (response.ok) {
-        statusDiv.style.color = '#166534'; statusDiv.innerText = "✅ Gràcies! El teu missatge s'ha enviat correctament.";
+        statusDiv.style.color = '#0f5132'; statusDiv.innerText = "✅ Gràcies! El teu missatge s'ha enviat correctament.";
         form.reset(); setTimeout(() => closeFeedbackModal(), 2000);
-      } else { statusDiv.style.color = '#991b1b'; statusDiv.innerText = "❌ Hi ha hagut un error en enviar el missatge."; }
-    } catch (error) { statusDiv.style.color = '#991b1b'; statusDiv.innerText = "❌ Error de connexió."; }
+      } else { statusDiv.style.color = '#842029'; statusDiv.innerText = "❌ Hi ha hagut un error en enviar el missatge."; }
+    } catch (error) { statusDiv.style.color = '#842029'; statusDiv.innerText = "❌ Error de connexió."; }
   }
 
   function formatMarkdownToHtml(text) {
@@ -3021,5 +2799,129 @@
   function displayReportError(message) {
     const reportTextDiv = document.getElementById('reportText');
     reportTextDiv.innerHTML = `
-      <div style="color: #991b1b; font-weight: bold; margin-bottom: 10px;">${message}</div>
-      <button type="button" onclick="copyLastPrompt()" class="btn-orange" style="font-size: 13px; padding: 6px
+      <div style="color: #991b1b; font-weight: bold; margin-bottom: 12px;">${message}</div>
+      <button type="button" onclick="copyLastPrompt()" class="btn-orange" style="font-size: 13px; padding: 8px 14px;">
+        📋 Copiar Prompt per enganxar a Gemini
+      </button>
+    `;
+  }
+
+  async function generateReport(type) {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const group = db.groups[selectedGroupIndex];
+    const student = group.students[selectedStudentIndex];
+
+    if ((!student.observations || student.observations.length === 0) && (!student.grades || student.grades.length === 0)) {
+      alert("Aquest alumne no té observacions ni notes registrades per redactar l'informe."); return;
+    }
+
+    const reportTextDiv = document.getElementById('reportText');
+    const reportTitleDiv = document.getElementById('reportTitle');
+    document.getElementById('reportContainer').style.display = 'block';
+
+    if (reportTimerInterval) clearInterval(reportTimerInterval);
+
+    let secondsElapsed = 0;
+    const formatTime = (s) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
+    const updateTimerMessage = (extraText = "") => { reportTextDiv.innerText = `⏱️ Generant informe... (${formatTime(secondsElapsed)}) ${extraText}`; };
+
+    updateTimerMessage();
+    reportTimerInterval = setInterval(() => { secondsElapsed++; updateTimerMessage(); }, 1000);
+
+    const articleConfig = student.article || 'En';
+    let nameWithArticle = student.name;
+    let pronounInstruction = "";
+
+    if (articleConfig === 'En' || articleConfig === 'El') { nameWithArticle = `en ${student.name}`; pronounInstruction = "Fes servir el pronom 'ell' o concordança masculina."; }
+    else if (articleConfig === 'La') { nameWithArticle = `la ${student.name}`; pronounInstruction = "Fes servir el pronom 'ella' o concordança femenina."; }
+    else if (articleConfig.includes("L'")) { nameWithArticle = `l'${student.name}`; pronounInstruction = "Prefixa l'article apostrofat (l') al nom."; }
+
+    const obsFormatted = (student.observations || []).filter(o => !o.isInternal).map(o => `- [${o.trimestre}] [Àrea: ${o.area}] (${o.date}): ${o.text}`).join('\n');
+    const summaryGradesFormatted = group.areas.map(area => {
+      return `- Àrea: ${area} -> 1r Trim: ${calculateWeightedScore(student, area, "1r Trimestre") || 'sense dades'}, 2n Trim: ${calculateWeightedScore(student, area, "2n Trimestre") || 'sense dades'}, 3r Trim: ${calculateWeightedScore(student, area, "3r Trimestre") || 'sense dades'} | FINAL: ${calculateWeightedScore(student, area, "FINAL") || 'sense dades'}`;
+    }).join('\n');
+
+    const instruccionsNormes = `ROL I REGLES DE REDACCIÓ LINGÜÍSTICA I COEDUCATIVA:\n` +
+      `- ACTUA COM UN MESTRE/A D'EDUCACIÓ PRIMÀRIA I REDACTA UN INFORME PEDAGÒGIC OPTIMITZAT.\n` +
+      `- ESCRIU DIRECTAMENT L'INFORME EN CATALÀ.\n` +
+      `- Fes servir el nom de l'alumne/a com a referència principal: "${nameWithArticle}".\n` +
+      `- ${pronounInstruction}\n` +
+      `- NO FACIS SERVIR MAI INTRODUCCIONS, SALUTACIONS, NI ET DIRIGEIXIS A LA FAMÍLIA.\n` +
+      `- NO FACIS SERVIR MAI NOMS D'EXÀMENS, PROVES NI NOTES NUMÈRIQUES A L'INFORME.\n` +
+      `- Totes les àrees definides del grup (${group.areas.join(', ')}) HAN D'APARÈIXER A L'INFORME.\n` +
+      `- SI NO HI HA DADES NI ANOTACIONS EN ALGUNA ÀREA, HAS DE MOSTRAR LITERALMENT: "No hi ha dades suficients d'aquesta àrea." SOTA AQUESTA ÀREA. NO T'INVENTIS INFORMAACIÓ.\n` +
+      `- INCLOU UN APARTAT FINAL TITULAT **PROPOSTES DE MILLORA** AMB RECOMENANIONS PEDAGÒGIQUES I OBJECTIUS PRÀCTICS PER A L'ALUMNE/A.\n` +
+      `- Format del text: Posa el NOM DE L'ÀREA entre asteriscos (p. ex. **Música**) i el títol **PROPOSTES DE MILLORA** entre asteriscos, seguits immediatament per la descripció corresponent.\n`;
+
+    let promptText = "";
+    if (type === 'trimestral') {
+      reportTitleDiv.innerText = "📝 Informe de final de trimestre:";
+      promptText = `${instruccionsNormes}\nGrup: ${group.name}.\nÀrees: ${group.areas.join(', ')}.\nResum qualificacions:\n${summaryGradesFormatted}\n\nObservacions:\n${obsFormatted || 'Sense observacions'}`;
+    } else {
+      reportTitleDiv.innerText = "🎓 Informe global de final de curs (juny):";
+      promptText = `${instruccionsNormes}\nInforme GLOBAL per a ${nameWithArticle}.\nGrup: ${group.name}.\nÀrees: ${group.areas.join(', ')}.\nResum qualificacions:\n${summaryGradesFormatted}\n\nObservacions:\n${obsFormatted || 'Sense observacions'}`;
+    }
+
+    lastGeneratedPrompt = promptText;
+
+    if (!apiKey) {
+      clearInterval(reportTimerInterval);
+      displayReportError("⚠️ Clau API no configurada. Pots copiar el prompt per utilitzar-lo directament a Gemini:");
+      return;
+    }
+
+    const streamEndpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:streamGenerateContent?alt=sse&key=${apiKey}`;
+
+    try {
+      const response = await fetch(streamEndpointUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { maxOutputTokens: 8192, temperature: 0.7 } })
+      });
+
+      if (!response.ok) {
+        clearInterval(reportTimerInterval);
+        displayReportError("❌ Error en generar l'informe. Comprova la clau API o la connexió.");
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let fullText = ""; let firstChunkReceived = false;
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
+
+        for (let line of lines) {
+          if (line.startsWith("data: ")) {
+            const dataStr = line.replace("data: ", "").trim();
+            if (!dataStr) continue;
+            try {
+              const parsed = JSON.parse(dataStr);
+              if (parsed.candidates && parsed.candidates[0] && parsed.candidates[0].content && parsed.candidates[0].content.parts[0].text) {
+                if (!firstChunkReceived) { clearInterval(reportTimerInterval); reportTextDiv.innerHTML = ""; firstChunkReceived = true; }
+                fullText += parsed.candidates[0].content.parts[0].text;
+                reportTextDiv.innerHTML = formatMarkdownToHtml(fullText);
+              }
+            } catch (e) {}
+          }
+        }
+      }
+      clearInterval(reportTimerInterval);
+    } catch (e) {
+      clearInterval(reportTimerInterval);
+      displayReportError("⚠️ Error de connexió en generar l'informe.");
+    }
+  }
+
+  function copyReport() {
+    const text = document.getElementById('reportText').innerText;
+    navigator.clipboard.writeText(text).then(() => { alert("Informe copiat al porta-retalls!"); });
+  }
+</script>
+
+</body>
+</html>
