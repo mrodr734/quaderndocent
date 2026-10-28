@@ -55,6 +55,14 @@
       page-break-before: always !important;
       break-before: always !important;
     }
+    /* Estructura A4 / Pàgina 1 per al peu fixat */
+    .page-1-container {
+      min-h-[9.5in];
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full transition-colors duration-200">
@@ -200,6 +208,11 @@
             </div>
 
             <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Material / recursos necessaris (opcional)</label>
+              <input type="text" id="materialsUsuari" placeholder="ex: Piano, mocadors, targetes de colors, ordinadors..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            </div>
+
+            <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Producte final esperat</label>
               <input type="text" id="producte" required placeholder="ex: Guia interactiva de creixement de la planta" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
             </div>
@@ -286,50 +299,58 @@
           <div id="pdfContent" class="bg-white text-slate-900 p-6 sm:p-8 space-y-6">
             
             <!-- Context Page (Pàgina 1) -->
-            <div class="space-y-6">
-              <!-- Document Header -->
-              <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start pdf-no-break">
-                <div>
-                  <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
-                  <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 mt-1">Títol de la SdA</h2>
-                  <div class="flex items-center space-x-4 text-xs text-slate-600 mt-2">
-                    <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
-                    <span><strong>Nivell:</strong> <span id="pdfCurs"></span></span>
-                    <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
+            <div class="page-1-container">
+              <div class="space-y-5">
+                <!-- Document Header -->
+                <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start pdf-no-break">
+                  <div>
+                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
+                    <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 mt-1">Títol de la SdA</h2>
+                    <div class="flex items-center space-x-4 text-xs text-slate-600 mt-2">
+                      <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
+                      <span><strong>Nivell:</strong> <span id="pdfCurs"></span></span>
+                      <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
+                    </div>
+                  </div>
+                  <div class="text-right text-xs font-bold text-emerald-700">
+                    <span id="pdfAreaHeader"></span>
                   </div>
                 </div>
-                <div class="text-right text-xs font-bold text-emerald-700">
-                  <span id="pdfAreaHeader"></span>
+
+                <!-- Context Block -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
+                  <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                    <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
+                    <p id="pdfJustificacio" class="text-slate-700 leading-relaxed"></p>
+                  </div>
+                  <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                    <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Producte final esperat</h4>
+                    <p id="pdfProducte" class="text-slate-700 leading-relaxed font-semibold"></p>
+                  </div>
+                </div>
+
+                <!-- Curriculum Alignment -->
+                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs pdf-no-break">
+                  <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
+                  <p id="pdfSabers" class="text-slate-700 leading-relaxed"></p>
+                </div>
+
+                <!-- Material / Recursos -->
+                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs pdf-no-break">
+                  <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
+                  <p id="pdfMaterials" class="text-slate-700 leading-relaxed"></p>
+                </div>
+
+                <!-- DUA -->
+                <div class="bg-amber-50/60 p-3.5 rounded-lg border border-amber-200/80 text-xs pdf-no-break">
+                  <h4 class="font-bold text-amber-800 mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
+                  <p id="pdfDua" class="text-amber-900 leading-relaxed"></p>
                 </div>
               </div>
 
-              <!-- Context Block -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
-                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
-                  <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
-                  <p id="pdfJustificacio" class="text-slate-700 leading-relaxed"></p>
-                </div>
-                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
-                  <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Producte final esperat</h4>
-                  <p id="pdfProducte" class="text-slate-700 leading-relaxed font-semibold"></p>
-                </div>
-              </div>
-
-              <!-- Curriculum Alignment -->
-              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs pdf-no-break">
-                <h4 class="font-bold text-emerald-800 mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
-                <p id="pdfSabers" class="text-slate-700 leading-relaxed"></p>
-              </div>
-
-              <!-- DUA -->
-              <div class="bg-amber-50/60 p-3.5 rounded-lg border border-amber-200/80 text-xs pdf-no-break">
-                <h4 class="font-bold text-amber-800 mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
-                <p id="pdfDua" class="text-amber-900 leading-relaxed"></p>
-              </div>
-
-              <!-- Document Footer (Pàgina 1) -->
-              <div class="border-t border-slate-200 pt-3 text-[11px] font-semibold text-slate-600 flex justify-between items-center pdf-no-break">
-                <span><span id="pdfAutor"></span></span>
+              <!-- Document Footer (Només al peu de la Pàgina 1) -->
+              <div class="border-t border-slate-200 pt-3 text-[11px] font-semibold text-slate-600 mt-8 pdf-no-break">
+                <span>Autor/a: <span id="pdfAutor"></span></span>
               </div>
             </div>
 
@@ -522,6 +543,7 @@
       const sabers = document.getElementById('sabers').value;
       const instDocent = document.getElementById('instDocent').value || "full de seguiment docent";
       const instAlumnat = document.getElementById('instAlumnat').value || "diana d'autovaluació i coavaluació";
+      const materialsUsuari = document.getElementById('materialsUsuari').value;
       const producte = document.getElementById('producte').value;
       const dua = document.getElementById('dua').value;
 
@@ -538,11 +560,15 @@
       - Per a totes les sessions INTERMÈDIES (de la sessió 1 a la penúltima), l'avaluació ha de ser a càrrec del docent (utilitzant: "${instDocent}"). Si no hi ha un instrument específic, indica "full de seguiment docent".
       - ÚNICAMENT per a la ÚLTIMA SESSIÓ (sessió ${sessions}), integra obligatòriament els instruments d'avaluació de l'alumnat (utilitzant: "${instAlumnat}").
 
+      REGLA DE MATERIALS:
+      - Concreta la llista completa de materials i recursos necessaris (fitxes, mocadors, instruments, materials digitals, etc.) tenint en compte els suggeriments del docent i les activitats plantejades.
+
       Respon ÚNICAMENT en format JSON vàlid amb la següent estructura exacta:
       {
         "titol": "Títol adaptat de la SdA",
         "justificacio": "Justificació pedagògica contextualitzada",
         "sabers": "Sabers bàsics treballats",
+        "materials": "Llista detallada i sintètica dels materials i recursos necessaris",
         "producte": "Producte final concret",
         "dua": "Mesures d'atenció a la diversitat (DUA)",
         "sessions": [
@@ -565,6 +591,7 @@
       - Sabers bàsics a treballar: ${sabers}
       - Instruments d'avaluació docent: ${instDocent}
       - Instruments d'avaluació alumnat (per a l'última sessió): ${instAlumnat}
+      - Materials / recursos suggerits pel docent: ${materialsUsuari || "Determina'ls segons les activitats"}
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
@@ -637,6 +664,7 @@
       document.getElementById('pdfJustificacio').innerText = data.justificacio || '';
       document.getElementById('pdfProducte').innerText = data.producte || document.getElementById('producte').value;
       document.getElementById('pdfSabers').innerText = data.sabers || document.getElementById('sabers').value;
+      document.getElementById('pdfMaterials').innerText = data.materials || document.getElementById('materialsUsuari').value || 'No s'especifiquen materials complexos.';
       document.getElementById('pdfDua').innerText = data.dua || document.getElementById('dua').value;
 
       const sessionsContainer = document.getElementById('pdfSessionsContainer');
