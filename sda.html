@@ -104,10 +104,7 @@
 
           <!-- API Key Input Field + Botó Desa -->
           <div class="mb-4">
-            <div class="flex justify-between items-center mb-1">
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Clau d'API de Gemini (compte XTEC)</label>
-              <button type="button" onclick="toggleModal('apiModal')" class="text-[11px] text-orange-600 dark:text-orange-400 underline font-medium">Com aconseguir-la?</button>
-            </div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Clau d'API de Gemini (compte XTEC)</label>
             <div class="flex gap-2">
               <div class="relative flex-1">
                 <input type="password" id="apiKey" placeholder="Enganxa la teva clau d'API de Google AI Studio..." class="w-full text-xs p-2.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
@@ -200,11 +197,6 @@
                 <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Instruments de l'alumnat</label>
                 <input type="text" id="instAlumnat" placeholder="ex: Diana d'autoavaluació, coavaluació, qüestionari..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
               </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Material / recursos necessaris (opcional)</label>
-              <input type="text" id="materialsUsuari" placeholder="ex: Piano, mocadors, targetes de colors, ordinadors..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
             </div>
 
             <div>
@@ -539,7 +531,6 @@
       const sabers = document.getElementById('sabers').value;
       const instDocent = document.getElementById('instDocent').value || "full de seguiment docent";
       const instAlumnat = document.getElementById('instAlumnat').value || "diana d'autovaluació i coavaluació";
-      const materialsUsuari = document.getElementById('materialsUsuari').value;
       const producte = document.getElementById('producte').value;
       const dua = document.getElementById('dua').value;
 
@@ -557,14 +548,14 @@
       - ÚNICAMENT per a la ÚLTIMA SESSIÓ (sessió ${sessions}), integra obligatòriament els instruments d'avaluació de l'alumnat (utilitzant: "${instAlumnat}").
 
       REGLA DE MATERIALS:
-      - Concreta la llista completa de materials i recursos necessaris (fitxes, mocadors, instruments, materials digitals, etc.) tenint en compte els suggeriments del docent i les activitats plantejades.
+      - Analitza les activitats plantejades i genera automàticament una llista completa, detallada i pràctica de tots els materials i recursos necessaris (fitxes, estris, instruments, recursos digitals, etc.).
 
       Respon ÚNICAMENT en format JSON vàlid amb la següent estructura exacta:
       {
         "titol": "Títol adaptat de la SdA",
         "justificacio": "Justificació pedagògica contextualitzada",
         "sabers": "Sabers bàsics treballats",
-        "materials": "Llista detallada i sintètica dels materials i recursos necessaris",
+        "materials": "Llista detallada i sintètica dels materials i recursos necessaris detectats",
         "producte": "Producte final concret",
         "dua": "Mesures d'atenció a la diversitat (DUA)",
         "sessions": [
@@ -587,7 +578,6 @@
       - Sabers bàsics a treballar: ${sabers}
       - Instruments d'avaluació docent: ${instDocent}
       - Instruments d'avaluació alumnat (per a l'última sessió): ${instAlumnat}
-      - Materials / recursos suggerits pel docent: ${materialsUsuari || "Determina'ls segons les activitats"}
       - Producte final esperat: ${producte}
       - Atenció a la diversitat / DUA: ${dua}`;
 
@@ -660,7 +650,7 @@
       document.getElementById('pdfJustificacio').innerText = data.justificacio || '';
       document.getElementById('pdfProducte').innerText = data.producte || document.getElementById('producte').value;
       document.getElementById('pdfSabers').innerText = data.sabers || document.getElementById('sabers').value;
-      document.getElementById('pdfMaterials').innerText = data.materials || document.getElementById('materialsUsuari').value || 'No s\'especifiquen materials complexos.';
+      document.getElementById('pdfMaterials').innerText = data.materials || 'No s\'especifiquen materials complexos.';
       document.getElementById('pdfDua').innerText = data.dua || document.getElementById('dua').value;
 
       const sessionsContainer = document.getElementById('pdfSessionsContainer');
