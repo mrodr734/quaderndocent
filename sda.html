@@ -83,10 +83,16 @@
           <span class="hidden sm:inline">Configurar clau d'API XTEC</span>
         </button>
 
-        <!-- Botó Canvi de Tema -->
-        <button type="button" id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[#2d6a4f] dark:hover:text-[#52b788] transition">
-          <i class="fa-solid fa-moon dark:hidden"></i>
-          <i class="fa-solid fa-sun hidden dark:inline"></i>
+        <!-- Botó Canvi de Tema amb Text -->
+        <button type="button" id="themeToggleBtn" onclick="toggleDarkMode()" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[#2d6a4f] dark:hover:text-[#52b788] transition">
+          <span class="dark:hidden flex items-center gap-1.5">
+            <i class="fa-solid fa-moon"></i>
+            <span>Mode fosc</span>
+          </span>
+          <span class="hidden dark:flex items-center gap-1.5">
+            <i class="fa-solid fa-sun text-amber-400"></i>
+            <span>Mode clar</span>
+          </span>
         </button>
       </div>
     </div>
@@ -286,71 +292,73 @@
             </div>
           </div>
 
-          <!-- Printable PDF/DOC Document Container -->
-          <div id="pdfContent" class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-6 sm:p-8 space-y-6 rounded-2xl border border-slate-200 dark:border-slate-700">
-            
-            <!-- Context Page (Pàgina 1) -->
-            <div class="space-y-5">
-              <!-- Document Header -->
-              <div class="border-b-2 border-[#2d6a4f] pb-4 flex justify-between items-start pdf-no-break">
-                <div>
-                  <span class="text-xs font-bold text-[#2d6a4f] dark:text-[#52b788] uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
-                  <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 dark:text-white mt-1">Títol de la SdA</h2>
-                  <div class="flex items-center space-x-4 text-xs text-slate-600 dark:text-slate-300 mt-2">
-                    <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
-                    <span><strong>Nivell:</strong> <span id="pdfCurs"></span></span>
-                    <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
+          <!-- Printable PDF/DOC Document Container (Sense voreta ni ombrejats en exportar a PDF) -->
+          <div id="pdfContainerOuter" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <div id="pdfContent" class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-6 sm:p-8 space-y-6">
+              
+              <!-- Context Page (Pàgina 1) -->
+              <div class="space-y-5">
+                <!-- Document Header -->
+                <div class="border-b-2 border-[#2d6a4f] pb-4 flex justify-between items-start pdf-no-break">
+                  <div>
+                    <span class="text-xs font-bold text-[#2d6a4f] dark:text-[#52b788] uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
+                    <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 dark:text-white mt-1">Títol de la SdA</h2>
+                    <div class="flex items-center space-x-4 text-xs text-slate-600 dark:text-slate-300 mt-2">
+                      <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
+                      <span><strong>Nivell:</strong> <span id="pdfCurs"></span></span>
+                      <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
+                    </div>
+                  </div>
+                  <div class="text-right text-xs font-bold text-[#1b4332] dark:text-[#52b788]">
+                    <span id="pdfAreaHeader"></span>
                   </div>
                 </div>
-                <div class="text-right text-xs font-bold text-[#1b4332] dark:text-[#52b788]">
-                  <span id="pdfAreaHeader"></span>
+
+                <!-- Context Block -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
+                  <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
+                    <p id="pdfJustificacio" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+                  </div>
+                  <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Producte final esperat</h4>
+                    <p id="pdfProducte" class="text-slate-700 dark:text-slate-300 leading-relaxed font-semibold"></p>
+                  </div>
+                </div>
+
+                <!-- Curriculum Alignment -->
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
+                  <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
+                  <p id="pdfSabers" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Material / Recursos -->
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
+                  <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
+                  <p id="pdfMaterials" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+                </div>
+
+                <!-- DUA -->
+                <div class="bg-[#fdf6f0] dark:bg-amber-950/30 p-3.5 rounded-lg border border-[#fbeade] dark:border-amber-900/40 text-xs pdf-no-break">
+                  <h4 class="font-bold text-[#c15c3d] dark:text-[#f4a261] mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
+                  <p id="pdfDua" class="text-[#c15c3d] dark:text-amber-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Document Footer (Només al peu de la Pàgina 1) -->
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-3 text-[11px] font-semibold text-slate-600 dark:text-slate-400 mt-8 pdf-no-break">
+                  <span>Autor/a: <span id="pdfAutor"></span></span>
                 </div>
               </div>
 
-              <!-- Context Block -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
-                  <p id="pdfJustificacio" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
-                </div>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Producte final esperat</h4>
-                  <p id="pdfProducte" class="text-slate-700 dark:text-slate-300 leading-relaxed font-semibold"></p>
+              <!-- Sessions Sequence Page (Pàgina 2 en endavant) -->
+              <div class="pdf-page-break-before pt-2">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 uppercase tracking-wider pdf-no-break">Seqüència didàctica per sessions</h3>
+                <div id="pdfSessionsContainer" class="space-y-4">
+                  <!-- Session cards inserted dynamically -->
                 </div>
               </div>
 
-              <!-- Curriculum Alignment -->
-              <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
-                <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
-                <p id="pdfSabers" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
-              </div>
-
-              <!-- Material / Recursos -->
-              <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
-                <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
-                <p id="pdfMaterials" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
-              </div>
-
-              <!-- DUA -->
-              <div class="bg-[#fdf6f0] dark:bg-amber-950/30 p-3.5 rounded-lg border border-[#fbeade] dark:border-amber-900/40 text-xs pdf-no-break">
-                <h4 class="font-bold text-[#c15c3d] dark:text-[#f4a261] mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
-                <p id="pdfDua" class="text-[#c15c3d] dark:text-amber-300 leading-relaxed"></p>
-              </div>
-
-              <!-- Document Footer (Només al peu de la Pàgina 1) -->
-              <div class="border-t border-slate-200 dark:border-slate-700 pt-3 text-[11px] font-semibold text-slate-600 dark:text-slate-400 mt-8 pdf-no-break">
-                <span>Autor/a: <span id="pdfAutor"></span></span>
-              </div>
             </div>
-
-            <!-- Sessions Sequence Page (Pàgina 2 en endavant) -->
-            <div class="pdf-page-break-before pt-2">
-              <h3 class="font-bold text-sm text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 mb-4 uppercase tracking-wider pdf-no-break">Seqüència didàctica per sessions</h3>
-              <div id="pdfSessionsContainer" class="space-y-4">
-                <!-- Session cards inserted dynamically -->
-              </div>
-            </div>
-
           </div>
 
         </div>
@@ -679,7 +687,7 @@
       document.getElementById('resultatSection').classList.remove('hidden');
     }
 
-    // Exportació en format PDF ajustat sense talls
+    // Exportació en format PDF net (sense marcs exteriors)
     function descarregarPDF() {
       if (isEditing) toggleEdicio();
       const element = document.getElementById('pdfContent');
