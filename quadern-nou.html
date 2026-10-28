@@ -8,14 +8,13 @@
   <!-- FAVICON AMB EMOJI DE LLAPIS -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
 
-  <!-- FONT PLUS JAKARTA SANS PER A UN ASPECTE MODERNE I AMABLE -->
+  <!-- FONT PLUS JAKARTA SANS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* PALETA CÀLIDA I ORGÀNICA DE BAIXA FATIGA VISUAL */
       --bg-green: #f8faf9;
       --card-bg: #ffffff;
       --primary-orange: #d97745;
@@ -65,14 +64,14 @@
       margin: 0 auto;
     }
 
+    /* CAPÇALERA VERDA RESTAURADA */
     header {
-      background: var(--card-bg);
-      color: var(--accent-green);
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+      color: #ffffff;
       padding: 24px 30px;
       border-radius: var(--radius-card);
       margin-bottom: 20px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid var(--border);
+      box-shadow: 0 4px 15px rgba(31, 77, 54, 0.2);
       position: relative;
     }
 
@@ -84,15 +83,16 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      color: #ffffff;
     }
 
     .theme-toggle-btn {
       position: absolute;
       top: 24px;
       right: 30px;
-      background: var(--input-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
       padding: 8px 16px;
       border-radius: 30px;
       font-size: 13px;
@@ -102,7 +102,7 @@
     }
 
     .theme-toggle-btn:hover {
-      background: var(--border);
+      background: rgba(255, 255, 255, 0.35);
     }
 
     .top-controls {
@@ -110,10 +110,14 @@
       gap: 15px;
       align-items: center;
       flex-wrap: wrap;
-      background: var(--input-bg);
+      background: rgba(255, 255, 255, 0.12);
       padding: 12px 18px;
       border-radius: 12px;
-      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+    }
+
+    .top-controls label {
+      color: #ffffff;
     }
 
     .main-nav {
@@ -237,15 +241,21 @@
       border-radius: 6px;
     }
 
+    /* BOTÓ DE DUBTE AMB FONS BLANC PUR */
     .btn-help {
-      background: var(--input-bg);
-      color: var(--accent-green);
-      border: 1px solid var(--border);
+      background: #ffffff !important;
+      color: var(--accent-green) !important;
+      border: 1px solid var(--border) !important;
       padding: 8px 12px;
       border-radius: var(--radius-input);
       font-size: 14px;
       font-weight: bold;
       cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .btn-help:hover {
+      background: #f8faf9 !important;
     }
 
     .group-item, .student-item {
@@ -292,7 +302,6 @@
       color: white;
     }
 
-    /* BADGES MODELATS EN FORMA DE CÀPSULA SOFT */
     .badge {
       display: inline-block;
       background: #e6f4ea;
@@ -490,11 +499,29 @@
       background: var(--card-bg);
     }
 
+    /* ALINEACIÓ ESPECÍFICA: ALUMNES A L'ESQUERRA, NOTES I RESULTATS AL CENTRE */
     .group-matrix-table th, .group-matrix-table td,
     .student-grades-table th, .student-grades-table td {
       border: 1px solid var(--border);
       padding: 8px 12px;
       text-align: center;
+    }
+
+    .group-matrix-table th.student-name-header,
+    .group-matrix-table td.student-name-td {
+      text-align: left !important;
+    }
+
+    .student-link {
+      color: var(--accent-green);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .student-link:hover {
+      color: var(--primary-orange);
+      text-decoration: underline;
     }
 
     .group-matrix-table th {
@@ -634,15 +661,15 @@
   </div>
 
   <div class="privacy-notice">
-    🔒 <strong>Privacitat protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes[cite: 1].
+    🔒 <strong>Privacitat protegida:</strong> L'aplicació anonimitza les dades abans d'enviar-les a la IA. Les <strong>anotacions internes</strong> queden excloses dels informes.
   </div>
 
   <div class="storage-warning">
-    ⚠️ <strong>Atenció sobre les dades:</strong> Totes les dades s'emmagatzemen al teu navegador. Eliminar l'historial o la memòria pot fer que perdis la informació desada[cite: 1]. Recorda exportar una còpia de seguretat periòdicament per no perdre cap dada[cite: 1].
+    ⚠️ <strong>Atenció sobre les dades:</strong> Totes les dades s'emmagatzemen al teu navegador. Eliminar l'historial o la memòria pot fer que perdis la informació desada. Recorda exportar una còpia de seguretat periòdicament per no perdre cap dada.
   </div>
 
   <div class="usage-disclaimer">
-    ℹ️ Aquest full de seguiment s'ha dissenyat per facilitar la tasca docent. Utilitza'l sota la teva responsabilitat i fes-ne un bon ús[cite: 1].
+    ℹ️ Aquest full de seguiment s'ha dissenyat per facilitar la tasca docent. Utilitza'l sota la teva responsabilitat i fes-ne un bon ús.
   </div>
 
   <!-- SECCIÓ 1: SEGUIMENT DE L'ALUMNAT -->
@@ -749,7 +776,6 @@
             </div>
           </div>
 
-          <!-- PANEL AMB GRADIENT POLIT DE FONS BOSC -->
           <div style="background: linear-gradient(135deg, #1f4d36, #143525); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--shadow-soft);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
               <h4 style="margin:0; color:white; font-size:16px;">📊 Marcador d'avaluació ponderada (infant)</h4>
@@ -842,7 +868,7 @@
 
           <h4>Generació automàtica d'informes</h4>
           <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
-            Genera una proposta de redactat adaptada gramaticalment (excloent anotacions internes)[cite: 1]:
+            Genera una proposta de redactat adaptada gramaticalment (excloent anotacions internes):
           </p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button type="button" id="btnReportTrimestral" onclick="generateReport('trimestral')">📝 Informe trimestral</button>
@@ -1163,6 +1189,7 @@
   </div>
 </div>
 
+<!-- MODAL PRIVACITAT AMB TOTA LA INFORMACIÓ COMPLETA RESTAURADA -->
 <div id="privacyModal" class="modal-overlay" style="display:none;">
   <div class="modal-content" style="width: 520px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -1171,20 +1198,32 @@
     </div>
     
     <div style="font-size:13px; color:var(--text); line-height:1.6; overflow-y:auto; max-height:60vh; padding-right:5px;">
+      
       <div style="background:var(--input-bg); border-left:4px solid var(--accent-green); padding:12px; border-radius:6px; margin-bottom:12px;">
         <strong>1. Ús del compte educatiu XTEC:</strong><br>
-        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institutional <strong>XTEC</strong>[cite: 1].
+        Es recomana utilitzar aquesta eina identificat/ada amb el teu compte institucional <strong>XTEC</strong>. Els entorns educatius corporatius de Google disposen de garanties addicionals de protecció de dades i privacitat contractuals ajustades al RGPD per als centres docents.
       </div>
 
       <div style="background:var(--input-bg); border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:12px;">
         <strong>2. Emmagatzematge local (100% privat):</strong><br>
-        Totes les notes, observacions i tasques <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`)[cite: 1].
+        Totes les notes, observacions, tasques i dades dels alumnes <strong>s'emmagatzemen exclusivament al teu navegador web</strong> (`localStorage`). No es guarda res en cap servidor extern ni base de dades al núvol. Per això, és fonamental realitzar còpies de seguretat periòdicament des del botó <em>"💾 Exportar còpia"</em>.
       </div>
 
       <div style="background:var(--input-bg); border-left:4px solid var(--primary-orange); padding:12px; border-radius:6px; margin-bottom:12px;">
         <strong>3. Recomanació d'anonimització:</strong><br>
-        És preferible registrar els infants utilitzant <strong>només el nom de pila o la inicial del primer cognom</strong>[cite: 1].
+        Per garantir una protecció total de la identitat de l'alumnat:
+        <ul style="margin:5px 0 0 0; padding-left:20px;">
+          <li>És preferible registrar els infants utilitzant <strong>només el nom de pila o la inicial del primer cognom</strong> en lloc del nom complet.</li>
+          <li>En generar informes amb IA, les anotacions marcades com a 🔒 <em>internes</em> mai s'enviaran a l'API.</li>
+        </ul>
       </div>
+
+      <div style="background:var(--input-bg); border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:12px;">
+        <strong>4. Llicència i comunitat:</strong><br>
+        Projecte de codi obert allotjat a GitHub sota llicència MIT.<br><br>
+        Aquest projecte ha estat pensat per un docent i creat amb l'ajuda de la IA amb la intenció de compartir-lo amb tota la comunitat educativa. Si vols col·laborar amb la iniciativa, <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="color:var(--primary-orange); font-weight:bold;">convida'm a un cafè</a>.
+      </div>
+
     </div>
 
     <div style="text-align:right; margin-top:15px;">
@@ -1201,7 +1240,7 @@
     </div>
 
     <p style="font-size:13px; color:var(--text-muted); margin-top:0; margin-bottom:12px;">
-      Has trobat cap error o tens una idea per millorar el quadern? Envia el teu comentari directament[cite: 1]:
+      Has trobat cap error o tens una idea per millorar el quadern? Envia el teu comentari directament:
     </p>
 
     <form id="feedbackForm" action="https://formspree.io/f/meaaqyln" method="POST" onsubmit="handleFeedbackSubmit(event)">
@@ -1660,6 +1699,7 @@
     if (selectedStudentIndex === sIdx) { renderGrades(); renderSummaryDashboard(); }
   }
 
+  /* MATRIIU DE GRUP AMB ALINEACIÓ JUSTIFICADA A L'ESQUERRA DELS NOMS I ENLLAÇ A LA FITXA DE L'ALUMNE */
   function renderGroupMatrix() {
     const container = document.getElementById('groupMatrixContainer');
     if (!container || selectedGroupIndex === null) return;
@@ -1677,7 +1717,7 @@
         <thead>
           <tr>
             <th style="width:40px;">#</th>
-            <th style="text-align:left;">Nom i cognoms</th>`;
+            <th class="student-name-header">Nom i cognoms</th>`;
       group.areas.forEach(area => {
         const color = getAreaColorObj(area);
         tableHtml += `<th style="background-color:${color.bg}; color:${color.text}; border-color:${color.text}33;">${area}</th>`;
@@ -1693,10 +1733,13 @@
         const obsBadge = `<span class="badge-obs" title="${totalObs} observacions">📝 ${totalObs}</span>`;
         const gradesBadge = `<span class="badge-grades" title="${totalGrades} proves/tasques">📊 ${totalGrades}</span>`;
 
-        tableHtml += `<tr onclick="selectStudent(${sIdx})">
+        tableHtml += `<tr>
           <td style="font-weight:bold; color:var(--accent-green);">${sIdx + 1}</td>
-          <td class="student-name-td" style="font-weight:600;">
-            <span style="display:inline-flex; align-items:center;">${obsBadge}${gradesBadge}<span>${student.name}</span></span>
+          <td class="student-name-td">
+            <span style="display:inline-flex; align-items:center;">
+              ${obsBadge}${gradesBadge}
+              <a href="javascript:void(0)" class="student-link" onclick="selectStudent(${sIdx})">${student.name}</a>
+            </span>
           </td>`;
 
         group.areas.forEach(area => {
@@ -1710,7 +1753,7 @@
         tableHtml += `</tr>`;
       });
 
-      tableHtml += `<tr class="avg-row"><td colspan="2" style="text-align:right;">Mitjana del grup:</td>`;
+      tableHtml += `<tr class="avg-row"><td colspan="2" style="text-align:right; font-weight:bold;">Mitjana del grup:</td>`;
       group.areas.forEach(area => {
         if (areaCounts[area] > 0) {
           const avg = (areaSums[area] / areaCounts[area]).toFixed(1);
@@ -1732,7 +1775,7 @@
         <thead>
           <tr>
             <th style="width:40px;">#</th>
-            <th style="text-align:left;">Nom i cognoms</th>`;
+            <th class="student-name-header">Nom i cognoms</th>`;
 
       tests.forEach(test => {
         const color = getAreaColorObj(test.area);
@@ -1745,8 +1788,10 @@
 
       group.students.forEach((student, sIdx) => {
         tableHtml += `<tr>
-          <td style="font-weight:bold; color:var(--accent-green);" onclick="selectStudent(${sIdx})">${sIdx + 1}</td>
-          <td class="student-name-td" style="font-weight:600; cursor:pointer;" onclick="selectStudent(${sIdx})">${student.name}</td>`;
+          <td style="font-weight:bold; color:var(--accent-green);">${sIdx + 1}</td>
+          <td class="student-name-td">
+            <a href="javascript:void(0)" class="student-link" onclick="selectStudent(${sIdx})">${student.name}</a>
+          </td>`;
 
         tests.forEach(test => {
           let gradeObj = (student.grades || []).find(g => (g.activityId && g.activityId === test.activityId) || (g.id && g.id === test.activityId));
