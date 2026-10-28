@@ -17,34 +17,38 @@
         extend: {
           colors: {
             brand: {
-              50: '#ecfdf5',
-              100: '#d1fae5',
-              500: '#10b981',
-              600: '#059669',
-              700: '#047857',
+              50: '#f2f7f4',
+              100: '#d8e7de',
+              500: '#52b788',
+              600: '#2d6a4f',
+              700: '#1b4332',
             },
             accent: {
-              500: '#f97316',
-              600: '#ea580c',
-              700: '#c2410c',
+              50: '#fdf6f0',
+              100: '#fbeade',
+              500: '#f4a261',
+              600: '#e07a5f',
+              700: '#c15c3d',
             }
           }
         }
       }
     }
   </script>
-  <!-- FontAwesome for icons -->
+  <!-- FontAwesome per a icones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- html2pdf.js per generació de PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <!-- Fonts Google -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .editable-active {
-      outline: 2px dashed #10b981 !important;
+      outline: 2px dashed #2d6a4f !important;
       outline-offset: 2px;
-      background-color: rgba(236, 253, 245, 0.5);
+      background-color: rgba(242, 247, 244, 0.7);
     }
     /* Controls de salt de pàgina per al PDF */
     .pdf-no-break {
@@ -63,24 +67,24 @@
   <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+        <div class="w-10 h-10 rounded-xl bg-[#2d6a4f] flex items-center justify-center text-white font-bold text-xl shadow-md">
           <i class="fa-solid fa-book-bookmark"></i>
         </div>
         <div>
           <h1 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">Quadern docent</h1>
-          <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Dissenyador de SdA LOMLOE 🖋️</p>
+          <p class="text-xs text-[#2d6a4f] dark:text-[#52b788] font-medium">Dissenyador de SdA LOMLOE 🖋️</p>
         </div>
       </div>
 
       <div class="flex items-center space-x-3">
-        <!-- API Key Modal Trigger Button -->
-        <button type="button" onclick="toggleModal('apiModal')" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition">
-          <i class="fa-solid fa-key text-orange-500"></i>
+        <!-- Botó Modal API Key -->
+        <button type="button" onclick="toggleModal('apiModal')" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-[#fdf6f0] dark:bg-amber-950/40 text-[#e07a5f] dark:text-[#f4a261] border border-[#fbeade] dark:border-amber-800/50 hover:bg-[#fbeade] transition">
+          <i class="fa-solid fa-key text-[#e07a5f]"></i>
           <span class="hidden sm:inline">Configurar clau d'API XTEC</span>
         </button>
 
-        <!-- Toggle Theme Button -->
-        <button type="button" id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition">
+        <!-- Botó Canvi de Tema -->
+        <button type="button" id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[#2d6a4f] dark:hover:text-[#52b788] transition">
           <i class="fa-solid fa-moon dark:hidden"></i>
           <i class="fa-solid fa-sun hidden dark:inline"></i>
         </button>
@@ -97,27 +101,27 @@
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-700">
             <h2 class="font-bold text-slate-900 dark:text-white flex items-center text-base">
-              <i class="fa-solid fa-sliders text-emerald-600 dark:text-emerald-400 mr-2.5"></i> Paràmetres de la SdA
+              <i class="fa-solid fa-sliders text-[#2d6a4f] dark:text-[#52b788] mr-2.5"></i> Paràmetres de la SdA
             </h2>
-            <span class="text-xs px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 rounded-full font-medium">LOMLOE</span>
+            <span class="text-xs px-2.5 py-1 bg-[#f2f7f4] dark:bg-emerald-950/50 text-[#1b4332] dark:text-[#52b788] rounded-full font-medium">LOMLOE</span>
           </div>
 
-          <!-- API Key Input Field + Botó Desa -->
+          <!-- Camp API Key -->
           <div class="mb-4">
             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Clau d'API de Gemini (compte XTEC)</label>
             <div class="flex gap-2">
               <div class="relative flex-1">
-                <input type="password" id="apiKey" placeholder="Enganxa la teva clau d'API de Google AI Studio..." class="w-full text-xs p-2.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="password" id="apiKey" placeholder="Enganxa la teva clau d'API de Google AI Studio..." class="w-full text-xs p-2.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
                 <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">
                   <i class="fa-solid fa-eye" id="eyeIcon"></i>
                 </button>
               </div>
-              <button type="button" onclick="guardarApiKey()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm">
+              <button type="button" onclick="guardarApiKey()" class="px-3 py-2 bg-[#2d6a4f] hover:bg-[#1b4332] text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span>Desar</span>
               </button>
             </div>
-            <p id="apiSavedMsg" class="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold hidden">
+            <p id="apiSavedMsg" class="text-[10px] text-[#2d6a4f] dark:text-[#52b788] mt-1 font-semibold hidden">
               <i class="fa-solid fa-check mr-1"></i> Clau d'API desada correctament!
             </p>
           </div>
@@ -126,18 +130,18 @@
           <form id="sdaForm" onsubmit="event.preventDefault(); generarSdA();" class="space-y-4">
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nom i cognom de l'autor/a</label>
-              <input type="text" id="autor" required placeholder="ex: Manel Rodríguez" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <input type="text" id="autor" required placeholder="ex: Manel Rodríguez" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Títol o temàtica de la SdA</label>
-              <input type="text" id="titol" required placeholder="ex: Fem un hort escolar sostenible" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <input type="text" id="titol" required placeholder="ex: Fem un hort escolar sostenible" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nivell / curs</label>
-                <select id="curs" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <select id="curs" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
                   <!-- Educació Infantil -->
                   <optgroup label="Educació Infantil">
                     <option value="I3">I3</option>
@@ -153,7 +157,7 @@
                     <option value="5è de Primària">5è de Primària</option>
                     <option value="6è de Primària">6è de Primària</option>
                   </optgroup>
-                  <!-- Educació Secundària Obligatòria -->
+                  <!-- ESO -->
                   <optgroup label="ESO">
                     <option value="1r d'ESO">1r d'ESO</option>
                     <option value="2n d'ESO">2n d'ESO</option>
@@ -170,46 +174,46 @@
 
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Matèria / àrea</label>
-                <input type="text" id="materia" required placeholder="ex: Medi" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="materia" required placeholder="ex: Medi" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nombre de sessions</label>
-              <input type="number" id="sessions" min="1" max="15" value="6" required class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <input type="number" id="sessions" min="1" max="15" value="6" required class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Sabers bàsics a treballar</label>
-              <textarea id="sabers" rows="3" required placeholder="ex: Fotosíntesi, tipus de sòls, treball en equip, ús de taules de dades..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+              <textarea id="sabers" rows="3" required placeholder="ex: Fotosíntesi, tipus de sòls, treball en equip, ús de taules de dades..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none"></textarea>
             </div>
 
             <!-- Instruments d'avaluació -->
-            <div class="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700/80 space-y-3">
-              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 block uppercase tracking-wider">Instruments d'avaluació</span>
+            <div class="p-3 bg-[#f2f7f4] dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700/80 space-y-3">
+              <span class="text-xs font-bold text-[#1b4332] dark:text-[#52b788] block uppercase tracking-wider">Instruments d'avaluació</span>
               
               <div>
                 <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Instruments del docent</label>
-                <input type="text" id="instDocent" placeholder="ex: Rúbrica, full de seguiment, observació directa..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="instDocent" placeholder="ex: Rúbrica, full de seguiment, observació directa..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
               </div>
 
               <div>
                 <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Instruments de l'alumnat</label>
-                <input type="text" id="instAlumnat" placeholder="ex: Diana d'autoavaluació, coavaluació, qüestionari..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="instAlumnat" placeholder="ex: Diana d'autoavaluació, coavaluació, qüestionari..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
               </div>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Producte final esperat</label>
-              <input type="text" id="producte" required placeholder="ex: Guia interactiva de creixement de la planta" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <input type="text" id="producte" required placeholder="ex: Guia interactiva de creixement de la planta" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Atenció a la diversitat (DUA)</label>
-              <input type="text" id="dua" placeholder="ex: Suport visual, lectors de pantalla, tasques graduades" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <input type="text" id="dua" placeholder="ex: Suport visual, lectors de pantalla, tasques graduades" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#2d6a4f] focus:outline-none">
             </div>
 
-            <button type="submit" id="btnGenerate" class="w-full mt-2 py-3 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-md shadow-orange-500/20 hover:shadow-orange-500/40 transition flex items-center justify-center space-x-2 text-sm">
+            <button type="submit" id="btnGenerate" class="w-full mt-2 py-3 px-4 bg-[#e07a5f] hover:bg-[#c15c3d] text-white font-bold rounded-xl shadow-md shadow-[#e07a5f]/20 hover:shadow-[#e07a5f]/40 transition flex items-center justify-center space-x-2 text-sm">
               <i class="fa-solid fa-wand-magic-sparkles"></i>
               <span>Dissenyar Situació d'Aprenentatge</span>
             </button>
@@ -222,7 +226,7 @@
         
         <!-- Placeholder State -->
         <div id="emptyState" class="bg-white dark:bg-slate-800 p-12 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-center flex flex-col items-center justify-center min-h-[500px]">
-          <div class="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center text-2xl mb-4">
+          <div class="w-16 h-16 rounded-full bg-[#fdf6f0] dark:bg-amber-950/60 text-[#e07a5f] dark:text-[#f4a261] flex items-center justify-center text-2xl mb-4">
             <i class="fa-solid fa-file-pen"></i>
           </div>
           <h3 class="font-bold text-slate-800 dark:text-white text-lg mb-1">Cap Situació d'Aprenentatge generada</h3>
@@ -231,7 +235,7 @@
 
         <!-- Loading State -->
         <div id="loadingState" class="hidden bg-white dark:bg-slate-800 p-12 rounded-2xl border border-slate-200 dark:border-slate-700 text-center flex flex-col items-center justify-center min-h-[500px]">
-          <div class="text-emerald-600 dark:text-emerald-400 text-5xl mb-4">
+          <div class="text-[#2d6a4f] dark:text-[#52b788] text-5xl mb-4">
             <i class="fa-solid fa-circle-notch fa-spin"></i>
           </div>
           <h3 class="font-bold text-slate-800 dark:text-white text-base mb-1">Dissenyant la seqüència didàctica...</h3>
@@ -251,7 +255,7 @@
           </div>
           
           <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-2">
-            <button onclick="copiarPromptDirecte()" class="py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition flex items-center gap-1.5 shadow-sm">
+            <button onclick="copiarPromptDirecte()" class="py-2 px-4 bg-[#e07a5f] hover:bg-[#c15c3d] text-white font-bold rounded-lg text-xs transition flex items-center gap-1.5 shadow-sm">
               <i class="fa-solid fa-copy"></i>
               <span>Copiar prompt per a Gemini</span>
             </button>
@@ -263,7 +267,7 @@
           
           <!-- Actions toolbar -->
           <div class="flex flex-wrap justify-between items-center gap-2 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center">
+            <span class="text-xs font-semibold text-[#2d6a4f] dark:text-[#52b788] flex items-center">
               <i class="fa-solid fa-circle-check mr-1.5"></i> SdA generada amb èxit
             </span>
             <div class="flex items-center gap-2">
@@ -271,26 +275,26 @@
                 <i class="fa-solid fa-pen-to-square" id="editIcon"></i>
                 <span id="editText">Editar</span>
               </button>
-              <button onclick="descarregarDOC()" class="py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5">
+              <button onclick="descarregarDOC()" class="py-2 px-3 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5">
                 <i class="fa-solid fa-file-word"></i>
                 <span>Descarregar DOC</span>
               </button>
-              <button onclick="descarregarPDF()" class="py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5">
+              <button onclick="descarregarPDF()" class="py-2 px-3 bg-[#2d6a4f] hover:bg-[#1b4332] text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5">
                 <i class="fa-solid fa-file-pdf"></i>
                 <span>Descarregar PDF</span>
               </button>
             </div>
           </div>
 
-          <!-- Printable PDF/DOC Document Container (Compatible amb mode fosc) -->
+          <!-- Printable PDF/DOC Document Container -->
           <div id="pdfContent" class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-6 sm:p-8 space-y-6 rounded-2xl border border-slate-200 dark:border-slate-700">
             
             <!-- Context Page (Pàgina 1) -->
             <div class="space-y-5">
               <!-- Document Header -->
-              <div class="border-b-2 border-emerald-600 pb-4 flex justify-between items-start pdf-no-break">
+              <div class="border-b-2 border-[#2d6a4f] pb-4 flex justify-between items-start pdf-no-break">
                 <div>
-                  <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
+                  <span class="text-xs font-bold text-[#2d6a4f] dark:text-[#52b788] uppercase tracking-wider">PROGRAMACIÓ DIDÀCTICA LOMLOE</span>
                   <h2 id="pdfTitol" class="text-xl font-bold text-slate-900 dark:text-white mt-1">Títol de la SdA</h2>
                   <div class="flex items-center space-x-4 text-xs text-slate-600 dark:text-slate-300 mt-2">
                     <span><strong>Matèria:</strong> <span id="pdfMateria"></span></span>
@@ -298,7 +302,7 @@
                     <span><strong>Sessions:</strong> <span id="pdfSessions"></span></span>
                   </div>
                 </div>
-                <div class="text-right text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                <div class="text-right text-xs font-bold text-[#1b4332] dark:text-[#52b788]">
                   <span id="pdfAreaHeader"></span>
                 </div>
               </div>
@@ -306,31 +310,31 @@
               <!-- Context Block -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pdf-no-break">
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
+                  <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Justificació pedagògica</h4>
                   <p id="pdfJustificacio" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Producte final esperat</h4>
+                  <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Producte final esperat</h4>
                   <p id="pdfProducte" class="text-slate-700 dark:text-slate-300 leading-relaxed font-semibold"></p>
                 </div>
               </div>
 
               <!-- Curriculum Alignment -->
               <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
-                <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
+                <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Sabers bàsics a treballar</h4>
                 <p id="pdfSabers" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
               </div>
 
               <!-- Material / Recursos -->
               <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs pdf-no-break">
-                <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
+                <h4 class="font-bold text-[#1b4332] dark:text-[#52b788] mb-1 uppercase text-[10px]">Material i recursos necessaris</h4>
                 <p id="pdfMaterials" class="text-slate-700 dark:text-slate-300 leading-relaxed"></p>
               </div>
 
               <!-- DUA -->
-              <div class="bg-amber-50/60 dark:bg-amber-950/30 p-3.5 rounded-lg border border-amber-200/80 dark:border-amber-900/40 text-xs pdf-no-break">
-                <h4 class="font-bold text-amber-800 dark:text-amber-400 mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
-                <p id="pdfDua" class="text-amber-900 dark:text-amber-300 leading-relaxed"></p>
+              <div class="bg-[#fdf6f0] dark:bg-amber-950/30 p-3.5 rounded-lg border border-[#fbeade] dark:border-amber-900/40 text-xs pdf-no-break">
+                <h4 class="font-bold text-[#c15c3d] dark:text-[#f4a261] mb-1 uppercase text-[10px]">Atenció a la diversitat (DUA)</h4>
+                <p id="pdfDua" class="text-[#c15c3d] dark:text-amber-300 leading-relaxed"></p>
               </div>
 
               <!-- Document Footer (Només al peu de la Pàgina 1) -->
@@ -361,7 +365,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-700 shadow-xl space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
         <h3 class="font-bold text-slate-900 dark:text-white flex items-center text-sm">
-          <i class="fa-solid fa-key text-orange-500 mr-2"></i> Obtenir la clau API de Gemini amb l'XTEC
+          <i class="fa-solid fa-key text-[#e07a5f] mr-2"></i> Obtenir la clau API de Gemini amb l'XTEC
         </h3>
         <button type="button" onclick="toggleModal('apiModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
           <i class="fa-solid fa-xmark text-base"></i>
@@ -372,14 +376,14 @@
         <p>L'aplicació utilitza la clau d'API de Google Gemini per processar la informació de les Situacions d'Aprenentatge.</p>
 
         <ol class="list-decimal list-inside space-y-2 font-medium text-slate-700 dark:text-slate-200">
-          <li>Entra a <a href="https://aistudio.google.com/" target="_blank" class="text-orange-600 dark:text-orange-400 underline font-bold">Google AI Studio</a> amb el teu compte de l'XTEC.</li>
+          <li>Entra a <a href="https://aistudio.google.com/" target="_blank" class="text-[#e07a5f] dark:text-[#f4a261] underline font-bold">Google AI Studio</a> amb el teu compte de l'XTEC.</li>
           <li>A la barra lateral o al botó principal, clica a <strong>"Create API key"</strong>.</li>
           <li>Copia la clau generada, engalta-la al camp superior d'aquesta aplicació i prem <strong>Desar</strong>.</li>
         </ol>
       </div>
 
       <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-end">
-        <button type="button" onclick="toggleModal('apiModal')" class="py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">
+        <button type="button" onclick="toggleModal('apiModal')" class="py-2 px-4 bg-[#2d6a4f] hover:bg-[#1b4332] text-white font-bold rounded-lg text-xs">
           Entesos
         </button>
       </div>
@@ -461,7 +465,7 @@
           el.classList.add('editable-active');
         });
         editBtnText.innerText = "Desar edició";
-        editIcon.className = "fa-solid fa-check text-emerald-600";
+        editIcon.className = "fa-solid fa-check text-[#2d6a4f]";
       } else {
         editables.forEach(el => {
           el.contentEditable = "false";
@@ -662,7 +666,7 @@
           sessionCard.className = 'border border-slate-200 dark:border-slate-700 rounded-lg p-3.5 bg-slate-50 dark:bg-slate-900/50 text-xs space-y-1.5 pdf-no-break';
           sessionCard.innerHTML = `
             <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-1.5">
-              <span class="font-bold text-emerald-700 dark:text-emerald-400">Sessió ${sessio.numero}: ${sessio.titol}</span>
+              <span class="font-bold text-[#2d6a4f] dark:text-[#52b788]">Sessió ${sessio.numero}: ${sessio.titol}</span>
               <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Objectiu: ${sessio.objectiu}</span>
             </div>
             <p class="text-slate-700 dark:text-slate-300 leading-relaxed pt-1"><strong>Desenvolupament:</strong> ${sessio.desenvolupament}</p>
@@ -705,10 +709,10 @@
           <meta charset='utf-8'>
           <title>${titolText}</title>
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.5; font-size: 11pt; }
-            h2 { font-size: 16pt; color: #047857; }
+            body { font-family: 'Plus Jakarta Sans', Arial, sans-serif; line-height: 1.5; font-size: 11pt; }
+            h2 { font-size: 16pt; color: #2d6a4f; }
             h3 { font-size: 13pt; color: #333333; border-bottom: 1px solid #cccccc; }
-            h4 { font-size: 10pt; color: #047857; text-transform: uppercase; }
+            h4 { font-size: 10pt; color: #2d6a4f; text-transform: uppercase; }
             .border { border: 1px solid #e2e8f0; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
           </style>
         </head>
