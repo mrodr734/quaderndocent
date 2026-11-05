@@ -662,34 +662,41 @@
 <div class="container">
 <header style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; overflow: hidden; max-width: 100%;">
   <style>
-    /* Mode Mòbil: Ocultem el text fent que la font sigui 0, però mantenem la mida de l'emoji */
+    /* Estil del botó del mode fosc */
+    #themeToggleBtn {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* En mòbils (pantalles < 640px): amaguem el text i deixem la icona en un quadrat net */
     @media (max-width: 639px) {
       #themeToggleBtn {
         width: 38px !important;
         height: 38px !important;
         padding: 0 !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 0px !important; /* Oculta qualsevol lletra com la "M" */
-        flex-shrink: 0 !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-      }
-      /* Assegurem que el primer caràcter/emoji es vegi a mida normal */
-      #themeToggleBtn::first-letter {
         font-size: 1.2rem !important;
+      }
+      /* Si el botó conté spans de text, els amaga en mòbil */
+      #themeToggleBtn .btn-text {
+        display: none !important;
       }
     }
 
-    /* Mode Ordinador / Pantalla gran: Es mostra tot el text i icona normalment */
+    /* En ordinadors / pantalles grans (>= 640px): mida normal amb text */
     @media (min-width: 640px) {
       #themeToggleBtn {
         width: auto !important;
         height: auto !important;
         padding: 8px 12px !important;
         font-size: 0.9rem !important;
-        justify-content: center !important;
+      }
+      #themeToggleBtn .btn-text {
+        display: inline !important;
       }
     }
   </style>
@@ -697,7 +704,9 @@
   <!-- Línia superior: Títol i Botó Mode fosc -->
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; box-sizing: border-box;">
     <h1 style="margin: 0; font-size: 1.5rem; color: white;">✏️ Quadern docent</h1>
-    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
+    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">
+      <span id="themeIcon">🌙</span><span class="btn-text"> Mode fosc</span>
+    </button>
   </div>
 
   <!-- Línia inferior: Controls de la clau API i Còpies de seguretat -->
