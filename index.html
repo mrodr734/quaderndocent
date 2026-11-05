@@ -660,21 +660,32 @@
 <body>
 
 <div class="container">
-  <header>
-    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
-    <h1>✏️ Quadern docent</h1>
-    <div class="top-controls">
-      <div style="flex: 2; display:flex; gap:8px; align-items:center;">
-        <label for="apiKey" style="white-space:nowrap; font-weight: 600;">Clau API:</label>
-        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC." style="margin-bottom:0;">
-        <button type="button" onclick="saveApiKey()">Desar clau</button>
-        <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?">❓</button>
+ <header style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; box-sizing: border-radius;">
+    
+    <!-- Línia superior: Títol i Botó Mode fosc -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%;">
+      <h1 style="margin: 0; font-size: 1.5rem; color: white;">✏️ Quadern docent</h1>
+      <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
+    </div>
+
+    <!-- Línia inferior: Controls de la clau API i Còpies de seguretat -->
+    <div class="top-controls" style="display: flex; flex-wrap: wrap; gap: 12px; width: 100%; align-items: center; justify-content: space-between;">
+      
+      <!-- Secció Clau API -->
+      <div style="flex: 1 1 280px; min-width: 0; display: flex; gap: 8px; align-items: center;">
+        <label for="apiKey" style="white-space: nowrap; font-weight: 600; font-size: 13px;">Clau API:</label>
+        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC." style="margin-bottom: 0; flex: 1; min-width: 0;">
+        <button type="button" onclick="saveApiKey()" style="white-space: nowrap;">Desar clau</button>
+        <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?" style="flex-shrink: 0;">❓</button>
       </div>
-      <div style="display:flex; gap:8px;">
+
+      <!-- Secció Còpies de seguretat -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0;">
         <button type="button" onclick="exportData()" class="btn-green">💾 Exportar còpia</button>
         <button type="button" onclick="document.getElementById('importFile').click()">📂 Importar còpia</button>
-        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+        <input type="file" id="importFile" style="display: none" onchange="importData(event)">
       </div>
+
     </div>
   </header>
 
