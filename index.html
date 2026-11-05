@@ -660,23 +660,28 @@
 <body>
 
 <div class="container">
-  <header>
-    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
-    <h1>✏️ Quadern docent</h1>
-    <div class="top-controls">
-      <div style="flex: 2; display:flex; gap:8px; align-items:center;">
-        <label for="apiKey" style="white-space:nowrap; font-weight: 600;">Clau API:</label>
-        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC." style="margin-bottom:0;">
-        <button type="button" onclick="saveApiKey()">Desar clau</button>
-        <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?">❓</button>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button type="button" onclick="exportData()" class="btn-green">💾 Exportar còpia</button>
-        <button type="button" onclick="document.getElementById('importFile').click()">📂 Importar còpia</button>
-        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-      </div>
+<header class="bg-gradient-to-r from-[#2d6a4f] to-[#1b4332] text-white p-4 md:p-6 rounded-2xl shadow-lg mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <!-- Títol i Icona -->
+  <div class="flex items-center gap-3 min-w-0">
+    <div class="w-10 h-10 rounded-xl bg-[#2d6a4f] flex items-center justify-center text-white font-bold text-xl shadow-md shrink-0">
+      <i class="fa-solid fa-pen-to-square"></i>
     </div>
-  </header>
+    <div class="min-w-0">
+      <h1 class="text-lg md:text-2xl font-bold tracking-tight truncate sm:whitespace-normal">Quadern Docent</h1>
+      <p class="text-xs md:text-sm text-emerald-100 opacity-90 truncate sm:whitespace-normal">Avaluació pedagògica i gestió d'aula</p>
+    </div>
+  </div>
+
+  <!-- Botons d'Acció (Mode Fosc / Ajuda) -->
+  <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
+    <button onclick="toggleDarkMode()" id="darkModeBtn" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all">
+      <span id="themeIcon">🌙</span>
+      <span id="themeText">Mode fosc</span>
+    </button>
+    <button onclick="toggleModal('apiModal')" class="btn-help" title="Com aconseguir la clau API?">?</button>
+  </div>
+</header>
+
 
   <div class="main-nav">
     <button type="button" id="tabGroupsBtn" class="nav-btn active" onclick="switchMainTab('groups')">📋 Seguiment de l'alumnat</button>
