@@ -661,11 +661,24 @@
 
 <div class="container">
 <header style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; overflow: hidden; max-width: 100%;">
-  
+  <style>
+    /* Mostra el text del botó en ordinadors i l'oculta en mòbils per estalviar espai */
+    .theme-toggle-text {
+      display: none;
+    }
+    @media (min-width: 640px) {
+      .theme-toggle-text {
+        display: inline;
+      }
+    }
+  </style>
+
   <!-- Línia superior: Títol i Botó Mode fosc -->
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; box-sizing: border-box;">
     <h1 style="margin: 0; font-size: 1.5rem; color: white;">✏️ Quadern docent</h1>
-    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
+    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">
+      <span id="themeIcon">🌙</span> <span class="theme-toggle-text">Mode fosc</span>
+    </button>
   </div>
 
   <!-- Línia inferior: Controls de la clau API i Còpies de seguretat -->
@@ -688,7 +701,6 @@
 
   </div>
 </header>
-
   <div class="main-nav">
     <button type="button" id="tabGroupsBtn" class="nav-btn active" onclick="switchMainTab('groups')">📋 Seguiment de l'alumnat</button>
     <button type="button" id="tabLogbookBtn" class="nav-btn" onclick="switchMainTab('logbook')">🧭 Quadern de bitàcola</button>
