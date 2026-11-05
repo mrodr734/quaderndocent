@@ -660,20 +660,25 @@
 <body>
 
 <div class="container">
-  <header>
-    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
-    <h1>✏️ Quadern docent</h1>
-    <div class="top-controls">
-      <div style="flex: 2; display:flex; gap:8px; align-items:center;">
-        <label for="apiKey" style="white-space:nowrap; font-weight: 600;">Clau API:</label>
-        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC." style="margin-bottom:0;">
+ <header style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- Línia superior: Títol i Botó Mode fosc -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%;">
+      <h1 style="margin: 0; font-size: 1.5rem;">✏️ Quadern docent</h1>
+      <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
+    </div>
+
+    <!-- Línia inferior: Controls de la clau API i còpies de seguretat -->
+    <div class="top-controls" style="display: flex; flex-wrap: wrap; gap: 12px; width: 100%;">
+      <div style="flex: 1 1 300px; display: flex; gap: 8px; align-items: center;">
+        <label for="apiKey" style="white-space: nowrap; font-weight: 600;">Clau API:</label>
+        <input type="password" id="apiKey" placeholder="Enganxa la clau API de l'XTEC." style="margin-bottom: 0; width: 100%;">
         <button type="button" onclick="saveApiKey()">Desar clau</button>
         <button type="button" class="btn-help" onclick="openApiHelpModal()" title="Com aconseguir una clau API?">❓</button>
       </div>
-      <div style="display:flex; gap:8px;">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <button type="button" onclick="exportData()" class="btn-green">💾 Exportar còpia</button>
         <button type="button" onclick="document.getElementById('importFile').click()">📂 Importar còpia</button>
-        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+        <input type="file" id="importFile" style="display: none" onchange="importData(event)">
       </div>
     </div>
   </header>
