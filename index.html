@@ -662,30 +662,32 @@
 <div class="container">
 <header style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; overflow: hidden; max-width: 100%;">
   <style>
-    /* Estil per a mòbils: es redueix l'amplada del botó per mostrar només la icona */
+    /* Mode Mòbil: Mostra només la icona (lluna/sol) retallant el text de forma neta */
     @media (max-width: 639px) {
       #themeToggleBtn {
-        width: 38px !important;
+        width: 42px !important;
         height: 38px !important;
         padding: 0 !important;
         display: inline-flex !important;
         align-items: center !important;
-        justify-content: center !important;
-        font-size: 1.1rem !important;
+        justify-content: flex-start !important;
+        padding-left: 10px !important;
+        font-size: 1.2rem !important;
         flex-shrink: 0 !important;
         overflow: hidden !important;
         white-space: nowrap !important;
-        line-height: 1 !important;
+        box-sizing: border-box !important;
       }
     }
 
-    /* Estil per a ordinadors/pantalles grans: es mostra la icona i el text complets */
+    /* Mode Ordinador / Pantalla gran: Mostra tot el botó amb text normal */
     @media (min-width: 640px) {
       #themeToggleBtn {
         width: auto !important;
         height: auto !important;
         padding: 8px 12px !important;
         font-size: 0.9rem !important;
+        justify-content: center !important;
       }
     }
   </style>
