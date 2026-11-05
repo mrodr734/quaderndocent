@@ -662,25 +662,27 @@
 <div class="container">
 <header style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; overflow: hidden; max-width: 100%;">
   <style>
-    /* Mode Mòbil: Mostra només la icona (lluna/sol) retallant el text de forma neta */
+    /* Mode Mòbil: Ocultem el text fent que la font sigui 0, però mantenem la mida de l'emoji */
     @media (max-width: 639px) {
       #themeToggleBtn {
-        width: 42px !important;
+        width: 38px !important;
         height: 38px !important;
         padding: 0 !important;
         display: inline-flex !important;
         align-items: center !important;
-        justify-content: flex-start !important;
-        padding-left: 10px !important;
-        font-size: 1.2rem !important;
+        justify-content: center !important;
+        font-size: 0px !important; /* Oculta qualsevol lletra com la "M" */
         flex-shrink: 0 !important;
         overflow: hidden !important;
-        white-space: nowrap !important;
         box-sizing: border-box !important;
+      }
+      /* Assegurem que el primer caràcter/emoji es vegi a mida normal */
+      #themeToggleBtn::first-letter {
+        font-size: 1.2rem !important;
       }
     }
 
-    /* Mode Ordinador / Pantalla gran: Mostra tot el botó amb text normal */
+    /* Mode Ordinador / Pantalla gran: Es mostra tot el text i icona normalment */
     @media (min-width: 640px) {
       #themeToggleBtn {
         width: auto !important;
@@ -695,7 +697,7 @@
   <!-- Línia superior: Títol i Botó Mode fosc -->
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; box-sizing: border-box;">
     <h1 style="margin: 0; font-size: 1.5rem; color: white;">✏️ Quadern docent</h1>
-    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙  Mode fosc</button>
+    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
   </div>
 
   <!-- Línia inferior: Controls de la clau API i Còpies de seguretat -->
@@ -1355,7 +1357,7 @@
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     localStorage.setItem('mestre_app_theme', isDark ? 'dark' : 'light');
-    document.getElementById('themeToggleBtn').innerText = isDark ? '☀️  Mode clar' : '🌙  Mode fosc';
+    document.getElementById('themeToggleBtn').innerText = isDark ? '☀️ Mode clar' : '🌙 Mode fosc';
   }
 
   function getAreaColorObj(areaName) {
