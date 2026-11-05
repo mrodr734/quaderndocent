@@ -681,8 +681,16 @@
 <div class="container">
 <header style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; overflow: hidden; max-width: 100%;">
   <style>
-    /* Mode Mòbil (< 640px): Fixem el botó en un quadrat perfecte de 38px.
-       Visualitzem només l'emoji del principi (🌙 o ☀️) i amaguem qualsevol text. */
+    /* Ajust del logotip segons la mida de pantalla */
+    .header-logo {
+      height: 32px;
+      max-height: 48px;
+      width: auto;
+      max-width: calc(100% - 50px); /* Garanteix espai per al botó en mòbil */
+      object-fit: contain;
+    }
+
+    /* Mode Mòbil (< 640px): Fixem el botó del mode fosc en un quadrat de 38px */
     @media (max-width: 639px) {
       #themeToggleBtn {
         width: 38px !important;
@@ -698,12 +706,15 @@
         overflow: hidden !important;
         white-space: nowrap !important;
         box-sizing: border-box !important;
-        text-indent: 7px !important; /* Desplaça l'emoji lleugerament a la dreta per centrar-lo perfectament */
+        text-indent: 7px !important;
       }
     }
 
-    /* Mode Ordinador (>= 640px): Mida automàtica amb la icona i el text complets */
+    /* Mode Ordinador (>= 640px): El logotip i el botó tornen a la mida completa */
     @media (min-width: 640px) {
+      .header-logo {
+        height: 45px;
+      }
       #themeToggleBtn {
         width: auto !important;
         height: auto !important;
@@ -715,15 +726,11 @@
     }
   </style>
 
-  <!-- Línia superior: Títol i Botó Mode fosc -->
-  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; box-sizing: border-box;">
-    <!-- Línia superior: Logotip i Botó Mode fosc -->
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; box-sizing: border-box;">
-  <!-- Imatge del logotip que substitueix l'h1 -->
-  <img src="quadern-docent.png" alt="Quadern docent" style="height: 48px; max-height: 55px; width: auto; max-width: 100%; object-fit: contain;">
+  <!-- Línia superior: Logotip i Botó Mode fosc -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 12px; width: 100%; box-sizing: border-box;">
+    <!-- Imatge del logotip adaptativa -->
+    <img src="quadern-docent.png" alt="Quadern docent" class="header-logo">
 
-  <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
-</div>
     <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()">🌙 Mode fosc</button>
   </div>
 
