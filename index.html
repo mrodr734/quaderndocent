@@ -1365,6 +1365,71 @@
 </div>
 
 <script>
+
+document.addEventListener("DOMContentLoaded", function() {
+  checkSeasonalDonationPrompt();
+});
+
+function checkSeasonalDonationPrompt() {
+  const today = new Date();
+  const currentMonth = today.getMonth(); // 11 = Desembre, 2 = Març, 5 = Juny
+  const currentYear = today.getFullYear();
+
+  // Només actuar al desembre (11), març (2) i juny (5)
+  const targetMonths = [11, 2, 5];
+  if (!targetMonths.includes(currentMonth)) {
+    return;
+  }
+
+  // Comprovar si l'usuari ha demanat no veure-ho mai més
+  if (localStorage.getItem("neverShowDonationPrompt") === "true") {
+    return;
+  }
+
+  // Comprovar si ja ho ha vist aquest mes concret
+  const lastShownKey = `donationPrompt_${currentYear}_${currentMonth}`;
+  if (localStorage.getItem(lastShownKey)) {
+    return;
+  }
+
+  // Si passa totes les opcions, mostrem la modal
+  document.getElementById("donationPromptModal").style.display = "flex";
+}
+
+function closeDonationPromptModal() {
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
+  // Guardar que ja s'ha vist aquest mes
+  const lastShownKey = `donationPrompt_${currentYear}_${currentMonth}`;
+  localStorage.setItem(lastShownKey, "true");
+
+  // Si ha marcat la casella de no tornar-ho a mostrar mai més
+  if (document.getElementById("dontShowDonationAgain").checked) {
+    localStorage.setItem("neverShowDonationPrompt", "true");
+  }
+
+  document.getElementById("donationPromptModal").style.display = "none";
+}
+
+  // Comprovar i mostrar la modal en carregar la pàgina
+document.addEventListener("DOMContentLoaded", function() {
+  const hideWelcome = localStorage.getItem("hideWelcomeModal");
+  if (!hideWelcome) {
+    document.getElementById("welcomeModal").style.display = "flex";
+  }
+});
+
+// Funció per tancar la modal i desar la preferència
+function closeWelcomeModal() {
+  const dontShow = document.getElementById("dontShowWelcome").checked;
+  if (dontShow) {
+    localStorage.setItem("hideWelcomeModal", "true");
+  }
+  document.getElementById("welcomeModal").style.display = "none";
+}
+  
   let db = { groups: [], schoolMeetings: [], logbookEntries: [] };
   let selectedGroupIndex = null;
   let selectedStudentIndex = null;
@@ -1588,6 +1653,54 @@
         </div>
         <div class="content">${reportContent}</div>
         <script>window.onload = function() { window.print(); };<\/script>
+
+        <!-- Modal Puntual de Suggeriments i Donació -->
+<div id="donationPromptModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+  <div style="background: white; border-radius: 12px; max-width: 480px; width: 90%; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: inherit; color: #333; max-height: 85vh; overflow-y: auto; text-align: center;">
+    
+    <div style="font-size: 36px; margin-bottom: 8px;">🎒</div>
+    
+    <h3 style="margin: 0 0 10px 0; color: var(--accent-green-dark, #1b4332); font-size: 1.25rem;">
+      Què et sembla el Quadern Docent?
+    </h3>
+    
+    <p style="font-size: 14px; line-height: 1.5; color: #555; margin-bottom: 16px;">
+      Esperem que t'estigui sent útil en aquest període d'intensa feina a l'aula! 
+    </p>
+
+    <!-- Bloc per donació -->
+    <div style="background: #fdf8f5; border: 1px solid #f9ebe0; padding: 14px; border-radius: 10px; margin-bottom: 16px; text-align: center;">
+      <p style="font-size: 13px; color: #444; margin: 0 0 10px 0;">
+        Si t'està ajudant a estalviar temps i vols contribuir a mantenir el projecte actiu i gratuït:
+      </p>
+      <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="background-color: var(--primary-orange, #e07a5f); color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+        ☕ Fer una donació
+      </a>
+    </div>
+
+    <!-- Bloc per suggeriments -->
+    <div style="font-size: 13px; color: #666; margin-bottom: 20px;">
+      💡 Tens alguna idea per millorar? Utilitza el nostre 
+      <a href="#" onclick="closeDonationPromptModal(); openContactModal(); return false;" style="color: var(--accent-green, #2d6a4f); text-decoration: underline; font-weight: 600;">
+        formulari de contacte
+      </a> 
+      per enviar-nos suggeriments.
+    </div>
+
+    <!-- Accions de tancament -->
+    <div style="padding-top: 12px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <label style="font-size: 12px; color: #777; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <input type="checkbox" id="dontShowDonationAgain" style="cursor: pointer;">
+        No ho tornis a mostrar
+      </label>
+      
+      <button type="button" onclick="closeDonationPromptModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
+        Continuar al quadern
+      </button>
+    </div>
+
+  </div>
+</div>
       </body>
       </html>
     `);
@@ -3070,6 +3183,47 @@
     navigator.clipboard.writeText(text).then(() => { alert("Informe copiat al porta-retalls!"); });
   }
 </script>
+<!-- Modal de Benvinguda, Privacitat i Donacions -->
+<div id="welcomeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+  <div style="background: white; border-radius: 12px; max-width: 500px; width: 90%; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: inherit; color: #333; max-height: 85vh; overflow-y: auto;">
+    
+    <!-- Títol de benvinguda -->
+    <h2 style="margin-top: 0; color: var(--accent-green-dark, #1b4332); display: flex; align-items: center; gap: 8px;">
+      👋 Benvingut/da al Quadern Docent
+    </h2>
+    
+    <!-- Contingut explicatiu -->
+    <div style="font-size: 14px; line-height: 1.5; color: #444;">
+      <p>Aquest quadern és una eina creada per i per a docents amb l'objectiu de facilitar el seguiment de l'alumnat i la gestió del dia a dia a l'aula.</p>
+      
+      <div style="background: #f4f9f5; border-left: 4px solid var(--accent-green, #2d6a4f); padding: 10px 14px; margin: 15px 0; border-radius: 0 8px 8px 0;">
+        <strong style="color: var(--accent-green-dark, #1b4332);">🔒 La teva privacitat és el primer:</strong>
+        <p style="margin: 5px 0 0 0; font-size: 13px;">Totes les dades s'emmagatzemen <strong>únicament al teu navegador o dispositiu local</strong>. Cap informació ni nom d'alumne s'envia o guarda en servidors externs.</p>
+      </div>
+      
+      <p>Es tracta d'un projecte de codi obert mantingut de manera independent. Si et resulta útil i vols ajudar a mantenir-lo actiu i actualitzat, pots fer una petita aportació:</p>
+      
+      <div style="text-align: center; margin: 15px 0;">
+        <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="background-color: var(--primary-orange, #e07a5f); color: white; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+          ☕ Convida'm a un cafè
+        </a>
+      </div>
+    </div>
+    
+    <!-- Línia inferior amb la casella i el botó -->
+    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <label style="font-size: 13px; color: #666; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <input type="checkbox" id="dontShowWelcome" style="cursor: pointer;">
+        No ho tornis a mostrar
+      </label>
+      
+      <button type="button" onclick="closeWelcomeModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
+        D'acord
+      </button>
+    </div>
 
+  </div>
+</div>
+  
 </body>
 </html>
