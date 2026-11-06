@@ -1654,53 +1654,6 @@ function closeWelcomeModal() {
         <div class="content">${reportContent}</div>
         <script>window.onload = function() { window.print(); };<\/script>
 
-        <!-- Modal Puntual de Suggeriments i Donació -->
-<div id="donationPromptModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
-  <div style="background: white; border-radius: 12px; max-width: 480px; width: 90%; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: inherit; color: #333; max-height: 85vh; overflow-y: auto; text-align: center;">
-    
-    <div style="font-size: 36px; margin-bottom: 8px;">🎒</div>
-    
-    <h3 style="margin: 0 0 10px 0; color: var(--accent-green-dark, #1b4332); font-size: 1.25rem;">
-      Què et sembla el Quadern Docent?
-    </h3>
-    
-    <p style="font-size: 14px; line-height: 1.5; color: #555; margin-bottom: 16px;">
-      Esperem que t'estigui sent útil en aquest període d'intensa feina a l'aula! 
-    </p>
-
-    <!-- Bloc per donació -->
-    <div style="background: #fdf8f5; border: 1px solid #f9ebe0; padding: 14px; border-radius: 10px; margin-bottom: 16px; text-align: center;">
-      <p style="font-size: 13px; color: #444; margin: 0 0 10px 0;">
-        Si t'està ajudant a estalviar temps i vols contribuir a mantenir el projecte actiu i gratuït:
-      </p>
-      <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="background-color: var(--primary-orange, #e07a5f); color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
-        ☕ Fer una donació
-      </a>
-    </div>
-
-    <!-- Bloc per suggeriments -->
-    <div style="font-size: 13px; color: #666; margin-bottom: 20px;">
-      💡 Tens alguna idea per millorar? Utilitza el nostre 
-      <a href="#" onclick="closeDonationPromptModal(); openContactModal(); return false;" style="color: var(--accent-green, #2d6a4f); text-decoration: underline; font-weight: 600;">
-        formulari de contacte
-      </a> 
-      per enviar-nos suggeriments.
-    </div>
-
-    <!-- Accions de tancament -->
-    <div style="padding-top: 12px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-      <label style="font-size: 12px; color: #777; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-        <input type="checkbox" id="dontShowDonationAgain" style="cursor: pointer;">
-        No ho tornis a mostrar
-      </label>
-      
-      <button type="button" onclick="closeDonationPromptModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
-        Continuar al quadern
-      </button>
-    </div>
-
-  </div>
-</div>
       </body>
       </html>
     `);
@@ -3219,6 +3172,54 @@ function closeWelcomeModal() {
       
       <button type="button" onclick="closeWelcomeModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
         D'acord
+      </button>
+    </div>
+
+  </div>
+</div>
+
+   <!-- Modal Puntual de Suggeriments i Donació -->
+<div id="donationPromptModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+  <div style="background: white; border-radius: 12px; max-width: 480px; width: 90%; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: inherit; color: #333; max-height: 85vh; overflow-y: auto; text-align: center;">
+    
+    <div style="font-size: 36px; margin-bottom: 8px;">🎒</div>
+    
+    <h3 style="margin: 0 0 10px 0; color: var(--accent-green-dark, #1b4332); font-size: 1.25rem;">
+      Què et sembla el Quadern Docent?
+    </h3>
+    
+    <p style="font-size: 14px; line-height: 1.5; color: #555; margin-bottom: 16px;">
+      Esperem que t'estigui sent útil! 
+    </p>
+
+    <!-- Bloc per donació -->
+    <div style="background: #fdf8f5; border: 1px solid #f9ebe0; padding: 14px; border-radius: 10px; margin-bottom: 16px; text-align: center;">
+      <p style="font-size: 13px; color: #444; margin: 0 0 10px 0;">
+        Si t'està ajudant a estalviar temps i vols contribuir a mantenir el projecte actiu i gratuït:
+      </p>
+      <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="background-color: var(--primary-orange, #e07a5f); color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+        ☕ Fer una donació
+      </a>
+    </div>
+
+    <!-- Bloc per suggeriments -->
+    <div style="font-size: 13px; color: #666; margin-bottom: 20px;">
+      💡 Tens alguna idea per millorar? Utilitza el nostre 
+      <a href="#" onclick="closeDonationPromptModal(); openContactModal(); return false;" style="color: var(--accent-green, #2d6a4f); text-decoration: underline; font-weight: 600;">
+        formulari de contacte
+      </a> 
+      per enviar-nos suggeriments.
+    </div>
+
+    <!-- Accions de tancament -->
+    <div style="padding-top: 12px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <label style="font-size: 12px; color: #777; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <input type="checkbox" id="dontShowDonationAgain" style="cursor: pointer;">
+        No ho tornis a mostrar
+      </label>
+      
+      <button type="button" onclick="closeDonationPromptModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
+        Continuar al quadern
       </button>
     </div>
 
