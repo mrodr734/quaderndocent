@@ -3138,7 +3138,7 @@ function closeWelcomeModal() {
     navigator.clipboard.writeText(text).then(() => { alert("Informe copiat al porta-retalls!"); });
   }
 
- // Selecció automàtica del trimestre segons la data (1 = Gener ... 12 = Desembre)
+// Selecció automàtica de TOTS els selectors de trimestre segons la data (1 = Gener ... 12 = Desembre)
   function setAutomaticTrimester() {
     // DATA SIMULADA PER A PROVES (15 de gener -> activa el 2n Trimestre)
     const today = new Date('2026-01-15'); 
@@ -3158,16 +3158,16 @@ function closeWelcomeModal() {
       currentTrimester = "3r Trimestre"; // A partir del 28 de març
     }
 
-    const selectors = ['groupMatrixTrimestreSelector', 'summaryTrimestreSelector'];
-    selectors.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.value = currentTrimester;
-        el.dispatchEvent(new Event('change'));
+    // Busquem TOTS els desplegables de la pàgina que tinguin l'opció "1r Trimestre"
+    document.querySelectorAll('select').forEach(select => {
+      const hasTrimesterOption = Array.from(select.options).some(opt => opt.value === "1r Trimestre");
+      if (hasTrimesterOption) {
+        select.value = currentTrimester;
+        select.dispatchEvent(new Event('change'));
       }
     });
   }
-
+  
   // Control Modal de Benvinguda
   function closeWelcomeModal() {
     if (document.getElementById("dontShowWelcome").checked) {
