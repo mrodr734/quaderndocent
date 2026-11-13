@@ -3137,66 +3137,122 @@ function closeWelcomeModal() {
     const text = document.getElementById('reportText').innerText;
     navigator.clipboard.writeText(text).then(() => { alert("Informe copiat al porta-retalls!"); });
   }
+
+ // Selecció automàtica del trimestre segons la data (1 = Gener ... 12 = Desembre)
+  function setAutomaticTrimester() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
+    let currentTrimester = "1r Trimestre";
+
+    if (month >= 9 || (month === 11 && day < 11)) {
+      currentTrimester = "1r Trimestre"; // De l'1 de setembre al 7 de gener
+    } else if ((month === 11 && day >= 12) || month === 2 || (month === 3 && day <= 27)) {
+      currentTrimester = "2n Trimestre"; // Del 8 de gener al 27 de març
+    } else {
+      currentTrimester = "3r Trimestre"; // A partir del 28 de març (fins al 31 d'agost)
+    }
+
+    const selectors = ['groupMatrixTrimestreSelector', 'summaryTrimestreSelector'];
+    selectors.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = currentTrimester;
+        el.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+
+  // Control Modal de Benvinguda
+  function closeWelcomeModal() {
+    if (document.getElementById("dontShowWelcome").checked) {
+      localStorage.setItem("hideWelcomeModal", "true");
+    }
+    document.getElementById("welcomeModal").style.display = "none";
+  }
+
+  // Control Modal Puntual de Suggeriments i Donació (Desembre, Març, Juny)
+  function checkSeasonalDonationPrompt() {
+    const today = new Date();
+    const currentMonth = today.getMonth(); // 11 = Desembre, 2 = Març, 5 = Juny
+    const currentYear = today.getFullYear();
+
+    if (![11, 2, 5].includes(currentMonth)) return;
+    if (localStorage.getItem("neverShowDonationPrompt") === "true") return;
+
+    const lastShownKey = `donationPrompt_${currentYear}_${currentMonth}`;
+    if (localStorage.getItem(lastShownKey)) return;
+
+    document.getElementById("donationPromptModal").style.display = "flex";
+  }
+
+  function closeDonationPromptModal() {
+    const today = new Date();
+    const lastShownKey = `donationPrompt_${today.getFullYear()}_${today.getMonth()}`;
+    localStorage.setItem(lastShownKey, "true");
+
+    if (document.getElementById("dontShowDonationAgain").checked) {
+      localStorage.setItem("neverShowDonationPrompt", "true");
+    }
+    document.getElementById("donationPromptModal").style.display = "none";
+  }
+
+  // Inicialització en carregar la pàgina
+  document.addEventListener("DOMContentLoaded", function() {
+    setAutomaticTrimester();
+
+    if (!localStorage.getItem("hideWelcomeModal")) {
+      document.getElementById("welcomeModal").style.display = "flex";
+    }
+
+    checkSeasonalDonationPrompt();
+  });
 </script>
+
 <!-- Modal de Benvinguda, Privacitat i Donacions -->
 <div id="welcomeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
   <div style="background: white; border-radius: 12px; max-width: 600px; width: 90%; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: inherit; color: #333; max-height: 85vh; overflow-y: auto;">
-    
-    <!-- Títol de benvinguda -->
     <h2 style="margin-top: 0; color: var(--accent-green-dark, #1b4332); display: flex; align-items: center; gap: 8px;">
       Benvinguts i benvingudes al Quadern Docent!
     </h2>
-    
-    <!-- Contingut explicatiu -->
     <div style="font-size: 14px; line-height: 1.5; color: #444;">
       <p>Aquest quadern és una eina creada per a docents amb l'objectiu de facilitar el seguiment de l'alumnat i la gestió del dia a dia a l'aula.</p>
-      
       <div style="background: #f4f9f5; border-left: 4px solid var(--accent-green, #2d6a4f); padding: 10px 14px; margin: 15px 0; border-radius: 0 8px 8px 0;">
         <strong style="color: var(--accent-green-dark, #1b4332);">🔒 Ha estat dissenyat posant la privacitat al centre</strong>
-        <p style="margin: 5px 0 0 0; font-size: 13px;">Totes les dades s'emmagatzemen <strong>únicament al teu navegador o dispositiu local</strong>. Cap informació de l'alumnat s'envia ni es guarda en servidors externs. Per aquest motiu, <strong>és important que generis còpies de seguretat al teu ordinador i que sempre hi accedeixis des del mateix dispositiu i navegador.</strong> 
-          <br>
-          <br>Fer servir la teva API d'XTEC evitarà que Gemini entreni models d'IA amb les dades enviades, assegurant el compliment del RGPD i la protecció de dades de l'entorn educatiu. </p>
+        <p style="margin: 5px 0 0 0; font-size: 13px;">Totes les dades s'emmagatzemen <strong>únicament al teu navegador o dispositiu local</strong>. Cap informació de l'alumnat s'envia ni es guarda en servidors externs. Per aquest motiu, <strong>és important que generis còpies de seguretat al teu ordinador i que sempre hi accedeixis des del mateix dispositiu i navegador.</strong>
+          <br><br>Fer servir la teva API d'XTEC evitarà que Gemini entreni models d'IA amb les dades enviades, assegurant el compliment del RGPD i la protecció de dades de l'entorn educatiu.
+        </p>
       </div>
-      
       <p>Es tracta d'un projecte de codi obert mantingut de manera independent. Si et resulta útil i vols ajudar a mantenir-lo actiu i actualitzat, pots fer una petita aportació:</p>
-      
       <div style="text-align: center; margin: 15px 0;">
         <a href="https://buymeacoffee.com/quaderndocent" target="_blank" rel="noopener noreferrer" style="background-color: var(--primary-orange, #e07a5f); color: white; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
           ☕ Convida'm a un cafè
         </a>
       </div>
     </div>
-    
-    <!-- Línia inferior amb la casella i el botó -->
     <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
       <label style="font-size: 13px; color: #666; cursor: pointer; display: flex; align-items: center; gap: 6px;">
         <input type="checkbox" id="dontShowWelcome" style="cursor: pointer;">
         No ho tornis a mostrar
       </label>
-      
       <button type="button" onclick="closeWelcomeModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">
         D'acord
       </button>
     </div>
-
   </div>
 </div>
 
-   <!-- Modal Puntual de Suggeriments i Donació -->
+<!-- Modal Puntual de Suggeriments i Donació -->
 <div id="donationPromptModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
   <div style="background: white; border-radius: 12px; max-width: 480px; width: 90%; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: inherit; color: #333; max-height: 85vh; overflow-y: auto; text-align: center;">
-    
     <div style="font-size: 36px; margin-bottom: 8px;">🎒</div>
-    
     <h3 style="margin: 0 0 10px 0; color: var(--accent-green-dark, #1b4332); font-size: 1.25rem;">
       Què et sembla el Quadern Docent?
     </h3>
-    
     <p style="font-size: 14px; line-height: 1.5; color: #555; margin-bottom: 16px;">
-      Esperem que t'estigui sent útil! 
+      Esperem que t'estigui sent útil!
     </p>
-
-    <!-- Bloc per donació -->
     <div style="background: #fdf8f5; border: 1px solid #f9ebe0; padding: 14px; border-radius: 10px; margin-bottom: 16px; text-align: center;">
       <p style="font-size: 13px; color: #444; margin: 0 0 10px 0;">
         Si t'està ajudant a estalviar temps i vols contribuir a mantenir el projecte actiu i gratuït:
@@ -3205,30 +3261,24 @@ function closeWelcomeModal() {
         ☕ Fer una donació
       </a>
     </div>
-
-    <!-- Bloc per suggeriments -->
     <div style="font-size: 13px; color: #666; margin-bottom: 20px;">
-      💡 Tens alguna idea per millorar? Utilitza el nostre 
+      💡 Tens alguna idea per millorar? Utilitza el nostre
       <a href="#" onclick="closeDonationPromptModal(); openContactModal(); return false;" style="color: var(--accent-green, #2d6a4f); text-decoration: underline; font-weight: 600;">
         formulari de contacte
-      </a> 
+      </a>
       per enviar-nos suggeriments.
     </div>
-
-    <!-- Accions de tancament -->
     <div style="padding-top: 12px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
       <label style="font-size: 12px; color: #777; cursor: pointer; display: flex; align-items: center; gap: 6px;">
         <input type="checkbox" id="dontShowDonationAgain" style="cursor: pointer;">
         No ho tornis a mostrar
       </label>
-      
       <button type="button" onclick="closeDonationPromptModal()" style="background: var(--accent-green-dark, #1b4332); color: white; border: none; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
         Continuar al quadern
       </button>
     </div>
-
   </div>
 </div>
-  
+
 </body>
 </html>
