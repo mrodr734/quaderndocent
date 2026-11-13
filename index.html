@@ -1497,13 +1497,18 @@ function closeWelcomeModal() {
   function openFeedbackModal() { document.getElementById('feedbackModal').style.display = 'flex'; document.getElementById('feedbackStatus').style.display = 'none'; }
   function closeFeedbackModal() { document.getElementById('feedbackModal').style.display = 'none'; }
 
-  function getDefaultTrimestre() {
-    const today = new Date();
+ function getDefaultTrimestre() {
+    // DATA SIMULADA PER A PROVES (15 de gener -> activa el 2n Trimestre)
+    const today = new Date('2026-01-15');
+    // Quan acabis la prova, esborra la línia de dalt i descomenta aquesta:
+    // const today = new Date();
+
     const month = today.getMonth() + 1;
     const day = today.getDate();
-    if (month >= 9 && month <= 12) return '1r Trimestre';
-    if (month === 1 || month === 2 || (month === 3 && day <= 20)) return '2n Trimestre';
-    if ((month === 3 && day >= 21) || month === 4 || month === 5) return '3r Trimestre';
+
+    if (month >= 9 || (month === 1 && day < 8)) return '1r Trimestre'; // Fins al 7 de gener
+    if ((month === 1 && day >= 8) || month === 2 || (month === 3 && day <= 27)) return '2n Trimestre'; // Del 8 de gener al 27 de març
+    if ((month === 3 && day >= 28) || month === 4 || month === 5) return '3r Trimestre'; // Del 28 de març al 31 de maig
     return 'FINAL';
   }
 
@@ -3136,36 +3141,6 @@ function closeWelcomeModal() {
   function copyReport() {
     const text = document.getElementById('reportText').innerText;
     navigator.clipboard.writeText(text).then(() => { alert("Informe copiat al porta-retalls!"); });
-  }
-
-// Selecció automàtica de TOTS els selectors de trimestre segons la data (1 = Gener ... 12 = Desembre)
-  function setAutomaticTrimester() {
-    // DATA SIMULADA PER A PROVES (15 de gener -> activa el 2n Trimestre)
-    const today = new Date('2026-01-15'); 
-    // Quan acabis la prova, esborra la línia de dalt i descomenta aquesta:
-    // const today = new Date();
-
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-
-    let currentTrimester = "1r Trimestre";
-
-    if (month >= 9 || (month === 1 && day < 8)) {
-      currentTrimester = "1r Trimestre"; // De l'1 de setembre al 7 de gener
-    } else if ((month === 1 && day >= 8) || month === 2 || (month === 3 && day <= 27)) {
-      currentTrimester = "2n Trimestre"; // Del 8 de gener al 27 de març
-    } else {
-      currentTrimester = "3r Trimestre"; // A partir del 28 de març
-    }
-
-    // Busquem TOTS els desplegables de la pàgina que tinguin l'opció "1r Trimestre"
-    document.querySelectorAll('select').forEach(select => {
-      const hasTrimesterOption = Array.from(select.options).some(opt => opt.value === "1r Trimestre");
-      if (hasTrimesterOption) {
-        select.value = currentTrimester;
-        select.dispatchEvent(new Event('change'));
-      }
-    });
   }
   
   // Control Modal de Benvinguda
