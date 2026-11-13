@@ -1497,12 +1497,8 @@ function closeWelcomeModal() {
   function openFeedbackModal() { document.getElementById('feedbackModal').style.display = 'flex'; document.getElementById('feedbackStatus').style.display = 'none'; }
   function closeFeedbackModal() { document.getElementById('feedbackModal').style.display = 'none'; }
 
- function getDefaultTrimestre() {
-    // DATA SIMULADA PER A PROVES (15 de gener -> activa el 2n Trimestre)
-    const today = new Date('2026-01-15');
-    // Quan acabis la prova, esborra la línia de dalt i descomenta aquesta:
-    // const today = new Date();
-
+function getDefaultTrimestre() {
+    const today = new Date();
     const month = today.getMonth() + 1;
     const day = today.getDate();
 
