@@ -1596,14 +1596,138 @@ function getDefaultTrimestre() {
     localStorage.setItem('mestre_app_db', JSON.stringify(db));
   }
 
-  function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+ // Funcions auxiliars de xifratge natiu (Web Crypto API - AES-GCM 256-bit)
+  async function encryptJsonData(plainText, password) {
+    const enc = new TextEncoder();
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]
+    );
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt"]
+    );
+
+    const encrypted = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv: iv }, key, enc.encode(plainText)
+    );
+
+    const bufferToBase64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+    return JSON.stringify({
+      encrypted: true,
+      version: 1,
+      salt: bufferToBase64(salt),
+      iv: bufferToBase64(iv),
+      data: bufferToBase64(encrypted)
+    });
+  }
+
+  async function decryptJsonData(encryptedObj, password) {
+    const base64ToBuffer = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+
+    const salt = base64ToBuffer(encryptedObj.salt);
+    const iv = base64ToBuffer(encryptedObj.iv);
+    const data = base64ToBuffer(encryptedObj.data);
+
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]
+    );
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["decrypt"]
+    );
+
+    const decrypted = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv }, key, data
+    );
+    return dec.decode(decrypted);
+  }
+
+  async function exportData() {
+    const password = prompt(
+      "🔒 Introdueix una contrasenya per encriptar la còpia de seguretat:\n(Deixa-ho en blanc i prem D'acord si la vols exportar sense encriptar.\n⚠️ ATENCIÓ: Si oblides la contrasenya, ningú podrà recuperar les dades.)"
+    );
+    if (password === null) return;
+
+    let finalContent = JSON.stringify(db);
+    let prefix = "copia_seguretat_mestre_";
+
+    if (password.trim() !== "") {
+      try {
+        finalContent = await encryptJsonData(finalContent, password.trim());
+        prefix = "copia_encriptada_mestre_";
+      } catch (err) {
+        alert("Error en encriptar les dades: " + err.message);
+        return;
+      }
+    }
+
+    const blob = new Blob([finalContent], { type: "application/json;charset=utf-8" });
     const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", `copia_seguretat_mestre_${new Date().toISOString().slice(0,10)}.json`);
+    dlAnchor.href = URL.createObjectURL(blob);
+    dlAnchor.setAttribute("download", `${prefix}${new Date().toISOString().slice(0,10)}.json`);
     document.body.appendChild(dlAnchor);
     dlAnchor.click();
     dlAnchor.remove();
+  }
+
+  function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+
+    reader.onload = async function(evt) {
+      try {
+        let imported = JSON.parse(evt.target.result);
+
+        if (imported && imported.encrypted === true) {
+          const password = prompt("🔑 Aquesta còpia està encriptada. Introdueix la contrasenya per desbloquejar-la:");
+          if (!password) { e.target.value = ''; return; }
+
+          try {
+            const decryptedText = await decryptJsonData(imported, password.trim());
+            imported = JSON.parse(decryptedText);
+          } catch (decryptErr) {
+            alert("❌ Contrasenya incorrecta o fitxer malmès. No s'han pogut desxifrar les dades.");
+            e.target.value = '';
+            return;
+          }
+        }
+
+        if (imported && Array.isArray(imported.groups)) {
+          db = imported;
+          if (!db.schoolMeetings) db.schoolMeetings = [];
+          if (!db.logbookEntries) db.logbookEntries = [];
+          saveDb();
+          selectedGroupIndex = null;
+          selectedStudentIndex = null;
+          renderGroups();
+          renderSchoolMeetings();
+          initLogbookSelects();
+          document.getElementById('studentSection').style.display = 'none';
+          document.getElementById('groupOverviewSection').style.display = 'none';
+          document.getElementById('studentDetail').style.display = 'none';
+          document.getElementById('noStudentSelected').style.display = 'block';
+          alert("✅ Dades carregades correctament!");
+        } else {
+          alert("El fitxer no té un format vàlid.");
+        }
+      } catch (err) {
+        alert("Error en llegir el fitxer: " + err.message);
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
   }
 
   function exportGroupScoresCsv() {
@@ -1668,34 +1792,6 @@ function getDefaultTrimestre() {
       </html>
     `);
     printWindow.document.close();
-  }
-
-  function importData(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      try {
-        const imported = JSON.parse(evt.target.result);
-        if (imported && Array.isArray(imported.groups)) {
-          db = imported;
-          if (!db.schoolMeetings) db.schoolMeetings = [];
-          if (!db.logbookEntries) db.logbookEntries = [];
-          saveDb();
-          selectedGroupIndex = null;
-          selectedStudentIndex = null;
-          renderGroups();
-          renderSchoolMeetings();
-          initLogbookSelects();
-          document.getElementById('studentSection').style.display = 'none';
-          document.getElementById('groupOverviewSection').style.display = 'none';
-          document.getElementById('studentDetail').style.display = 'none';
-          document.getElementById('noStudentSelected').style.display = 'block';
-          alert("Dades carregades correctament!");
-        } else { alert("El fitxer no té un format vàlid."); }
-      } catch (err) { alert("Error en llegir el fitxer: " + err.message); }
-    };
-    reader.readAsText(file);
   }
 
   function getQualificacioOficial(val) {
