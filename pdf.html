@@ -7,7 +7,7 @@
   <!-- Carrega de la font Plus Jakarta Sans des de Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -16,6 +16,7 @@
       --accent-green: #2d6a4f;
       --accent-dark: #1b4332;
       --text: #2b2d42;
+      --text-muted: #6c757d;
       --border: #d3e2d8;
       --orange: #e07a5f;
     }
@@ -76,18 +77,26 @@
       background-color: #eef6f2;
     }
 
-    select, button, input[type="checkbox"] {
+    select, button, input[type="checkbox"], input[type="password"] {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       font-size: 14px;
     }
 
-    select {
+    select, input[type="password"] {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--border);
       border-radius: 6px;
       background-color: #fafdfb;
+      color: var(--text);
       margin-top: 6px;
+      box-sizing: border-box;
+    }
+
+    select:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.15);
     }
 
     .btn {
@@ -116,6 +125,14 @@
       background-color: #c85a2b;
     }
 
+    .btn-secondary {
+      background-color: var(--text-muted);
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
     .options-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -132,6 +149,29 @@
       align-items: center;
       gap: 8px;
       font-size: 13px;
+    }
+
+    /* MODAL DE CONTRASENYA */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      color: var(--text);
+      padding: 26px;
+      border-radius: 14px;
+      width: 440px;
+      max-width: 90%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border);
     }
 
     /* ESTILS PER A LA IMPRESSIÓ / GENERACIÓ DE PDF */
@@ -188,7 +228,7 @@
       }
     }
 
-    /* ESTILS DE LA VISTA PREVIA A PANTALLA */
+    /* ESTILS DE LA VISTA PRÈVIA A PANTALLA */
     .preview-table {
       width: 100%;
       border-collapse: collapse;
@@ -269,21 +309,118 @@
 
 </div>
 
+<!-- Modal per desencriptar còpies de seguretat -->
+<div id="cryptoPasswordModal" class="modal-overlay no-print" style="display:none;">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h4 style="margin:0; color:var(--accent-green);">🔑 Còpia de seguretat encriptada</h4>
+      <button type="button" id="cryptoModalCloseBtn" style="background:none; border:none; color:var(--text); font-size:18px; cursor:pointer; padding:0;">✕</button>
+    </div>
+
+    <p style="font-size:13px; color:var(--text); line-height:1.5; margin-top:0; margin-bottom:12px;">
+      Aquest fitxer està protegit. Introdueix la contrasenya per desbloquejar i carregar les dades:
+    </p>
+
+    <label for="cryptoModalInput" style="font-size:12px; font-weight:600;">Contrasenya:</label>
+    <input type="password" id="cryptoModalInput" placeholder="Introdueix la contrasenya..." style="margin-bottom: 16px;">
+
+    <div style="display:flex; justify-content:flex-end; gap:8px;">
+      <button type="button" id="cryptoModalCancelBtn" class="btn btn-secondary">Cancel·lar</button>
+      <button type="button" id="cryptoModalConfirmBtn" class="btn">🔓 Desbloquejar</button>
+    </div>
+  </div>
+</div>
+
 <script>
   let importedDb = null;
+
+  // Desxifratge natiu (Web Crypto API - AES-GCM 256-bit)
+  async function decryptJsonData(encryptedObj, password) {
+    const base64ToBuffer = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+
+    const salt = base64ToBuffer(encryptedObj.salt);
+    const iv = base64ToBuffer(encryptedObj.iv);
+    const data = base64ToBuffer(encryptedObj.data);
+
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]
+    );
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["decrypt"]
+    );
+
+    const decrypted = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv }, key, data
+    );
+    return dec.decode(decrypted);
+  }
+
+  function askDecryptPasswordModal() {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('cryptoPasswordModal');
+      const inputEl = document.getElementById('cryptoModalInput');
+      const confirmBtn = document.getElementById('cryptoModalConfirmBtn');
+      const cancelBtn = document.getElementById('cryptoModalCancelBtn');
+      const closeBtn = document.getElementById('cryptoModalCloseBtn');
+
+      inputEl.value = '';
+      modal.style.display = 'flex';
+      setTimeout(() => inputEl.focus(), 50);
+
+      const cleanup = (result) => {
+        modal.style.display = 'none';
+        confirmBtn.onclick = null;
+        cancelBtn.onclick = null;
+        closeBtn.onclick = null;
+        inputEl.onkeydown = null;
+        resolve(result);
+      };
+
+      confirmBtn.onclick = () => cleanup(inputEl.value);
+      cancelBtn.onclick = () => cleanup(null);
+      closeBtn.onclick = () => cleanup(null);
+      inputEl.onkeydown = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); cleanup(inputEl.value); }
+        if (e.key === 'Escape') { e.preventDefault(); cleanup(null); }
+      };
+    });
+  }
 
   function handleFileSelect(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    document.getElementById('fileNameDisplay').innerText = `Fitxer seleccionat: ${file.name}`;
-
     const reader = new FileReader();
-    reader.onload = function(evt) {
+    reader.onload = async function(evt) {
       try {
-        const parsed = JSON.parse(evt.target.result);
+        let parsed = JSON.parse(evt.target.result);
+
+        if (parsed && parsed.encrypted === true) {
+          const password = await askDecryptPasswordModal();
+          if (!password) {
+            e.target.value = '';
+            return;
+          }
+
+          try {
+            const decryptedText = await decryptJsonData(parsed, password.trim());
+            parsed = JSON.parse(decryptedText);
+          } catch (decryptErr) {
+            alert("❌ Contrasenya incorrecta o fitxer malmès. No s'han pogut desxifrar les dades.");
+            e.target.value = '';
+            return;
+          }
+        }
+
         if (parsed && Array.isArray(parsed.groups)) {
           importedDb = parsed;
+          document.getElementById('fileNameDisplay').innerText = `Fitxer seleccionat: ${file.name}`;
           populateGroupSelector();
           document.getElementById('exportOptionsPanel').style.display = 'block';
           renderPreview();
@@ -293,6 +430,7 @@
       } catch (err) {
         alert("Error en llegir el fitxer JSON: " + err.message);
       }
+      e.target.value = '';
     };
     reader.readAsText(file);
   }
@@ -410,7 +548,7 @@
 
       group.students.forEach((s, idx) => {
         const obsList = (s.observations || []).filter(o => incInternal || !o.isInternal);
-        const gradesList = s.grades || [];
+        const gradesList = (s.grades || []).filter(g => g.val !== null && g.val !== undefined && g.val !== '');
 
         html += `
           <div class="student-card">
@@ -449,7 +587,7 @@
           <div class="student-card" style="background:#fcfdfe; border-left: 4px solid #2d6a4f;">
             <strong style="font-size:13px; color:#1b4332;">[${m.type}] ${m.title}</strong>
             <span style="font-size:11px; color:#666; float:right;">📅 ${m.date}</span>
-            <p style="font-size:12px; margin:6px 0 0 0; white-space: pre-wrap;">${m.content}</p>
+            <div style="font-size:12px; margin:6px 0 0 0; white-space: pre-wrap;">${m.content}</div>
           </div>
         `;
       });
@@ -461,23 +599,23 @@
   function calculateWeightedScore(group, student, areaName, trimestreName) {
     if (!student.grades) return null;
     const DEFAULT_CAT = [
-      { name: "Proves escrites", weight: 40 },
+      { name: "Prova escrita", weight: 40 },
       { name: "Expressió oral i exposicions", weight: 30 },
       { name: "Treball diari, tasques i projectes", weight: 20 },
       { name: "Actitud", weight: 10 }
     ];
 
     const weights = (group.areaWeights && group.areaWeights[areaName]) ? group.areaWeights[areaName] : DEFAULT_CAT;
-    const filteredGrades = student.grades.filter(g => g.area === areaName && (trimestreName === 'FINAL' || g.trimestre === trimestreName));
+    const filteredGrades = student.grades.filter(g => g.area === areaName && (trimestreName === 'FINAL' || g.trimestre === trimestreName) && g.val !== null && g.val !== undefined && g.val !== '');
     if (filteredGrades.length === 0) return null;
 
     let totalWeightedScore = 0;
     let totalWeightApplied = 0;
 
     weights.forEach(w => {
-      const catGrades = filteredGrades.filter(g => g.category === w.name || (!g.category && w.name === DEFAULT_CAT[0].name));
+      const catGrades = filteredGrades.filter(g => g.category === w.name || (w.name === 'Prova escrita' && g.category === 'Proves escrites') || (!g.category && w.name === DEFAULT_CAT[0].name));
       if (catGrades.length > 0) {
-        const catAvg = catGrades.reduce((acc, curr) => acc + curr.val, 0) / catGrades.length;
+        const catAvg = catGrades.reduce((acc, curr) => acc + parseFloat(curr.val), 0) / catGrades.length;
         totalWeightedScore += catAvg * (w.weight / 100);
         totalWeightApplied += (w.weight / 100);
       }
@@ -496,6 +634,7 @@
 
     const groupIdx = document.getElementById('groupSelect').value;
     const group = importedDb.groups[groupIdx];
+    const incInternal = document.getElementById('optIncludeInternal').checked;
 
     if (!group || !group.students) return;
 
@@ -513,7 +652,7 @@
 
     // Files per alumne
     group.students.forEach((s, idx) => {
-      const row = [(idx + 1), `"${s.name}"`, `"${s.article || 'En'}"`];
+      const row = [(idx + 1), `"${s.name.replace(/"/g, '""')}"`, `"${s.article || 'En'}"`];
 
       // Notes
       group.areas.forEach(a => {
@@ -530,8 +669,9 @@
         });
       }
 
-      // Observacions
+      // Observacions (respectant la casella d'anotacions internes)
       const obsText = (s.observations || [])
+        .filter(o => incInternal || !o.isInternal)
         .map(o => `[${o.trimestre} - ${o.area}]: ${o.text}`)
         .join(" | ")
         .replace(/"/g, '""');
